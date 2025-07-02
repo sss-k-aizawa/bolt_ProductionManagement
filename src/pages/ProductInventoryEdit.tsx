@@ -5,21 +5,29 @@ import { Save, ArrowLeft, Package, Plus, Trash2, ChevronLeft, ChevronRight } fro
 import { format, addDays, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
-interface ProductInventoryItem {
-  id: string;
-  item_id: string;
-  name: string;
-  category: string;
-  unit: string;
-  unit_price: number;
-  shipping_customer: string;
-  shipping_destination: string;
+interface Destination {
+  destination_name: string;
   min_quantity: number;
   max_quantity: number;
+  daily_stock: { [date: string]: number };
+}
+
+interface Customer {
+  customer_name: string;
+  unit_price: number;
+  destinations: Destination[];
+}
+
+interface ProductInventoryItem {
+  id: string;
+  product_id: string;
+  product_name: string;
+  category: string;
+  unit: string;
   location: string;
   supplier: string;
   description: string;
-  daily_stock: { [date: string]: number };
+  customers: Customer[];
 }
 
 const ProductInventoryEdit: React.FC = () => {
@@ -35,185 +43,294 @@ const ProductInventoryEdit: React.FC = () => {
     return format(date, 'yyyy-MM-dd');
   });
 
-  // 初期データ（実際の実装では、APIから取得）
+  // 初期データ（階層構造）
   const [inventoryItems, setInventoryItems] = useState<ProductInventoryItem[]>([
     {
       id: 'prod-1',
-      item_id: 'PROD-A',
-      name: '製品A',
+      product_id: 'PROD-A',
+      product_name: '製品A',
       category: '製品',
       unit: '個',
-      unit_price: 1500,
-      shipping_customer: 'A商事株式会社',
-      shipping_destination: '東京都港区',
-      min_quantity: 200,
-      max_quantity: 2000,
       location: '製品倉庫A-01',
       supplier: '自社製造',
       description: '主力製品A',
-      daily_stock: dates.reduce((acc, date) => ({
-        ...acc,
-        [date]: Math.floor(Math.random() * 1000) + 500
-      }), {})
+      customers: [
+        {
+          customer_name: 'A商事株式会社',
+          unit_price: 1500,
+          destinations: [
+            {
+              destination_name: '東京都港区本社',
+              min_quantity: 100,
+              max_quantity: 1000,
+              daily_stock: dates.reduce((acc, date) => ({
+                ...acc,
+                [date]: Math.floor(Math.random() * 500) + 200
+              }), {})
+            },
+            {
+              destination_name: '東京都江東区倉庫',
+              min_quantity: 50,
+              max_quantity: 500,
+              daily_stock: dates.reduce((acc, date) => ({
+                ...acc,
+                [date]: Math.floor(Math.random() * 300) + 100
+              }), {})
+            }
+          ]
+        },
+        {
+          customer_name: 'X流通株式会社',
+          unit_price: 1450,
+          destinations: [
+            {
+              destination_name: '神奈川県横浜市',
+              min_quantity: 80,
+              max_quantity: 800,
+              daily_stock: dates.reduce((acc, date) => ({
+                ...acc,
+                [date]: Math.floor(Math.random() * 400) + 150
+              }), {})
+            }
+          ]
+        }
+      ]
     },
     {
       id: 'prod-2',
-      item_id: 'PROD-B',
-      name: '製品B',
+      product_id: 'PROD-B',
+      product_name: '製品B',
       category: '製品',
       unit: '個',
-      unit_price: 2200,
-      shipping_customer: 'B流通株式会社',
-      shipping_destination: '大阪府大阪市',
-      min_quantity: 150,
-      max_quantity: 1500,
       location: '製品倉庫A-02',
       supplier: '自社製造',
       description: '標準製品B',
-      daily_stock: dates.reduce((acc, date) => ({
-        ...acc,
-        [date]: Math.floor(Math.random() * 800) + 400
-      }), {})
+      customers: [
+        {
+          customer_name: 'B流通株式会社',
+          unit_price: 2200,
+          destinations: [
+            {
+              destination_name: '大阪府大阪市本店',
+              min_quantity: 120,
+              max_quantity: 1200,
+              daily_stock: dates.reduce((acc, date) => ({
+                ...acc,
+                [date]: Math.floor(Math.random() * 600) + 300
+              }), {})
+            },
+            {
+              destination_name: '大阪府堺市支店',
+              min_quantity: 30,
+              max_quantity: 300,
+              daily_stock: dates.reduce((acc, date) => ({
+                ...acc,
+                [date]: Math.floor(Math.random() * 200) + 80
+              }), {})
+            }
+          ]
+        }
+      ]
     },
     {
       id: 'prod-3',
-      item_id: 'PROD-C',
-      name: '製品C',
+      product_id: 'PROD-C',
+      product_name: '製品C',
       category: '製品',
       unit: '個',
-      unit_price: 3800,
-      shipping_customer: 'Cマート',
-      shipping_destination: '愛知県名古屋市',
-      min_quantity: 100,
-      max_quantity: 800,
       location: '製品倉庫B-01',
       supplier: '自社製造',
       description: '特殊製品C',
-      daily_stock: dates.reduce((acc, date) => ({
-        ...acc,
-        [date]: Math.floor(Math.random() * 300) + 100
-      }), {})
-    },
-    {
-      id: 'prod-4',
-      item_id: 'PROD-D',
-      name: '製品D',
-      category: '製品',
-      unit: '個',
-      unit_price: 980,
-      shipping_customer: 'D食品株式会社',
-      shipping_destination: '福岡県福岡市',
-      min_quantity: 80,
-      max_quantity: 600,
-      location: '製品倉庫B-02',
-      supplier: '自社製造',
-      description: '新製品D',
-      daily_stock: dates.reduce((acc, date) => ({
-        ...acc,
-        [date]: Math.floor(Math.random() * 200) + 50
-      }), {})
-    },
-    {
-      id: 'prod-5',
-      item_id: 'PROD-E',
-      name: '製品E',
-      category: '製品',
-      unit: '個',
-      unit_price: 5500,
-      shipping_customer: 'E商店',
-      shipping_destination: '北海道札幌市',
-      min_quantity: 50,
-      max_quantity: 500,
-      location: '製品倉庫C-01',
-      supplier: '自社製造',
-      description: 'プレミアム製品E',
-      daily_stock: dates.reduce((acc, date) => ({
-        ...acc,
-        [date]: Math.floor(Math.random() * 400) + 200
-      }), {})
-    },
-    {
-      id: 'prod-6',
-      item_id: 'PROD-F',
-      name: '製品F',
-      category: '製品',
-      unit: '個',
-      unit_price: 750,
-      shipping_customer: 'F卸売株式会社',
-      shipping_destination: '宮城県仙台市',
-      min_quantity: 300,
-      max_quantity: 2500,
-      location: '製品倉庫C-02',
-      supplier: '自社製造',
-      description: '大量生産製品F',
-      daily_stock: dates.reduce((acc, date) => ({
-        ...acc,
-        [date]: Math.floor(Math.random() * 1500) + 800
-      }), {})
-    },
-    {
-      id: 'prod-7',
-      item_id: 'PROD-G',
-      name: '製品G',
-      category: '製品',
-      unit: '個',
-      unit_price: 4200,
-      shipping_customer: 'G商事',
-      shipping_destination: '広島県広島市',
-      min_quantity: 100,
-      max_quantity: 400,
-      location: '製品倉庫D-01',
-      supplier: '自社製造',
-      description: '限定製品G',
-      daily_stock: dates.reduce((acc, date) => ({
-        ...acc,
-        [date]: Math.floor(Math.random() * 300) + 100
-      }), {})
-    },
+      customers: [
+        {
+          customer_name: 'Cマート',
+          unit_price: 3800,
+          destinations: [
+            {
+              destination_name: '愛知県名古屋市店舗',
+              min_quantity: 60,
+              max_quantity: 600,
+              daily_stock: dates.reduce((acc, date) => ({
+                ...acc,
+                [date]: Math.floor(Math.random() * 300) + 100
+              }), {})
+            }
+          ]
+        },
+        {
+          customer_name: 'Y商事',
+          unit_price: 3650,
+          destinations: [
+            {
+              destination_name: '静岡県浜松市',
+              min_quantity: 40,
+              max_quantity: 200,
+              daily_stock: dates.reduce((acc, date) => ({
+                ...acc,
+                [date]: Math.floor(Math.random() * 150) + 50
+              }), {})
+            }
+          ]
+        }
+      ]
+    }
   ]);
 
-  const addInventoryItem = () => {
-    const newItem: ProductInventoryItem = {
-      id: `prod-${inventoryItems.length + 1}`,
-      item_id: '',
-      name: '',
+  const addProduct = () => {
+    const newProduct: ProductInventoryItem = {
+      id: `prod-${Date.now()}`,
+      product_id: '',
+      product_name: '',
       category: '製品',
       unit: '個',
-      unit_price: 0,
-      shipping_customer: '',
-      shipping_destination: '',
-      min_quantity: 0,
-      max_quantity: 1000,
       location: '',
       supplier: '自社製造',
       description: '',
-      daily_stock: dates.reduce((acc, date) => ({ ...acc, [date]: 0 }), {}),
+      customers: []
     };
-    setInventoryItems([...inventoryItems, newItem]);
+    setInventoryItems([...inventoryItems, newProduct]);
   };
 
-  const removeInventoryItem = (id: string) => {
-    setInventoryItems(inventoryItems.filter(item => item.id !== id));
+  const removeProduct = (productId: string) => {
+    setInventoryItems(inventoryItems.filter(item => item.id !== productId));
   };
 
-  const updateInventoryItem = (id: string, field: keyof ProductInventoryItem, value: string | number) => {
-    setInventoryItems(inventoryItems.map(item => 
-      item.id === id ? { ...item, [field]: value } : item
+  const addCustomer = (productId: string) => {
+    setInventoryItems(inventoryItems.map(product => {
+      if (product.id === productId) {
+        const newCustomer: Customer = {
+          customer_name: '',
+          unit_price: 0,
+          destinations: []
+        };
+        return {
+          ...product,
+          customers: [...product.customers, newCustomer]
+        };
+      }
+      return product;
+    }));
+  };
+
+  const removeCustomer = (productId: string, customerIndex: number) => {
+    setInventoryItems(inventoryItems.map(product => {
+      if (product.id === productId) {
+        return {
+          ...product,
+          customers: product.customers.filter((_, index) => index !== customerIndex)
+        };
+      }
+      return product;
+    }));
+  };
+
+  const addDestination = (productId: string, customerIndex: number) => {
+    setInventoryItems(inventoryItems.map(product => {
+      if (product.id === productId) {
+        const updatedCustomers = [...product.customers];
+        const newDestination: Destination = {
+          destination_name: '',
+          min_quantity: 0,
+          max_quantity: 1000,
+          daily_stock: dates.reduce((acc, date) => ({ ...acc, [date]: 0 }), {})
+        };
+        updatedCustomers[customerIndex] = {
+          ...updatedCustomers[customerIndex],
+          destinations: [...updatedCustomers[customerIndex].destinations, newDestination]
+        };
+        return {
+          ...product,
+          customers: updatedCustomers
+        };
+      }
+      return product;
+    }));
+  };
+
+  const removeDestination = (productId: string, customerIndex: number, destinationIndex: number) => {
+    setInventoryItems(inventoryItems.map(product => {
+      if (product.id === productId) {
+        const updatedCustomers = [...product.customers];
+        updatedCustomers[customerIndex] = {
+          ...updatedCustomers[customerIndex],
+          destinations: updatedCustomers[customerIndex].destinations.filter((_, index) => index !== destinationIndex)
+        };
+        return {
+          ...product,
+          customers: updatedCustomers
+        };
+      }
+      return product;
+    }));
+  };
+
+  const updateProduct = (productId: string, field: keyof ProductInventoryItem, value: string) => {
+    setInventoryItems(inventoryItems.map(product => 
+      product.id === productId ? { ...product, [field]: value } : product
     ));
   };
 
-  const updateDailyStock = (itemId: string, date: string, value: number) => {
-    setInventoryItems(inventoryItems.map(item => {
-      if (item.id === itemId) {
+  const updateCustomer = (productId: string, customerIndex: number, field: keyof Customer, value: string | number) => {
+    setInventoryItems(inventoryItems.map(product => {
+      if (product.id === productId) {
+        const updatedCustomers = [...product.customers];
+        updatedCustomers[customerIndex] = {
+          ...updatedCustomers[customerIndex],
+          [field]: value
+        };
         return {
-          ...item,
+          ...product,
+          customers: updatedCustomers
+        };
+      }
+      return product;
+    }));
+  };
+
+  const updateDestination = (productId: string, customerIndex: number, destinationIndex: number, field: keyof Destination, value: string | number | { [date: string]: number }) => {
+    setInventoryItems(inventoryItems.map(product => {
+      if (product.id === productId) {
+        const updatedCustomers = [...product.customers];
+        const updatedDestinations = [...updatedCustomers[customerIndex].destinations];
+        updatedDestinations[destinationIndex] = {
+          ...updatedDestinations[destinationIndex],
+          [field]: value
+        };
+        updatedCustomers[customerIndex] = {
+          ...updatedCustomers[customerIndex],
+          destinations: updatedDestinations
+        };
+        return {
+          ...product,
+          customers: updatedCustomers
+        };
+      }
+      return product;
+    }));
+  };
+
+  const updateDailyStock = (productId: string, customerIndex: number, destinationIndex: number, date: string, value: number) => {
+    setInventoryItems(inventoryItems.map(product => {
+      if (product.id === productId) {
+        const updatedCustomers = [...product.customers];
+        const updatedDestinations = [...updatedCustomers[customerIndex].destinations];
+        updatedDestinations[destinationIndex] = {
+          ...updatedDestinations[destinationIndex],
           daily_stock: {
-            ...item.daily_stock,
+            ...updatedDestinations[destinationIndex].daily_stock,
             [date]: value
           }
         };
+        updatedCustomers[customerIndex] = {
+          ...updatedCustomers[customerIndex],
+          destinations: updatedDestinations
+        };
+        return {
+          ...product,
+          customers: updatedCustomers
+        };
       }
-      return item;
+      return product;
     }));
   };
 
@@ -237,16 +354,16 @@ const ProductInventoryEdit: React.FC = () => {
       setError(null);
       
       // バリデーション
-      const invalidItems = inventoryItems.filter(item => 
-        !item.item_id || !item.name
+      const invalidProducts = inventoryItems.filter(product => 
+        !product.product_id || !product.product_name
       );
       
-      if (invalidItems.length > 0) {
+      if (invalidProducts.length > 0) {
         throw new Error('製品IDと製品名は必須です');
       }
       
       // 実際の実装では、APIに送信
-      console.log('Saving product inventory items:', inventoryItems);
+      console.log('Saving hierarchical product inventory:', inventoryItems);
       
       // 保存成功のシミュレーション
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -259,18 +376,29 @@ const ProductInventoryEdit: React.FC = () => {
     }
   };
 
-  const getInventoryLevelColor = (current: number, min: number, max: number) => {
-    if (current === 0) return 'text-red-600';
-    if (current <= min) return 'text-amber-600';
-    if (current >= max * 0.9) return 'text-blue-600';
-    return 'text-green-600';
-  };
-
   const getInventoryLevelStatus = (current: number, min: number, max: number) => {
     if (current === 0) return '在庫切れ';
     if (current <= min) return '在庫少';
     if (current >= max * 0.9) return '在庫過多';
     return '適正';
+  };
+
+  const getProductTotalStock = (product: ProductInventoryItem, date: string) => {
+    return product.customers.reduce((total, customer) => 
+      total + customer.destinations.reduce((destTotal, dest) => 
+        destTotal + (dest.daily_stock[date] || 0), 0
+      ), 0
+    );
+  };
+
+  const getProductTotalMinMax = (product: ProductInventoryItem) => {
+    const totalMin = product.customers.reduce((total, customer) => 
+      total + customer.destinations.reduce((destTotal, dest) => destTotal + dest.min_quantity, 0), 0
+    );
+    const totalMax = product.customers.reduce((total, customer) => 
+      total + customer.destinations.reduce((destTotal, dest) => destTotal + dest.max_quantity, 0), 0
+    );
+    return { totalMin, totalMax };
   };
 
   return (
@@ -284,14 +412,14 @@ const ProductInventoryEdit: React.FC = () => {
             <ArrowLeft className="h-6 w-6 text-gray-600" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">製品在庫編集</h1>
-            <p className="mt-1 text-sm text-gray-500">製品在庫情報の日別編集と管理</p>
+            <h1 className="text-2xl font-bold text-gray-900">製品在庫編集（階層別・日別）</h1>
+            <p className="mt-1 text-sm text-gray-500">製品 → 出荷顧客 → 出荷先の階層構造で在庫情報を編集</p>
           </div>
         </div>
         <div className="flex space-x-2">
           <button
             type="button"
-            onClick={addInventoryItem}
+            onClick={addProduct}
             className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <Plus size={16} className="mr-2" />
@@ -359,26 +487,17 @@ const ProductInventoryEdit: React.FC = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-48">
-                      製品情報
+                    <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-64">
+                      製品 / 出荷顧客 / 出荷先
                     </th>
-                    <th className="sticky left-48 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                    <th className="sticky left-64 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
                       単価
                     </th>
-                    <th className="sticky left-72 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
-                      出荷顧客
-                    </th>
-                    <th className="sticky left-96 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
-                      出荷先
-                    </th>
-                    <th className="sticky left-128 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                    <th className="sticky left-88 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
                       最小在庫
                     </th>
-                    <th className="sticky left-152 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                    <th className="sticky left-112 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
                       最大在庫
-                    </th>
-                    <th className="sticky left-176 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
-                      保管場所
                     </th>
                     {dates.map((date) => {
                       const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
@@ -393,140 +512,241 @@ const ProductInventoryEdit: React.FC = () => {
                         </th>
                       );
                     })}
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-20">
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                       操作
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {inventoryItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                        <div className="flex items-center">
-                          <Package size={16} className="text-blue-500 mr-2" />
-                          <div className="space-y-2">
-                            {item.item_id ? (
-                              <div>
-                                <div className="font-medium text-gray-900">{item.name}</div>
-                                <div className="text-xs text-gray-500">{item.item_id}</div>
-                              </div>
-                            ) : (
-                              <div className="space-y-1">
-                                <input
-                                  type="text"
-                                  value={item.item_id}
-                                  onChange={(e) => updateInventoryItem(item.id, 'item_id', e.target.value)}
-                                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                  placeholder="製品ID"
-                                  required
-                                />
-                                <input
-                                  type="text"
-                                  value={item.name}
-                                  onChange={(e) => updateInventoryItem(item.id, 'name', e.target.value)}
-                                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                  placeholder="製品名"
-                                  required
-                                />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="sticky left-48 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                        <input
-                          type="number"
-                          value={item.unit_price}
-                          onChange={(e) => updateInventoryItem(item.id, 'unit_price', parseInt(e.target.value) || 0)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
-                          min="0"
-                          placeholder="単価"
-                        />
-                      </td>
-                      <td className="sticky left-72 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                        <input
-                          type="text"
-                          value={item.shipping_customer}
-                          onChange={(e) => updateInventoryItem(item.id, 'shipping_customer', e.target.value)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
-                          placeholder="出荷顧客"
-                        />
-                      </td>
-                      <td className="sticky left-96 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                        <input
-                          type="text"
-                          value={item.shipping_destination}
-                          onChange={(e) => updateInventoryItem(item.id, 'shipping_destination', e.target.value)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                          placeholder="出荷先"
-                        />
-                      </td>
-                      <td className="sticky left-128 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                        <input
-                          type="number"
-                          value={item.min_quantity}
-                          onChange={(e) => updateInventoryItem(item.id, 'min_quantity', parseInt(e.target.value) || 0)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
-                          min="0"
-                        />
-                      </td>
-                      <td className="sticky left-152 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                        <input
-                          type="number"
-                          value={item.max_quantity}
-                          onChange={(e) => updateInventoryItem(item.id, 'max_quantity', parseInt(e.target.value) || 0)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
-                          min="0"
-                        />
-                      </td>
-                      <td className="sticky left-176 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                        <input
-                          type="text"
-                          value={item.location}
-                          onChange={(e) => updateInventoryItem(item.id, 'location', e.target.value)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                          placeholder="保管場所"
-                        />
-                      </td>
-                      {dates.map((date) => {
-                        const stockValue = item.daily_stock[date] || 0;
-                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        const isToday = format(new Date(), 'yyyy-MM-dd') === date;
-                        
-                        return (
-                          <td key={`${item.id}-${date}`} className={`px-4 py-4 whitespace-nowrap ${
-                            isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
-                          }`}>
-                            <div className="text-center space-y-1">
-                              <input
-                                type="number"
-                                value={stockValue}
-                                onChange={(e) => updateDailyStock(item.id, date, parseInt(e.target.value) || 0)}
-                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
-                                min="0"
-                              />
-                              <div className={`text-xs px-1 py-0.5 rounded ${
-                                getInventoryLevelStatus(stockValue, item.min_quantity, item.max_quantity) === '在庫切れ' ? 'bg-red-100 text-red-700' :
-                                getInventoryLevelStatus(stockValue, item.min_quantity, item.max_quantity) === '在庫少' ? 'bg-amber-100 text-amber-700' :
-                                getInventoryLevelStatus(stockValue, item.min_quantity, item.max_quantity) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
-                                'bg-green-100 text-green-700'
-                              }`}>
-                                {getInventoryLevelStatus(stockValue, item.min_quantity, item.max_quantity)}
-                              </div>
+                  {inventoryItems.map((product) => (
+                    <React.Fragment key={product.id}>
+                      {/* 製品レベル（合計行） */}
+                      <tr className="bg-blue-50 border-t-2 border-blue-200">
+                        <td className="sticky left-0 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                          <div className="flex items-center">
+                            <Package size={18} className="text-blue-600 mr-3" />
+                            <div className="space-y-2">
+                              {product.product_id ? (
+                                <div>
+                                  <div className="font-bold text-blue-900">{product.product_name}</div>
+                                  <div className="text-xs text-blue-600">{product.product_id} - 日別合計在庫</div>
+                                </div>
+                              ) : (
+                                <div className="space-y-1">
+                                  <input
+                                    type="text"
+                                    value={product.product_id}
+                                    onChange={(e) => updateProduct(product.id, 'product_id', e.target.value)}
+                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    placeholder="製品ID"
+                                    required
+                                  />
+                                  <input
+                                    type="text"
+                                    value={product.product_name}
+                                    onChange={(e) => updateProduct(product.id, 'product_name', e.target.value)}
+                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    placeholder="製品名"
+                                    required
+                                  />
+                                </div>
+                              )}
                             </div>
-                          </td>
-                        );
-                      })}
-                      <td className="px-4 py-4 whitespace-nowrap text-center">
-                        <button
-                          type="button"
-                          onClick={() => removeInventoryItem(item.id)}
-                          className="inline-flex items-center p-1 border border-transparent rounded-full text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
+                          </div>
+                        </td>
+                        <td className="sticky left-64 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                          <div className="text-center">
+                            <span className="text-blue-600">-</span>
+                          </div>
+                        </td>
+                        <td className="sticky left-88 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                          <div className="text-center">
+                            <span className="text-blue-600">-</span>
+                          </div>
+                        </td>
+                        <td className="sticky left-112 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                          <div className="text-center">
+                            <span className="text-blue-600">-</span>
+                          </div>
+                        </td>
+                        {dates.map((date) => {
+                          const totalStock = getProductTotalStock(product, date);
+                          const { totalMin, totalMax } = getProductTotalMinMax(product);
+                          const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                          const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                          
+                          return (
+                            <td key={`${product.id}-total-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
+                              isToday ? 'bg-blue-100' : isWeekend ? 'bg-blue-100' : ''
+                            }`}>
+                              <div className="text-center">
+                                <div className="text-lg font-bold text-blue-800">
+                                  {totalStock.toLocaleString()}
+                                </div>
+                                <div className="text-xs text-blue-600 mb-1">合計</div>
+                                <div className={`text-xs px-1 py-0.5 rounded ${
+                                  getInventoryLevelStatus(totalStock, totalMin, totalMax) === '在庫切れ' ? 'bg-red-100 text-red-700' :
+                                  getInventoryLevelStatus(totalStock, totalMin, totalMax) === '在庫少' ? 'bg-amber-100 text-amber-700' :
+                                  getInventoryLevelStatus(totalStock, totalMin, totalMax) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
+                                  'bg-green-100 text-green-700'
+                                }`}>
+                                  {getInventoryLevelStatus(totalStock, totalMin, totalMax)}
+                                </div>
+                              </div>
+                            </td>
+                          );
+                        })}
+                        <td className="px-4 py-4 whitespace-nowrap text-center">
+                          <div className="flex items-center justify-center space-x-1">
+                            <button
+                              type="button"
+                              onClick={() => addCustomer(product.id)}
+                              className="inline-flex items-center p-1 border border-transparent rounded-full text-blue-600 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              title="顧客追加"
+                            >
+                              <Plus size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeProduct(product.id)}
+                              className="inline-flex items-center p-1 border border-transparent rounded-full text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                              title="製品削除"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      
+                      {/* 顧客・出荷先レベル */}
+                      {product.customers.map((customer, customerIndex) => (
+                        <React.Fragment key={`${product.id}-${customerIndex}`}>
+                          {customer.destinations.map((destination, destIndex) => {
+                            const isFirstDestination = destIndex === 0;
+                            
+                            return (
+                              <tr key={`${product.id}-${customerIndex}-${destIndex}`} className="hover:bg-gray-50">
+                                <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                                  <div className="flex items-center">
+                                    <div className="w-6 mr-2"></div> {/* インデント */}
+                                    <div className="flex items-center">
+                                      <div className="w-4 h-4 border-l border-b border-gray-300 mr-2"></div>
+                                      <div className="space-y-2">
+                                        {isFirstDestination && (
+                                          <input
+                                            type="text"
+                                            value={customer.customer_name}
+                                            onChange={(e) => updateCustomer(product.id, customerIndex, 'customer_name', e.target.value)}
+                                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-medium"
+                                            placeholder="出荷顧客名"
+                                          />
+                                        )}
+                                        <div className="ml-4">
+                                          <input
+                                            type="text"
+                                            value={destination.destination_name}
+                                            onChange={(e) => updateDestination(product.id, customerIndex, destIndex, 'destination_name', e.target.value)}
+                                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            placeholder="出荷先"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                                  <div className="text-center">
+                                    {isFirstDestination ? (
+                                      <input
+                                        type="number"
+                                        value={customer.unit_price}
+                                        onChange={(e) => updateCustomer(product.id, customerIndex, 'unit_price', parseInt(e.target.value) || 0)}
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
+                                        min="0"
+                                        placeholder="単価"
+                                      />
+                                    ) : (
+                                      <span className="text-gray-400">-</span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="sticky left-88 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                                  <input
+                                    type="number"
+                                    value={destination.min_quantity}
+                                    onChange={(e) => updateDestination(product.id, customerIndex, destIndex, 'min_quantity', parseInt(e.target.value) || 0)}
+                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
+                                    min="0"
+                                  />
+                                </td>
+                                <td className="sticky left-112 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                                  <input
+                                    type="number"
+                                    value={destination.max_quantity}
+                                    onChange={(e) => updateDestination(product.id, customerIndex, destIndex, 'max_quantity', parseInt(e.target.value) || 0)}
+                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
+                                    min="0"
+                                  />
+                                </td>
+                                {dates.map((date) => {
+                                  const stockValue = destination.daily_stock[date] || 0;
+                                  const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                                  const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                                  
+                                  return (
+                                    <td key={`${product.id}-${customerIndex}-${destIndex}-${date}`} className={`px-4 py-4 whitespace-nowrap ${
+                                      isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                                    }`}>
+                                      <div className="text-center">
+                                        <input
+                                          type="number"
+                                          value={stockValue}
+                                          onChange={(e) => updateDailyStock(product.id, customerIndex, destIndex, date, parseInt(e.target.value) || 0)}
+                                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
+                                          min="0"
+                                        />
+                                      </div>
+                                    </td>
+                                  );
+                                })}
+                                <td className="px-4 py-4 whitespace-nowrap text-center">
+                                  <div className="flex items-center justify-center space-x-1">
+                                    {isFirstDestination && (
+                                      <button
+                                        type="button"
+                                        onClick={() => addDestination(product.id, customerIndex)}
+                                        className="inline-flex items-center p-1 border border-transparent rounded-full text-green-600 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        title="出荷先追加"
+                                      >
+                                        <Plus size={12} />
+                                      </button>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => removeDestination(product.id, customerIndex, destIndex)}
+                                      className="inline-flex items-center p-1 border border-transparent rounded-full text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                      title="出荷先削除"
+                                    >
+                                      <Trash2 size={12} />
+                                    </button>
+                                    {isFirstDestination && customer.destinations.length === 1 && (
+                                      <button
+                                        type="button"
+                                        onClick={() => removeCustomer(product.id, customerIndex)}
+                                        className="inline-flex items-center p-1 border border-transparent rounded-full text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                        title="顧客削除"
+                                      >
+                                        <Trash2 size={14} />
+                                      </button>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </React.Fragment>
+                      ))}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
@@ -537,11 +757,11 @@ const ProductInventoryEdit: React.FC = () => {
             <div className="text-center py-12">
               <Package className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900">製品在庫がありません</h3>
-              <p className="mt-1 text-sm text-gray-500">製品を追加して在庫管理を開始してください</p>
+              <p className="mt-1 text-sm text-gray-500">製品を追加して階層別在庫管理を開始してください</p>
               <div className="mt-6">
                 <button
                   type="button"
-                  onClick={addInventoryItem}
+                  onClick={addProduct}
                   className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
                 >
                   <Plus size={16} className="mr-2" />
