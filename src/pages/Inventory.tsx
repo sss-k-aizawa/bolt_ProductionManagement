@@ -369,7 +369,6 @@ const Inventory: React.FC = () => {
                         >
                           発注
                         </button>
-                        <button className="text-gray-600 hover:text-gray-900">履歴</button>
                       </td>
                     </tr>
                   ))}
