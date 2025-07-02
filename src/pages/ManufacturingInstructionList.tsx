@@ -221,40 +221,6 @@ const ManufacturingInstructionList: React.FC = () => {
         </button>
       </div>
 
-      {/* 統計カード */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">総数</p>
-            <p className="mt-1 text-3xl font-semibold text-gray-900">{statusCounts.total}</p>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">作成中</p>
-            <p className="mt-1 text-3xl font-semibold text-gray-600">{statusCounts.draft}</p>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">承認待ち</p>
-            <p className="mt-1 text-3xl font-semibold text-amber-600">{statusCounts.pending}</p>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">製造中</p>
-            <p className="mt-1 text-3xl font-semibold text-blue-600">{statusCounts.inProgress}</p>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">完了</p>
-            <p className="mt-1 text-3xl font-semibold text-green-600">{statusCounts.completed}</p>
-          </div>
-        </Card>
-      </div>
-
       {/* フィルター */}
       <Card>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -330,12 +296,6 @@ const ManufacturingInstructionList: React.FC = () => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   ステータス
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  優先度
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  作成者
-                </th>
                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   操作
                 </th>
@@ -375,20 +335,6 @@ const ManufacturingInstructionList: React.FC = () => {
                       <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(instruction.status)}`}>
                         {instruction.status}
                       </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(instruction.priority)}`}>
-                      {instruction.priority}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <User size={16} className="text-gray-400 mr-2" />
-                      <div>
-                        <div className="text-sm text-gray-900">{instruction.createdBy}</div>
-                        <div className="text-sm text-gray-500">{format(new Date(instruction.createdDate), 'MM/dd', { locale: ja })}</div>
-                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
