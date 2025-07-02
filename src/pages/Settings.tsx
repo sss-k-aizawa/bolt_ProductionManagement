@@ -365,44 +365,6 @@ const Settings: React.FC = () => {
                   </div>
                 </div>
                 
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-3">二要素認証</h3>
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        id="twoFactor"
-                        type="checkbox"
-                        className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <label htmlFor="twoFactor" className="text-sm font-medium text-gray-700">
-                        二要素認証を有効化
-                      </label>
-                      <p className="text-xs text-gray-500">アカウントにセキュリティ層を追加</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-3">セッション管理</h3>
-                  <div className="bg-gray-50 p-4 rounded-md">
-                    <div className="flex justify-between items-center mb-3">
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">現在のセッション</p>
-                        <p className="text-xs text-gray-500">Chrome on Windows • 東京, 日本</p>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="inline-flex h-2 w-2 rounded-full bg-green-400 mr-2"></span>
-                        <span className="text-xs text-gray-500">アクティブ</span>
-                      </div>
-                    </div>
-                    <button className="text-sm text-blue-600 hover:text-blue-800">
-                      他のすべてのセッションからログアウト
-                    </button>
-                  </div>
-                </div>
-                
                 <div className="flex justify-end">
                   <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     変更を保存
