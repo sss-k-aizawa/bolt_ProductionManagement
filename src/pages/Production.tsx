@@ -50,118 +50,88 @@ const Production: React.FC = () => {
 
   // 製品在庫のサンプルデータを生成
   const generateProductInventoryData = () => {
+    // 製品 -> 出荷顧客 -> 出荷先の階層構造
     const productInventoryData = [
       {
-        id: 'prod-1',
-        item_id: 'PROD-A',
-        name: '製品A',
-        category: '製品',
-        quantity: 1250,
-        unit: '個',
+        product_id: 'PROD-A',
+        product_name: '製品A',
         unit_price: 1500,
-        shipping_customer: 'A商事株式会社',
-        shipping_destination: '東京都港区',
-        min_quantity: 200,
-        max_quantity: 2000,
-        location: '製品倉庫A-01',
-        supplier: '自社製造',
-        description: '主力製品A',
+        customers: [
+          {
+            customer_name: 'A商事株式会社',
+            destinations: [
+              {
+                destination_name: '東京都港区本社',
+                min_quantity: 100,
+                max_quantity: 1000,
+              },
+              {
+                destination_name: '東京都江東区倉庫',
+                min_quantity: 50,
+                max_quantity: 500,
+              }
+            ]
+          },
+          {
+            customer_name: 'X流通株式会社',
+            destinations: [
+              {
+                destination_name: '神奈川県横浜市',
+                min_quantity: 80,
+                max_quantity: 800,
+              }
+            ]
+          }
+        ]
       },
       {
-        id: 'prod-2',
-        item_id: 'PROD-B',
-        name: '製品B',
-        category: '製品',
-        quantity: 850,
-        unit: '個',
+        product_id: 'PROD-B',
+        product_name: '製品B',
         unit_price: 2200,
-        shipping_customer: 'B流通株式会社',
-        shipping_destination: '大阪府大阪市',
-        min_quantity: 150,
-        max_quantity: 1500,
-        location: '製品倉庫A-02',
-        supplier: '自社製造',
-        description: '標準製品B',
+        customers: [
+          {
+            customer_name: 'B流通株式会社',
+            destinations: [
+              {
+                destination_name: '大阪府大阪市本店',
+                min_quantity: 120,
+                max_quantity: 1200,
+              },
+              {
+                destination_name: '大阪府堺市支店',
+                min_quantity: 30,
+                max_quantity: 300,
+              }
+            ]
+          }
+        ]
       },
       {
-        id: 'prod-3',
-        item_id: 'PROD-C',
-        name: '製品C',
-        category: '製品',
-        quantity: 45,
-        unit: '個',
+        product_id: 'PROD-C',
+        product_name: '製品C',
         unit_price: 3800,
-        shipping_customer: 'Cマート',
-        shipping_destination: '愛知県名古屋市',
-        min_quantity: 100,
-        max_quantity: 800,
-        location: '製品倉庫B-01',
-        supplier: '自社製造',
-        description: '特殊製品C',
-      },
-      {
-        id: 'prod-4',
-        item_id: 'PROD-D',
-        name: '製品D',
-        category: '製品',
-        quantity: 0,
-        unit: '個',
-        unit_price: 980,
-        shipping_customer: 'D食品株式会社',
-        shipping_destination: '福岡県福岡市',
-        min_quantity: 80,
-        max_quantity: 600,
-        location: '製品倉庫B-02',
-        supplier: '自社製造',
-        description: '新製品D',
-      },
-      {
-        id: 'prod-5',
-        item_id: 'PROD-E',
-        name: '製品E',
-        category: '製品',
-        quantity: 320,
-        unit: '個',
-        unit_price: 5500,
-        shipping_customer: 'E商店',
-        shipping_destination: '北海道札幌市',
-        min_quantity: 50,
-        max_quantity: 500,
-        location: '製品倉庫C-01',
-        supplier: '自社製造',
-        description: 'プレミアム製品E',
-      },
-      {
-        id: 'prod-6',
-        item_id: 'PROD-F',
-        name: '製品F',
-        category: '製品',
-        quantity: 1850,
-        unit: '個',
-        unit_price: 750,
-        shipping_customer: 'F卸売株式会社',
-        shipping_destination: '宮城県仙台市',
-        min_quantity: 300,
-        max_quantity: 2500,
-        location: '製品倉庫C-02',
-        supplier: '自社製造',
-        description: '大量生産製品F',
-      },
-      {
-        id: 'prod-7',
-        item_id: 'PROD-G',
-        name: '製品G',
-        category: '製品',
-        quantity: 125,
-        unit: '個',
-        unit_price: 4200,
-        shipping_customer: 'G商事',
-        shipping_destination: '広島県広島市',
-        min_quantity: 100,
-        max_quantity: 400,
-        location: '製品倉庫D-01',
-        supplier: '自社製造',
-        description: '限定製品G',
+        customers: [
+          {
+            customer_name: 'Cマート',
+            destinations: [
+              {
+                destination_name: '愛知県名古屋市店舗',
+                min_quantity: 60,
+                max_quantity: 600,
+              }
+            ]
+          },
+          {
+            customer_name: 'Y商事',
+            destinations: [
+              {
+                destination_name: '静岡県浜松市',
+                min_quantity: 40,
+                max_quantity: 200,
+              }
+            ]
+          }
+        ]
       },
     ];
 
@@ -171,13 +141,14 @@ const Production: React.FC = () => {
   // 製品在庫データ（サンプル）
   const productInventoryItems = generateProductInventoryData();
 
-  // 製品の日別在庫予測を生成
+  // 製品の日別在庫予測を生成（階層構造対応）
   const generateProductInventoryForecast = () => {
-    const forecast: { [productId: string]: { [date: string]: number } } = {};
+    const forecast: { [key: string]: { [date: string]: number } } = {};
     
-    productInventoryItems.forEach(item => {
-      forecast[item.item_id] = {};
-      let currentStock = item.quantity; // 現在の在庫数
+    productInventoryItems.forEach(product => {
+      // 製品レベルの予測
+      forecast[product.product_id] = {};
+      let productTotalStock = 0;
       
       // 過去7日分のデータも含めて14日分生成
       const extendedDates = Array.from({ length: 14 }, (_, i) => {
@@ -185,26 +156,47 @@ const Production: React.FC = () => {
         return format(date, 'yyyy-MM-dd');
       });
       
-      extendedDates.forEach((date, index) => {
-        // 生産による在庫増加
-        const productionData = scheduleData.find(s => 
-          s.date === date && s.product_id === item.item_id
-        );
-        const production = productionData?.planned_quantity || 0;
-        
-        // 出荷・使用による在庫減少（サンプル値）
-        const baseUsage = Math.floor(item.quantity * 0.08); // 現在在庫の8%程度
-        const dailyVariation = Math.floor(Math.random() * baseUsage * 0.6); // ±30%の変動
-        const usage = Math.max(0, baseUsage + dailyVariation - (baseUsage * 0.3));
-        
-        // 週末は使用量を減らす
-        const dayOfWeek = new Date(date).getDay();
-        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-        const adjustedUsage = isWeekend ? Math.floor(usage * 0.2) : usage;
-        
-        // 在庫計算
-        currentStock = Math.max(0, Math.floor(currentStock + production - adjustedUsage));
-        forecast[item.item_id][date] = currentStock;
+      // 顧客・出荷先レベルの予測
+      product.customers.forEach(customer => {
+        customer.destinations.forEach(destination => {
+          const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+          forecast[key] = {};
+          let currentStock = Math.floor(Math.random() * 500) + 200; // 初期在庫
+          
+          dates.forEach((date) => {
+            // 生産による在庫増加
+            const productionData = scheduleData.find(s => 
+              s.date === date && s.product_id === product.product_id
+            );
+            const production = Math.floor((productionData?.planned_quantity || 0) * 0.3); // 出荷先別に分散
+            
+            // 出荷・使用による在庫減少（サンプル値）
+            const baseUsage = Math.floor(currentStock * 0.1);
+            const dailyVariation = Math.floor(Math.random() * baseUsage * 0.6);
+            const usage = Math.max(0, baseUsage + dailyVariation - (baseUsage * 0.3));
+            
+            // 週末は使用量を減らす
+            const dayOfWeek = new Date(date).getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+            const adjustedUsage = isWeekend ? Math.floor(usage * 0.2) : usage;
+            
+            // 在庫計算
+            currentStock = Math.max(0, Math.floor(currentStock + production - adjustedUsage));
+            forecast[key][date] = currentStock;
+          });
+        });
+      });
+      
+      // 製品レベルの合計在庫を計算
+      dates.forEach(date => {
+        let dailyTotal = 0;
+        product.customers.forEach(customer => {
+          customer.destinations.forEach(destination => {
+            const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+            dailyTotal += forecast[key][date] || 0;
+          });
+        });
+        forecast[product.product_id][date] = dailyTotal;
       });
     });
     
@@ -677,7 +669,7 @@ const Production: React.FC = () => {
 
           <Card>
             <div className="mb-4">
-              <h2 className="text-lg font-medium text-gray-900">製品在庫予測（日別）</h2>
+              <h2 className="text-lg font-medium text-gray-900">製品在庫予測（階層別・日別）</h2>
               <p className="text-sm text-gray-500">生産計画と出荷予定に基づく在庫予測</p>
             </div>
             
@@ -686,17 +678,11 @@ const Production: React.FC = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                        製品
+                      <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-64">
+                        製品 / 出荷顧客 / 出荷先
                       </th>
-                      <th className="sticky left-32 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                      <th className="sticky left-64 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
                         単価
-                      </th>
-                      <th className="sticky left-56 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
-                        出荷顧客
-                      </th>
-                      <th className="sticky left-88 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
-                        出荷先
                       </th>
                       {dates.map((date) => (
                         <th key={date} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
@@ -709,58 +695,107 @@ const Production: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {productInventoryItems.map((item) => (
-                      <tr key={item.id} className="hover:bg-gray-50">
-                        <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
-                          <div className="flex items-center">
-                            <Package size={16} className="text-blue-500 mr-2" />
-                            <div>
-                              <div className="font-medium">{item.name}</div>
-                              <div className="text-xs text-gray-500">{item.item_id}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="sticky left-32 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                          <div className="text-center">
-                            <span className="font-medium">¥{item.unit_price?.toLocaleString()}</span>
-                          </div>
-                        </td>
-                        <td className="sticky left-56 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                          <div className="text-center">
-                            <span className="text-xs">{item.shipping_customer}</span>
-                          </div>
-                        </td>
-                        <td className="sticky left-88 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                          <div className="text-center">
-                            <span className="text-xs">{item.shipping_destination}</span>
-                          </div>
-                        </td>
-                        {dates.map((date) => {
-                          const forecastStock = productInventoryForecast[item.item_id]?.[date] || 0;
-                          const isToday = format(new Date(), 'yyyy-MM-dd') === date;
-                          const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                          
-                          return (
-                            <td key={`${item.id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
-                              isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
-                            }`}>
-                              <div className="text-center">
-                                <div className={`font-medium ${getInventoryLevelColor(forecastStock, item.min_quantity || 0, item.max_quantity || 1000)}`}>
-                                  {Math.floor(forecastStock).toLocaleString()}
-                                </div>
-                                <div className={`text-xs px-1 py-0.5 rounded mt-1 ${
-                                  getInventoryLevelStatus(forecastStock, item.min_quantity || 0, item.max_quantity || 1000) === '在庫切れ' ? 'bg-red-100 text-red-700' :
-                                  getInventoryLevelStatus(forecastStock, item.min_quantity || 0, item.max_quantity || 1000) === '在庫少' ? 'bg-amber-100 text-amber-700' :
-                                  getInventoryLevelStatus(forecastStock, item.min_quantity || 0, item.max_quantity || 1000) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
-                                  'bg-green-100 text-green-700'
-                                }`}>
-                                  {getInventoryLevelStatus(forecastStock, item.min_quantity || 0, item.max_quantity || 1000)}
-                                </div>
+                    {productInventoryItems.map((product) => (
+                      <React.Fragment key={product.product_id}>
+                        {/* 製品レベル（合計行） */}
+                        <tr className="bg-blue-50 border-t-2 border-blue-200">
+                          <td className="sticky left-0 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap text-sm font-bold text-blue-900 border-r border-gray-200">
+                            <div className="flex items-center">
+                              <Package size={18} className="text-blue-600 mr-3" />
+                              <div>
+                                <div className="font-bold text-blue-900">{product.product_name}</div>
+                                <div className="text-xs text-blue-600">{product.product_id} - 日別合計在庫</div>
                               </div>
-                            </td>
-                          );
-                        })}
-                      </tr>
+                            </div>
+                          </td>
+                          <td className="sticky left-64 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap text-sm text-blue-900 border-r border-gray-200">
+                            <div className="text-center">
+                              <span className="font-bold">¥{product.unit_price.toLocaleString()}</span>
+                            </div>
+                          </td>
+                          {dates.map((date) => {
+                            const totalStock = productInventoryForecast[product.product_id]?.[date] || 0;
+                            const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                            const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                            
+                            return (
+                              <td key={`${product.product_id}-total-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
+                                isToday ? 'bg-blue-100' : isWeekend ? 'bg-blue-100' : ''
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-lg font-bold text-blue-800">
+                                    {totalStock.toLocaleString()}
+                                  </div>
+                                  <div className="text-xs text-blue-600">合計</div>
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                        
+                        {/* 顧客・出荷先レベル */}
+                        {product.customers.map((customer, customerIndex) => (
+                          <React.Fragment key={`${product.product_id}-${customer.customer_name}`}>
+                            {customer.destinations.map((destination, destIndex) => {
+                              const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+                              const isFirstDestination = destIndex === 0;
+                              
+                              return (
+                                <tr key={key} className="hover:bg-gray-50">
+                                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
+                                    <div className="flex items-center">
+                                      <div className="w-6 mr-2"></div> {/* インデント */}
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 border-l border-b border-gray-300 mr-2"></div>
+                                        <div>
+                                          {isFirstDestination && (
+                                            <div className="font-medium text-gray-700 mb-1">
+                                              {customer.customer_name}
+                                            </div>
+                                          )}
+                                          <div className="text-sm text-gray-600 ml-4">
+                                            {destination.destination_name}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                    <div className="text-center">
+                                      <span className="text-gray-400">-</span>
+                                    </div>
+                                  </td>
+                                  {dates.map((date) => {
+                                    const forecastStock = productInventoryForecast[key]?.[date] || 0;
+                                    const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                                    
+                                    return (
+                                      <td key={`${key}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
+                                        isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                                      }`}>
+                                        <div className="text-center">
+                                          <div className={`font-medium ${getInventoryLevelColor(forecastStock, destination.min_quantity, destination.max_quantity)}`}>
+                                            {forecastStock.toLocaleString()}
+                                          </div>
+                                          <div className={`text-xs px-1 py-0.5 rounded mt-1 ${
+                                            getInventoryLevelStatus(forecastStock, destination.min_quantity, destination.max_quantity) === '在庫切れ' ? 'bg-red-100 text-red-700' :
+                                            getInventoryLevelStatus(forecastStock, destination.min_quantity, destination.max_quantity) === '在庫少' ? 'bg-amber-100 text-amber-700' :
+                                            getInventoryLevelStatus(forecastStock, destination.min_quantity, destination.max_quantity) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
+                                            'bg-green-100 text-green-700'
+                                          }`}>
+                                            {getInventoryLevelStatus(forecastStock, destination.min_quantity, destination.max_quantity)}
+                                          </div>
+                                        </div>
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
+                              );
+                            })}
+                          </React.Fragment>
+                        ))}
+                      </React.Fragment>
                     ))}
                   </tbody>
                 </table>
