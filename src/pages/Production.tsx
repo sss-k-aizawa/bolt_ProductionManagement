@@ -659,9 +659,6 @@ const Production: React.FC = () => {
                       <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
                         製品
                       </th>
-                      <th className="sticky left-32 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                        現在在庫
-                      </th>
                       {dates.map((date) => (
                         <th key={date} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                           <div className="flex flex-col">
@@ -684,47 +681,20 @@ const Production: React.FC = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="sticky left-32 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                          <div className="text-center">
-                            <div className={`font-medium ${getInventoryLevelColor(item.quantity, item.min_quantity || 0, item.max_quantity || 1000)}`}>
-                              {item.quantity.toLocaleString()}
-                            </div>
-                            <div className={`text-xs px-2 py-1 rounded-full mt-1 ${
-                              getInventoryLevelStatus(item.quantity, item.min_quantity || 0, item.max_quantity || 1000) === '在庫切れ' ? 'bg-red-100 text-red-700' :
-                              getInventoryLevelStatus(item.quantity, item.min_quantity || 0, item.max_quantity || 1000) === '在庫少' ? 'bg-amber-100 text-amber-700' :
-                              getInventoryLevelStatus(item.quantity, item.min_quantity || 0, item.max_quantity || 1000) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
-                              'bg-green-100 text-green-700'
-                            }`}>
-                              {getInventoryLevelStatus(item.quantity, item.min_quantity || 0, item.max_quantity || 1000)}
-                            </div>
-                          </div>
-                        </td>
                         {dates.map((date) => {
                           const forecastStock = productInventoryForecast[item.item_id]?.[date] || 0;
                           const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                           const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                           
-                          // 生産予定数を取得
-                          const productionData = scheduleData.find(s => 
-                            s.date === date && s.product_id === item.item_id
-                          );
-                          const plannedProduction = productionData?.planned_quantity || 0;
-                          
                           return (
                             <td key={`${item.id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
                               isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
                             }`}>
-                              <div className="text-center space-y-1">
+                              <div className="text-center">
                                 <div className={`font-medium ${getInventoryLevelColor(forecastStock, item.min_quantity || 0, item.max_quantity || 1000)}`}>
                                   {forecastStock.toLocaleString()}
                                 </div>
-                                {plannedProduction > 0 && (
-                                  <div className="text-xs text-green-600 flex items-center justify-center">
-                                    <TrendingUp size={10} className="mr-1" />
-                                    +{plannedProduction.toLocaleString()}
-                                  </div>
-                                )}
-                                <div className={`text-xs px-1 py-0.5 rounded ${
+                                <div className={`text-xs px-1 py-0.5 rounded mt-1 ${
                                   getInventoryLevelStatus(forecastStock, item.min_quantity || 0, item.max_quantity || 1000) === '在庫切れ' ? 'bg-red-100 text-red-700' :
                                   getInventoryLevelStatus(forecastStock, item.min_quantity || 0, item.max_quantity || 1000) === '在庫少' ? 'bg-amber-100 text-amber-700' :
                                   getInventoryLevelStatus(forecastStock, item.min_quantity || 0, item.max_quantity || 1000) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
