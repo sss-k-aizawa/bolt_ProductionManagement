@@ -125,7 +125,7 @@ const PalletPlanning: React.FC = () => {
         <div className="flex space-x-2">
           <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <Edit size={16} className="mr-2" />
-            計画編集
+            <span onClick={() => navigate('/pallet-planning/edit')}>計画編集</span>
           </button>
           <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <Download size={16} className="mr-2" />
@@ -257,10 +257,6 @@ const PalletPlanning: React.FC = () => {
                               <TrendingDown size={10} className="ml-1 text-red-500" />
                             </div>
                             <div className="flex items-center justify-center">
-                              <span className="text-xs text-amber-600 mr-1">手配:</span>
-                              <span className="font-medium text-amber-600">{dayData?.arranged.toLocaleString()}</span>
-                            </div>
-                            <div className="flex items-center justify-center">
                               <span className="text-xs text-green-600 mr-1">入庫:</span>
                               <span className="font-medium text-green-600">{dayData?.inbound.toLocaleString()}</span>
                               <TrendingUp size={10} className="ml-1 text-green-500" />
@@ -300,9 +296,6 @@ const PalletPlanning: React.FC = () => {
                         <div className="space-y-2">
                           <div className="text-xs text-red-700">
                             使用: {totals.usage.toLocaleString()}
-                          </div>
-                          <div className="text-xs text-amber-700">
-                            手配: {totals.arranged.toLocaleString()}
                           </div>
                           <div className="text-xs text-green-700">
                             入庫: {totals.inbound.toLocaleString()}

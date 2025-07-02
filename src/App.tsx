@@ -12,6 +12,7 @@ import InventoryOrderHistory from './pages/InventoryOrderHistory';
 import PalletPlanning from './pages/PalletPlanning';
 import SPRPalletRequest from './pages/SPRPalletRequest';
 import JPRPalletRequest from './pages/JPRPalletRequest';
+import PalletPlanningEdit from './pages/PalletPlanningEdit';
 import Production from './pages/Production';
 import ProductionScheduleEdit from './pages/ProductionScheduleEdit';
 import ManufacturingInstructionList from './pages/ManufacturingInstructionList';
@@ -38,6 +39,7 @@ function App() {
             <Route path="/pallet-planning" element={<PalletPlanning />} />
             <Route path="/pallet-planning/spr-request" element={<SPRPalletRequest />} />
             <Route path="/pallet-planning/jpr-request" element={<JPRPalletRequest />} />
+            <Route path="/pallet-planning/edit" element={<PalletPlanningEdit />} />
             <Route path="/production" element={<Production />} />
             <Route path="/production/schedule/edit" element={<ProductionScheduleEdit />} />
             <Route path="/production/inventory/edit" element={<ProductInventoryEdit />} />
