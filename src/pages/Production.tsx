@@ -739,15 +739,6 @@ const Production: React.FC = () => {
                                   <div className="text-lg font-bold text-blue-800">
                                     {totalStock.toLocaleString()}
                                   </div>
-                                  <div className="text-xs text-blue-600 mb-1">合計</div>
-                                  <div className={`text-xs px-1 py-0.5 rounded ${
-                                    getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity) === '在庫切れ' ? 'bg-red-100 text-red-700' :
-                                    getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity) === '在庫少' ? 'bg-amber-100 text-amber-700' :
-                                    getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
-                                    'bg-green-100 text-green-700'
-                                  }`}>
-                                    {getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity)}
-                                  </div>
                                 </div>
                               </td>
                             );

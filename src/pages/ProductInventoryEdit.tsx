@@ -493,12 +493,6 @@ const ProductInventoryEdit: React.FC = () => {
                     <th className="sticky left-64 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
                       単価
                     </th>
-                    <th className="sticky left-88 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
-                      最小在庫
-                    </th>
-                    <th className="sticky left-112 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
-                      最大在庫
-                    </th>
                     {dates.map((date) => {
                       const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                       return (
@@ -559,16 +553,6 @@ const ProductInventoryEdit: React.FC = () => {
                             <span className="text-blue-600">-</span>
                           </div>
                         </td>
-                        <td className="sticky left-88 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                          <div className="text-center">
-                            <span className="text-blue-600">-</span>
-                          </div>
-                        </td>
-                        <td className="sticky left-112 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                          <div className="text-center">
-                            <span className="text-blue-600">-</span>
-                          </div>
-                        </td>
                         {dates.map((date) => {
                           const totalStock = getProductTotalStock(product, date);
                           const { totalMin, totalMax } = getProductTotalMinMax(product);
@@ -582,15 +566,6 @@ const ProductInventoryEdit: React.FC = () => {
                               <div className="text-center">
                                 <div className="text-lg font-bold text-blue-800">
                                   {totalStock.toLocaleString()}
-                                </div>
-                                <div className="text-xs text-blue-600 mb-1">合計</div>
-                                <div className={`text-xs px-1 py-0.5 rounded ${
-                                  getInventoryLevelStatus(totalStock, totalMin, totalMax) === '在庫切れ' ? 'bg-red-100 text-red-700' :
-                                  getInventoryLevelStatus(totalStock, totalMin, totalMax) === '在庫少' ? 'bg-amber-100 text-amber-700' :
-                                  getInventoryLevelStatus(totalStock, totalMin, totalMax) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
-                                  'bg-green-100 text-green-700'
-                                }`}>
-                                  {getInventoryLevelStatus(totalStock, totalMin, totalMax)}
                                 </div>
                               </div>
                             </td>
@@ -669,24 +644,6 @@ const ProductInventoryEdit: React.FC = () => {
                                       <span className="text-gray-400">-</span>
                                     )}
                                   </div>
-                                </td>
-                                <td className="sticky left-88 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                                  <input
-                                    type="number"
-                                    value={destination.min_quantity}
-                                    onChange={(e) => updateDestination(product.id, customerIndex, destIndex, 'min_quantity', parseInt(e.target.value) || 0)}
-                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
-                                    min="0"
-                                  />
-                                </td>
-                                <td className="sticky left-112 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                                  <input
-                                    type="number"
-                                    value={destination.max_quantity}
-                                    onChange={(e) => updateDestination(product.id, customerIndex, destIndex, 'max_quantity', parseInt(e.target.value) || 0)}
-                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
-                                    min="0"
-                                  />
                                 </td>
                                 {dates.map((date) => {
                                   const stockValue = destination.daily_stock[date] || 0;
