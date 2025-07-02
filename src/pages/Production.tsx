@@ -723,6 +723,14 @@ const Production: React.FC = () => {
                             const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                             const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                             
+                            // 製品全体の最小・最大在庫を計算（全出荷先の合計）
+                            const totalMinQuantity = product.customers.reduce((sum, customer) => 
+                              sum + customer.destinations.reduce((destSum, dest) => destSum + dest.min_quantity, 0), 0
+                            );
+                            const totalMaxQuantity = product.customers.reduce((sum, customer) => 
+                              sum + customer.destinations.reduce((destSum, dest) => destSum + dest.max_quantity, 0), 0
+                            );
+                            
                             return (
                               <td key={`${product.product_id}-total-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
                                 isToday ? 'bg-blue-100' : isWeekend ? 'bg-blue-100' : ''
@@ -731,7 +739,15 @@ const Production: React.FC = () => {
                                   <div className="text-lg font-bold text-blue-800">
                                     {totalStock.toLocaleString()}
                                   </div>
-                                  <div className="text-xs text-blue-600">合計</div>
+                                  <div className="text-xs text-blue-600 mb-1">合計</div>
+                                  <div className={`text-xs px-1 py-0.5 rounded ${
+                                    getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity) === '在庫切れ' ? 'bg-red-100 text-red-700' :
+                                    getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity) === '在庫少' ? 'bg-amber-100 text-amber-700' :
+                                    getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
+                                    'bg-green-100 text-green-700'
+                                  }`}>
+                                    {getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity)}
+                                  </div>
                                 </div>
                               </td>
                             );
@@ -786,14 +802,6 @@ const Production: React.FC = () => {
                                         <div className="text-center">
                                           <div className={`font-medium ${getInventoryLevelColor(forecastStock, destination.min_quantity, destination.max_quantity)}`}>
                                             {forecastStock.toLocaleString()}
-                                          </div>
-                                          <div className={`text-xs px-1 py-0.5 rounded mt-1 ${
-                                            getInventoryLevelStatus(forecastStock, destination.min_quantity, destination.max_quantity) === '在庫切れ' ? 'bg-red-100 text-red-700' :
-                                            getInventoryLevelStatus(forecastStock, destination.min_quantity, destination.max_quantity) === '在庫少' ? 'bg-amber-100 text-amber-700' :
-                                            getInventoryLevelStatus(forecastStock, destination.min_quantity, destination.max_quantity) === '在庫過多' ? 'bg-blue-100 text-blue-700' :
-                                            'bg-green-100 text-green-700'
-                                          }`}>
-                                            {getInventoryLevelStatus(forecastStock, destination.min_quantity, destination.max_quantity)}
                                           </div>
                                         </div>
                                       </td>
