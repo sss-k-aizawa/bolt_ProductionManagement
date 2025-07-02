@@ -382,50 +382,6 @@ const ProductInventoryEdit: React.FC = () => {
           )}
         </Card>
 
-        {/* 在庫統計サマリー */}
-        {inventoryItems.length > 0 && (
-          <Card>
-            <h2 className="text-lg font-medium text-gray-900 mb-4">在庫統計</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="text-center">
-                  <p className="text-sm font-medium text-blue-700">製品総数</p>
-                  <p className="mt-1 text-2xl font-semibold text-blue-900">{inventoryItems.length}</p>
-                </div>
-              </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <div className="text-center">
-                  <p className="text-sm font-medium text-green-700">適正在庫</p>
-                  <p className="mt-1 text-2xl font-semibold text-green-900">
-                    {inventoryItems.filter(item => 
-                      getInventoryLevelStatus(item.quantity, item.min_quantity, item.max_quantity) === '適正'
-                    ).length}
-                  </p>
-                </div>
-              </div>
-              <div className="bg-amber-50 p-4 rounded-lg">
-                <div className="text-center">
-                  <p className="text-sm font-medium text-amber-700">在庫少</p>
-                  <p className="mt-1 text-2xl font-semibold text-amber-900">
-                    {inventoryItems.filter(item => 
-                      getInventoryLevelStatus(item.quantity, item.min_quantity, item.max_quantity) === '在庫少'
-                    ).length}
-                  </p>
-                </div>
-              </div>
-              <div className="bg-red-50 p-4 rounded-lg">
-                <div className="text-center">
-                  <p className="text-sm font-medium text-red-700">在庫切れ</p>
-                  <p className="mt-1 text-2xl font-semibold text-red-900">
-                    {inventoryItems.filter(item => 
-                      getInventoryLevelStatus(item.quantity, item.min_quantity, item.max_quantity) === '在庫切れ'
-                    ).length}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Card>
-        )}
       </form>
     </div>
   );
