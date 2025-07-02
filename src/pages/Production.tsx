@@ -59,6 +59,7 @@ const Production: React.FC = () => {
         customers: [
           {
             customer_name: 'A商事株式会社',
+            unit_price: 1500,
             destinations: [
               {
                 destination_name: '東京都港区本社',
@@ -74,6 +75,7 @@ const Production: React.FC = () => {
           },
           {
             customer_name: 'X流通株式会社',
+            unit_price: 1450,
             destinations: [
               {
                 destination_name: '神奈川県横浜市',
@@ -91,6 +93,7 @@ const Production: React.FC = () => {
         customers: [
           {
             customer_name: 'B流通株式会社',
+            unit_price: 2200,
             destinations: [
               {
                 destination_name: '大阪府大阪市本店',
@@ -113,6 +116,7 @@ const Production: React.FC = () => {
         customers: [
           {
             customer_name: 'Cマート',
+            unit_price: 3800,
             destinations: [
               {
                 destination_name: '愛知県名古屋市店舗',
@@ -123,6 +127,7 @@ const Production: React.FC = () => {
           },
           {
             customer_name: 'Y商事',
+            unit_price: 3650,
             destinations: [
               {
                 destination_name: '静岡県浜松市',
@@ -710,7 +715,7 @@ const Production: React.FC = () => {
                           </td>
                           <td className="sticky left-64 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap text-sm text-blue-900 border-r border-gray-200">
                             <div className="text-center">
-                              <span className="font-bold">¥{product.unit_price.toLocaleString()}</span>
+                              <span className="text-blue-600">-</span>
                             </div>
                           </td>
                           {dates.map((date) => {
@@ -762,7 +767,11 @@ const Production: React.FC = () => {
                                   </td>
                                   <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
                                     <div className="text-center">
-                                      <span className="text-gray-400">-</span>
+                                      {isFirstDestination ? (
+                                        <span className="font-medium text-gray-900">¥{customer.unit_price.toLocaleString()}</span>
+                                      ) : (
+                                        <span className="text-gray-400">-</span>
+                                      )}
                                     </div>
                                   </td>
                                   {dates.map((date) => {
