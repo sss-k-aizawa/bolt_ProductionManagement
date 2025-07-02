@@ -689,6 +689,15 @@ const Production: React.FC = () => {
                       <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
                         製品
                       </th>
+                      <th className="sticky left-32 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                        単価
+                      </th>
+                      <th className="sticky left-56 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
+                        出荷顧客
+                      </th>
+                      <th className="sticky left-88 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
+                        出荷先
+                      </th>
                       {dates.map((date) => (
                         <th key={date} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                           <div className="flex flex-col">
