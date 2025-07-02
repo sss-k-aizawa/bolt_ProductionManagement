@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Card from '../components/ui/Card';
-import { Users, Bell, Lock, Eye, EyeOff, Globe, Mail } from 'lucide-react';
+import { Users, Bell, Lock, Eye, EyeOff, Mail } from 'lucide-react';
 
 const Settings: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,17 +49,6 @@ const Settings: React.FC = () => {
               >
                 <Lock size={18} className="mr-3" />
                 セキュリティ
-              </button>
-              <button
-                className={`flex items-center px-4 py-3 text-sm font-medium ${
-                  activeTab === 'regional'
-                    ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-                onClick={() => setActiveTab('regional')}
-              >
-                <Globe size={18} className="mr-3" />
-                地域設定
               </button>
             </nav>
           </Card>
@@ -423,93 +412,6 @@ const Settings: React.FC = () => {
             </Card>
           )}
           
-          {activeTab === 'regional' && (
-            <Card>
-              <h2 className="text-lg font-medium text-gray-900 mb-6">地域設定</h2>
-              
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-1">
-                    言語
-                  </label>
-                  <select
-                    id="language"
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                  >
-                    <option>日本語</option>
-                    <option>English</option>
-                    <option>中文</option>
-                    <option>한국어</option>
-                    <option>Español</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-1">
-                    タイムゾーン
-                  </label>
-                  <select
-                    id="timezone"
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                  >
-                    <option>(GMT+09:00) 東京、大阪、札幌</option>
-                    <option>(GMT+00:00) UTC</option>
-                    <option>(GMT-08:00) 太平洋時間（米国・カナダ）</option>
-                    <option>(GMT-05:00) 東部時間（米国・カナダ）</option>
-                    <option>(GMT+01:00) 中央ヨーロッパ時間</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label htmlFor="dateFormat" className="block text-sm font-medium text-gray-700 mb-1">
-                    日付形式
-                  </label>
-                  <select
-                    id="dateFormat"
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                  >
-                    <option>YYYY年MM月DD日</option>
-                    <option>YYYY/MM/DD</option>
-                    <option>DD/MM/YYYY</option>
-                    <option>MM/DD/YYYY</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label htmlFor="timeFormat" className="block text-sm font-medium text-gray-700 mb-1">
-                    時刻形式
-                  </label>
-                  <select
-                    id="timeFormat"
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                  >
-                    <option>24時間 (14:30)</option>
-                    <option>12時間 (午後2:30)</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label htmlFor="firstDayOfWeek" className="block text-sm font-medium text-gray-700 mb-1">
-                    週の開始日
-                  </label>
-                  <select
-                    id="firstDayOfWeek"
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                  >
-                    <option>月曜日</option>
-                    <option>日曜日</option>
-                    <option>土曜日</option>
-                  </select>
-                </div>
-                
-                <div className="flex justify-end">
-                  <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    変更を保存
-                  </button>
-                </div>
-              </div>
-            </Card>
-          )}
         </div>
       </div>
     </div>
