@@ -797,7 +797,19 @@ const Production: React.FC = () => {
                                           </div>
                                         </div>
                                       </td>
-                                    );
+                                    <div className="text-xs text-blue-600 mb-1">合計</div>
+                                    <div className={`text-xs px-1 py-0.5 rounded ${
+                                      getInventoryLevelStatus(totalStock, 
+                                        Math.min(...product.customers.flatMap(c => c.destinations.map(d => d.min_quantity))), 
+                                        Math.max(...product.customers.flatMap(c => c.destinations.map(d => d.max_quantity)))
+                                      ) === '在庫切れ' ? 'bg-red-100 text-red-700' :
+                                      getInventoryLevelStatus(totalStock, 
+                                        Math.min(...product.customers.flatMap(c => c.destinations.map(d => d.min_quantity))), 
+                                        Math.max(...product.customers.flatMap(c => c.destinations.map(d => d.max_quantity)))
+                                        Math.min(...product.customers.flatMap(c => c.destinations.map(d => d.min_quantity))), 
+                                        Math.max(...product.customers.flatMap(c => c.destinations.map(d => d.max_quantity)))
+                                      )}
+                                    </div>
                                   })}
                                 </tr>
                               );
