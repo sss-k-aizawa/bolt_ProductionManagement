@@ -579,16 +579,16 @@ const Production: React.FC = () => {
                     <th key={month.month} className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                       {month.month}
                     </th>
-                    <th className="sticky left-32 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
-                      単価
-                    </th>
-                    <th className="sticky left-56 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
-                      出荷顧客
-                    </th>
-                    <th className="sticky left-88 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
-                      出荷先
-                    </th>
                   ))}
+                  <th className="sticky left-32 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                    単価
+                  </th>
+                  <th className="sticky left-56 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
+                    出荷顧客
+                  </th>
+                  <th className="sticky left-88 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
+                    出荷先
+                  </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                     合計
                   </th>
