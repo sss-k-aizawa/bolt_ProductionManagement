@@ -11,6 +11,9 @@ interface ProductInventoryItem {
   name: string;
   category: string;
   unit: string;
+  unit_price: number;
+  shipping_customer: string;
+  shipping_destination: string;
   min_quantity: number;
   max_quantity: number;
   location: string;
@@ -40,6 +43,9 @@ const ProductInventoryEdit: React.FC = () => {
       name: '製品A',
       category: '製品',
       unit: '個',
+      unit_price: 1500,
+      shipping_customer: 'A商事株式会社',
+      shipping_destination: '東京都港区',
       min_quantity: 200,
       max_quantity: 2000,
       location: '製品倉庫A-01',
@@ -56,6 +62,9 @@ const ProductInventoryEdit: React.FC = () => {
       name: '製品B',
       category: '製品',
       unit: '個',
+      unit_price: 2200,
+      shipping_customer: 'B流通株式会社',
+      shipping_destination: '大阪府大阪市',
       min_quantity: 150,
       max_quantity: 1500,
       location: '製品倉庫A-02',
@@ -72,6 +81,9 @@ const ProductInventoryEdit: React.FC = () => {
       name: '製品C',
       category: '製品',
       unit: '個',
+      unit_price: 3800,
+      shipping_customer: 'Cマート',
+      shipping_destination: '愛知県名古屋市',
       min_quantity: 100,
       max_quantity: 800,
       location: '製品倉庫B-01',
@@ -88,6 +100,9 @@ const ProductInventoryEdit: React.FC = () => {
       name: '製品D',
       category: '製品',
       unit: '個',
+      unit_price: 980,
+      shipping_customer: 'D食品株式会社',
+      shipping_destination: '福岡県福岡市',
       min_quantity: 80,
       max_quantity: 600,
       location: '製品倉庫B-02',
@@ -104,6 +119,9 @@ const ProductInventoryEdit: React.FC = () => {
       name: '製品E',
       category: '製品',
       unit: '個',
+      unit_price: 5500,
+      shipping_customer: 'E商店',
+      shipping_destination: '北海道札幌市',
       min_quantity: 50,
       max_quantity: 500,
       location: '製品倉庫C-01',
@@ -120,6 +138,9 @@ const ProductInventoryEdit: React.FC = () => {
       name: '製品F',
       category: '製品',
       unit: '個',
+      unit_price: 750,
+      shipping_customer: 'F卸売株式会社',
+      shipping_destination: '宮城県仙台市',
       min_quantity: 300,
       max_quantity: 2500,
       location: '製品倉庫C-02',
@@ -136,6 +157,9 @@ const ProductInventoryEdit: React.FC = () => {
       name: '製品G',
       category: '製品',
       unit: '個',
+      unit_price: 4200,
+      shipping_customer: 'G商事',
+      shipping_destination: '広島県広島市',
       min_quantity: 100,
       max_quantity: 400,
       location: '製品倉庫D-01',
@@ -155,6 +179,9 @@ const ProductInventoryEdit: React.FC = () => {
       name: '',
       category: '製品',
       unit: '個',
+      unit_price: 0,
+      shipping_customer: '',
+      shipping_destination: '',
       min_quantity: 0,
       max_quantity: 1000,
       location: '',
@@ -336,12 +363,21 @@ const ProductInventoryEdit: React.FC = () => {
                       製品情報
                     </th>
                     <th className="sticky left-48 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
-                      最小在庫
+                      単価
                     </th>
                     <th className="sticky left-72 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
-                      最大在庫
+                      出荷顧客
                     </th>
                     <th className="sticky left-96 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
+                      出荷先
+                    </th>
+                    <th className="sticky left-128 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                      最小在庫
+                    </th>
+                    <th className="sticky left-152 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                      最大在庫
+                    </th>
+                    <th className="sticky left-176 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
                       保管場所
                     </th>
                     {dates.map((date) => {
@@ -400,13 +436,41 @@ const ProductInventoryEdit: React.FC = () => {
                       <td className="sticky left-48 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
                         <input
                           type="number"
+                          value={item.unit_price}
+                          onChange={(e) => updateInventoryItem(item.id, 'unit_price', parseInt(e.target.value) || 0)}
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
+                          min="0"
+                          placeholder="単価"
+                        />
+                      </td>
+                      <td className="sticky left-72 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                        <input
+                          type="text"
+                          value={item.shipping_customer}
+                          onChange={(e) => updateInventoryItem(item.id, 'shipping_customer', e.target.value)}
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
+                          placeholder="出荷顧客"
+                        />
+                      </td>
+                      <td className="sticky left-96 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                        <input
+                          type="text"
+                          value={item.shipping_destination}
+                          onChange={(e) => updateInventoryItem(item.id, 'shipping_destination', e.target.value)}
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          placeholder="出荷先"
+                        />
+                      </td>
+                      <td className="sticky left-128 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                        <input
+                          type="number"
                           value={item.min_quantity}
                           onChange={(e) => updateInventoryItem(item.id, 'min_quantity', parseInt(e.target.value) || 0)}
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-center"
                           min="0"
                         />
                       </td>
-                      <td className="sticky left-72 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                      <td className="sticky left-152 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
                         <input
                           type="number"
                           value={item.max_quantity}
@@ -415,7 +479,7 @@ const ProductInventoryEdit: React.FC = () => {
                           min="0"
                         />
                       </td>
-                      <td className="sticky left-96 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                      <td className="sticky left-176 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
                         <input
                           type="text"
                           value={item.location}
