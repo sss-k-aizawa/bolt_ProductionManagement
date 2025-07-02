@@ -58,6 +58,9 @@ const Production: React.FC = () => {
         category: '製品',
         quantity: 1250,
         unit: '個',
+        unit_price: 1500,
+        shipping_customer: 'A商事株式会社',
+        shipping_destination: '東京都港区',
         min_quantity: 200,
         max_quantity: 2000,
         location: '製品倉庫A-01',
@@ -71,6 +74,9 @@ const Production: React.FC = () => {
         category: '製品',
         quantity: 850,
         unit: '個',
+        unit_price: 2200,
+        shipping_customer: 'B流通株式会社',
+        shipping_destination: '大阪府大阪市',
         min_quantity: 150,
         max_quantity: 1500,
         location: '製品倉庫A-02',
@@ -84,6 +90,9 @@ const Production: React.FC = () => {
         category: '製品',
         quantity: 45,
         unit: '個',
+        unit_price: 3800,
+        shipping_customer: 'Cマート',
+        shipping_destination: '愛知県名古屋市',
         min_quantity: 100,
         max_quantity: 800,
         location: '製品倉庫B-01',
@@ -97,6 +106,9 @@ const Production: React.FC = () => {
         category: '製品',
         quantity: 0,
         unit: '個',
+        unit_price: 980,
+        shipping_customer: 'D食品株式会社',
+        shipping_destination: '福岡県福岡市',
         min_quantity: 80,
         max_quantity: 600,
         location: '製品倉庫B-02',
@@ -110,6 +122,9 @@ const Production: React.FC = () => {
         category: '製品',
         quantity: 320,
         unit: '個',
+        unit_price: 5500,
+        shipping_customer: 'E商店',
+        shipping_destination: '北海道札幌市',
         min_quantity: 50,
         max_quantity: 500,
         location: '製品倉庫C-01',
@@ -123,6 +138,9 @@ const Production: React.FC = () => {
         category: '製品',
         quantity: 1850,
         unit: '個',
+        unit_price: 750,
+        shipping_customer: 'F卸売株式会社',
+        shipping_destination: '宮城県仙台市',
         min_quantity: 300,
         max_quantity: 2500,
         location: '製品倉庫C-02',
@@ -136,6 +154,9 @@ const Production: React.FC = () => {
         category: '製品',
         quantity: 125,
         unit: '個',
+        unit_price: 4200,
+        shipping_customer: 'G商事',
+        shipping_destination: '広島県広島市',
         min_quantity: 100,
         max_quantity: 400,
         location: '製品倉庫D-01',
@@ -182,7 +203,7 @@ const Production: React.FC = () => {
         const adjustedUsage = isWeekend ? Math.floor(usage * 0.2) : usage;
         
         // 在庫計算
-        currentStock = Math.max(0, currentStock + production - adjustedUsage);
+        currentStock = Math.max(0, Math.floor(currentStock + production - adjustedUsage));
         forecast[item.item_id][date] = currentStock;
       });
     });
@@ -558,6 +579,15 @@ const Production: React.FC = () => {
                     <th key={month.month} className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                       {month.month}
                     </th>
+                    <th className="sticky left-32 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                      単価
+                    </th>
+                    <th className="sticky left-56 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
+                      出荷顧客
+                    </th>
+                    <th className="sticky left-88 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-32">
+                      出荷先
+                    </th>
                   ))}
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                     合計
@@ -681,6 +711,21 @@ const Production: React.FC = () => {
                             </div>
                           </div>
                         </td>
+                        <td className="sticky left-32 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                          <div className="text-center">
+                            <span className="font-medium">¥{item.unit_price?.toLocaleString()}</span>
+                          </div>
+                        </td>
+                        <td className="sticky left-56 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                          <div className="text-center">
+                            <span className="text-xs">{item.shipping_customer}</span>
+                          </div>
+                        </td>
+                        <td className="sticky left-88 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                          <div className="text-center">
+                            <span className="text-xs">{item.shipping_destination}</span>
+                          </div>
+                        </td>
                         {dates.map((date) => {
                           const forecastStock = productInventoryForecast[item.item_id]?.[date] || 0;
                           const isToday = format(new Date(), 'yyyy-MM-dd') === date;
@@ -692,7 +737,7 @@ const Production: React.FC = () => {
                             }`}>
                               <div className="text-center">
                                 <div className={`font-medium ${getInventoryLevelColor(forecastStock, item.min_quantity || 0, item.max_quantity || 1000)}`}>
-                                  {forecastStock.toLocaleString()}
+                                  {Math.floor(forecastStock).toLocaleString()}
                                 </div>
                                 <div className={`text-xs px-1 py-0.5 rounded mt-1 ${
                                   getInventoryLevelStatus(forecastStock, item.min_quantity || 0, item.max_quantity || 1000) === '在庫切れ' ? 'bg-red-100 text-red-700' :
