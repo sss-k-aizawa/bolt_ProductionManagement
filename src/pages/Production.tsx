@@ -662,38 +662,40 @@ const Production: React.FC = () => {
                     月別合計
                   </td>
                   {monthlyData.map((month) => (
-                    const monthlyTotal = month.data.reduce((sum, product) => sum + product.total, 0);
-                    const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
-                    const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
-                    
-                    // 達成率計算
-                    const targetAchievementRate = monthlyTarget > 0 ? (monthlyTotal / monthlyTarget) * 100 : 0;
-                    const minTargetAchievementRate = monthlyMinTarget > 0 ? (monthlyTotal / monthlyMinTarget) * 100 : 0;
-                    
-                    // 達成率の色分け
-                    const getAchievementColor = (rate: number) => {
-                      if (rate >= 100) return 'text-green-600';
-                      if (rate >= 80) return 'text-amber-600';
-                      return 'text-red-600';
-                    };
-                    
-                    return (
-                     <td key={`total-${month.month}`} className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
-                       <div className="space-y-1">
-                         <div className="text-lg font-bold">
-                           {monthlyTotal.toLocaleString()}
-                         </div>
-                         <div className="text-xs space-y-1">
-                           <div className={`${getAchievementColor(targetAchievementRate)}`}>
-                             目標達成率: {targetAchievementRate.toFixed(1)}%
+                    {
+                      const monthlyTotal = month.data.reduce((sum, product) => sum + product.total, 0);
+                      const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
+                      const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
+                      
+                      // 達成率計算
+                      const targetAchievementRate = monthlyTarget > 0 ? (monthlyTotal / monthlyTarget) * 100 : 0;
+                      const minTargetAchievementRate = monthlyMinTarget > 0 ? (monthlyTotal / monthlyMinTarget) * 100 : 0;
+                      
+                      // 達成率の色分け
+                      const getAchievementColor = (rate: number) => {
+                        if (rate >= 100) return 'text-green-600';
+                        if (rate >= 80) return 'text-amber-600';
+                        return 'text-red-600';
+                      };
+                      
+                      return (
+                       <td key={`total-${month.month}`} className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                         <div className="space-y-1">
+                           <div className="text-lg font-bold">
+                             {monthlyTotal.toLocaleString()}
                            </div>
-                           <div className={`${getAchievementColor(minTargetAchievementRate)}`}>
-                             最低達成率: {minTargetAchievementRate.toFixed(1)}%
+                           <div className="text-xs space-y-1">
+                             <div className={`${getAchievementColor(targetAchievementRate)}`}>
+                               目標達成率: {targetAchievementRate.toFixed(1)}%
+                             </div>
+                             <div className={`${getAchievementColor(minTargetAchievementRate)}`}>
+                               最低達成率: {minTargetAchievementRate.toFixed(1)}%
+                             </div>
                            </div>
                          </div>
-                       </div>
-                    </td>
-                    );
+                      </td>
+                      );
+                    }
                   ))}
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-gray-900">
                     <div className="space-y-1">
