@@ -198,7 +198,7 @@ const Dashboard: React.FC = () => {
           title="パレット在庫"
           value={(palletData.reduce((sum, p) => sum + p.stock, 0)).toLocaleString()}
           unit="個"
-          change={`使用${palletData.reduce((sum, p) => sum + p.usage, 0)}個/日`}
+          change={`出庫${palletData.reduce((sum, p) => sum + p.usage, 0)}個/日`}
           trend="neutral"
           icon={<Truck size={20} />}
           color="blue"
