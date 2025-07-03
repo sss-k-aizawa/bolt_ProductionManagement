@@ -35,10 +35,13 @@ const Production: React.FC = () => {
       const month = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + i, 1);
       months.push({
         month: format(month, 'yyyy年M月'),
+        isCurrentMonth: i === 0,
         data: uniqueProducts.map(product => ({
           product_id: product?.product_id || '',
           product_name: product?.product_name || '',
           total: Math.floor(Math.random() * 5000) + 1000, // サンプルデータ
+          target: Math.floor(Math.random() * 6000) + 1200, // 目標生産数
+          minTarget: Math.floor(Math.random() * 4500) + 900, // 最低生産数
         }))
       });
     }
@@ -447,21 +450,51 @@ const Production: React.FC = () => {
                     {/* 最低生産数行 */}
                     <tr className="bg-amber-50">
                       <td className="sticky left-0 z-10 bg-amber-50 px-4 py-3 whitespace-nowrap text-sm font-medium text-amber-800 border-r border-gray-200">
-                        最低生産数
-                      </td>
-                      {dates.map((date) => {
-                        const { minTarget } = getDailyTargets(date);
-                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        return (
-                          <td key={`min-target-${date}`} className={`px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-amber-800 ${
-                            isWeekend ? 'bg-amber-100' : ''
-                          }`}>
                             {minTarget > 0 ? minTarget.toLocaleString() : '-'}
                           </td>
                         );
                       })}
                     </tr>
 
+                    {/* 目標生産数行 */}
+                    <tr className="bg-green-50">
+                      <td className="sticky left-0 z-10 bg-green-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-green-800 border-r border-gray-200">
+                        目標生産数
+                      </td>
+                      {monthlyData.map((month) => {
+                        const monthTarget = month.data.reduce((sum, product) => sum + product.target, 0);
+                        return (
+                          <td key={`target-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-green-800 ${month.isCurrentMonth ? 'bg-green-100' : ''}`}>
+                            {monthTarget.toLocaleString()}
+                          </td>
+                        );
+                      })}
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-green-800">
+                        {monthlyData.reduce((sum, month) => 
+                          sum + month.data.reduce((monthSum, product) => monthSum + product.target, 0), 0
+                        ).toLocaleString()}
+                      </td>
+                    </tr>
+
+                    {/* 最低生産数行 */}
+                    <tr className="bg-amber-50">
+                      <td className="sticky left-0 z-10 bg-amber-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-amber-800 border-r border-gray-200">
+                        最低生産数
+                      </td>
+                      {monthlyData.map((month) => {
+                        const monthMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
+                        return (
+                          <td key={`min-target-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-amber-800 ${month.isCurrentMonth ? 'bg-amber-100' : ''}`}>
+                            {monthMinTarget.toLocaleString()}
+                          </td>
+                        );
+                      })}
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-amber-800">
+                        {monthlyData.reduce((sum, month) => 
+                          sum + month.data.reduce((monthSum, product) => monthSum + product.minTarget, 0), 0
+                        ).toLocaleString()}
+                      </td>
+                    </tr>
                     {/* 製品別生産予定 */}
                     {uniqueProducts.map((product) => (
                       <tr key={product?.product_id} className="hover:bg-gray-50">
@@ -473,10 +506,9 @@ const Production: React.FC = () => {
                         </td>
                         {dates.map((date) => {
                           const dayData = scheduleData.find(s => s.date === date && s.product_id === product?.product_id);
-                          const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                           
                           return (
-                            <td key={`${product?.product_id}-${date}`} className={`px-4 py-3 whitespace-nowrap text-sm text-gray-500 ${isToday ? 'bg-blue-50' : ''}`}>
+                            <td key={`${product?.product_id}-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm ${month.isCurrentMonth ? 'bg-blue-50 font-medium text-blue-900' : 'text-gray-900'}`}>
                               {dayData && dayData.planned_quantity > 0 ? (
                                 <div className="text-center">
                                   <span className="font-medium">{dayData.planned_quantity.toLocaleString()}</span>
@@ -617,6 +649,12 @@ const Production: React.FC = () => {
                       }, 0).toLocaleString()}
                     </td>
                   </tr>
+                        const monthTotal = month.data.reduce((sum, product) => sum + product.total, 0);
+                        const monthTarget = month.data.reduce((sum, product) => sum + product.target, 0);
+                        const monthMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
+                        const targetAchievementRate = monthTarget > 0 ? (monthTotal / monthTarget) * 100 : 0;
+                        const minTargetAchievementRate = monthMinTarget > 0 ? (monthTotal / monthMinTarget) * 100 : 0;
+                        
                 ))}
                 
                 {/* 月別合計行 */}
@@ -687,15 +725,57 @@ const Production: React.FC = () => {
                         製品 / 出荷顧客 / 出荷先
                       </th>
                       <th className="sticky left-64 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
-                        単価
-                      </th>
+                          <td key={`total-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900 ${month.isCurrentMonth ? 'bg-gray-100' : ''}`}>
+                            <div className="space-y-1">
+                              <div className="text-lg font-bold">
+                                {monthTotal.toLocaleString()}
+                              </div>
+                              <div className="text-xs space-y-0.5">
+                                <div className={`${targetAchievementRate >= 100 ? 'text-green-600' : targetAchievementRate >= 80 ? 'text-amber-600' : 'text-red-600'}`}>
+                                  目標達成率: {targetAchievementRate.toFixed(1)}%
+                                </div>
+                                <div className={`${minTargetAchievementRate >= 100 ? 'text-green-600' : minTargetAchievementRate >= 80 ? 'text-amber-600' : 'text-red-600'}`}>
+                                  最低達成率: {minTargetAchievementRate.toFixed(1)}%
+                                </div>
+                              </div>
+                            </div>
                       {dates.map((date) => (
                         <th key={date} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                           <div className="flex flex-col">
-                            <span>{format(new Date(date), 'M/d', { locale: ja })}</span>
-                            <span className="text-xs text-gray-400">{format(new Date(date), 'EEE', { locale: ja })}</span>
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-gray-900">
+                        <div className="space-y-1">
+                          <div className="text-lg font-bold">
+                            {monthlyData.reduce((sum, month) => 
+                              sum + month.data.reduce((monthSum, product) => monthSum + product.total, 0), 0
+                            ).toLocaleString()}
                           </div>
-                        </th>
+                          <div className="text-xs space-y-0.5">
+                            {(() => {
+                              const totalActual = monthlyData.reduce((sum, month) => 
+                                sum + month.data.reduce((monthSum, product) => monthSum + product.total, 0), 0
+                              );
+                              const totalTarget = monthlyData.reduce((sum, month) => 
+                                sum + month.data.reduce((monthSum, product) => monthSum + product.target, 0), 0
+                              );
+                              const totalMinTarget = monthlyData.reduce((sum, month) => 
+                                sum + month.data.reduce((monthSum, product) => monthSum + product.minTarget, 0), 0
+                              );
+                              const totalTargetRate = totalTarget > 0 ? (totalActual / totalTarget) * 100 : 0;
+                              const totalMinTargetRate = totalMinTarget > 0 ? (totalActual / totalMinTarget) * 100 : 0;
+                              
+                              return (
+                                <>
+                                  <div className={`${totalTargetRate >= 100 ? 'text-green-600' : totalTargetRate >= 80 ? 'text-amber-600' : 'text-red-600'}`}>
+                                    目標達成率: {totalTargetRate.toFixed(1)}%
+                                  </div>
+                                  <div className={`${totalMinTargetRate >= 100 ? 'text-green-600' : totalMinTargetRate >= 80 ? 'text-amber-600' : 'text-red-600'}`}>
+                                    最低達成率: {totalMinTargetRate.toFixed(1)}%
+                                  </div>
+                                </>
+                              );
+                            })()}
+                          </div>
+                        </div>
                       ))}
                     </tr>
                   </thead>
