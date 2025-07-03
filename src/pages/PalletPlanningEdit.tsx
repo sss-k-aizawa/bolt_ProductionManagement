@@ -260,7 +260,7 @@ const PalletPlanningEdit: React.FC = () => {
                           }`}>
                             <div className="space-y-2">
                               <div className="flex items-center justify-center">
-                                <span className="text-xs text-red-600 mr-1">使用:</span>
+                                <span className="text-xs text-red-600 mr-1">出庫:</span>
                                 <input
                                   type="number"
                                   value={dayData?.usage || 0}
@@ -319,7 +319,7 @@ const PalletPlanningEdit: React.FC = () => {
                         }`}>
                           <div className="space-y-2">
                             <div className="text-xs text-red-700">
-                              使用: {totals.usage.toLocaleString()}
+                              出庫: {totals.usage.toLocaleString()}
                             </div>
                             <div className="text-xs text-green-700">
                               入庫: {totals.inbound.toLocaleString()}
@@ -346,8 +346,8 @@ const PalletPlanningEdit: React.FC = () => {
           <h2 className="text-lg font-medium text-blue-900 mb-4">編集ガイド</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>
-              <h3 className="font-medium text-blue-800 mb-2">使用数</h3>
-              <p className="text-blue-700">日別のパレット使用数を入力してください。生産活動に応じて調整します。</p>
+              <h3 className="font-medium text-blue-800 mb-2">出庫数</h3>
+              <p className="text-blue-700">日別のパレット出庫数を入力してください。生産活動に応じて調整します。</p>
             </div>
             <div>
               <h3 className="font-medium text-blue-800 mb-2">入庫数</h3>
@@ -355,7 +355,7 @@ const PalletPlanningEdit: React.FC = () => {
             </div>
             <div>
               <h3 className="font-medium text-blue-800 mb-2">在庫数</h3>
-              <p className="text-blue-700">日別の在庫予定数を入力してください。使用数と入庫数のバランスを考慮して調整します。</p>
+              <p className="text-blue-700">日別の在庫予定数を入力してください。出庫数と入庫数のバランスを考慮して調整します。</p>
             </div>
           </div>
         </Card>

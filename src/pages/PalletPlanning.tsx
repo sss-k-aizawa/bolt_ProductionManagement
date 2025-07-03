@@ -248,8 +248,8 @@ const PalletPlanning: React.FC = () => {
                         }`}>
                           <div className="space-y-2">
                             <div className="flex items-center justify-center">
-                              <span className="text-xs text-red-600 mr-1">使用:</span>
-                              <span className="font-medium text-red-600">{dayData?.usage.toLocaleString()}</span>
+                              <span className="text-xs text-red-600 mr-1">出庫:</span>
+                              <span className="font-medium text-red-600">{dayData?.usage || 0}</span>
                               <TrendingDown size={10} className="ml-1 text-red-500" />
                             </div>
                             <div className="flex items-center justify-center">
@@ -291,7 +291,7 @@ const PalletPlanning: React.FC = () => {
                       }`}>
                         <div className="space-y-2">
                           <div className="text-xs text-red-700">
-                            使用: {totals.usage.toLocaleString()}
+                            出庫: {totals.usage.toLocaleString()}
                           </div>
                           <div className="text-xs text-green-700">
                             入庫: {totals.inbound.toLocaleString()}

@@ -340,7 +340,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">使用/日:</span>
+                    <span className="text-gray-500">出庫/日:</span>
                     <span className="text-red-600 font-medium">{pallet.usage}</span>
                   </div>
                   <div className="flex justify-between">
