@@ -16,7 +16,6 @@ import ProductionScheduleEdit from './pages/ProductionScheduleEdit';
 import ProductShipmentEdit from './pages/ProductShipmentEdit';
 import ManufacturingInstructionList from './pages/ManufacturingInstructionList';
 import ManufacturingInstruction from './pages/ManufacturingInstruction';
-import ProductInventoryEdit from './pages/ProductInventoryEdit';
 import Settings from './pages/Settings';
 import AuthGuard from './components/auth/AuthGuard';
 
@@ -40,7 +39,6 @@ function App() {
             <Route path="/production" element={<Production />} />
             <Route path="/production/schedule/edit" element={<ProductionScheduleEdit />} />
             <Route path="/production/shipment/edit" element={<ProductShipmentEdit />} />
-            <Route path="/production/inventory/edit" element={<ProductInventoryEdit />} />
             <Route path="/production/manufacturing-instruction" element={<ManufacturingInstruction />} />
             <Route path="/manufacturing-instructions" element={<ManufacturingInstructionList />} />
             <Route path="/manufacturing-instructions/new" element={<ManufacturingInstruction />} />
