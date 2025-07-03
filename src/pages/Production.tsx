@@ -994,10 +994,7 @@ const Production: React.FC = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-64">
-                        製品 / 出荷顧客 / 出荷先
-                      </th>
-                      <th className="sticky left-64 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
-                        単価
+                        製品
                       </th>
                       {dates.map((date) => (
                         <th key={date} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
@@ -1019,11 +1016,6 @@ const Production: React.FC = () => {
                               <div className="font-medium text-gray-900">{product.product_name}</div>
                               <div className="text-xs text-gray-500">{product.product_id}</div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                          <div className="text-center">
-                            <span className="font-medium text-gray-900">¥{product.unit_price.toLocaleString()}</span>
                           </div>
                         </td>
                         {dates.map((date) => {
