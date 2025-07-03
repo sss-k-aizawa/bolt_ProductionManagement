@@ -26,7 +26,6 @@ const ManufacturingInstructionList: React.FC = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
 
   // サンプルデータ
   const [instructions] = useState<ManufacturingInstruction[]>([
@@ -168,9 +167,8 @@ const ManufacturingInstructionList: React.FC = () => {
                          instruction.salesDestination.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || instruction.status === statusFilter;
-    const matchesPriority = priorityFilter === 'all' || instruction.priority === priorityFilter;
     
-    return matchesSearch && matchesStatus && matchesPriority;
+    return matchesSearch && matchesStatus;
   });
 
   const getStatusCounts = () => {
@@ -251,16 +249,6 @@ const ManufacturingInstructionList: React.FC = () => {
             <option value="キャンセル">キャンセル</option>
           </select>
 
-          <select
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-            className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-          >
-            <option value="all">すべての優先度</option>
-            <option value="高">高</option>
-            <option value="中">中</option>
-            <option value="低">低</option>
-          </select>
         </div>
       </Card>
 
