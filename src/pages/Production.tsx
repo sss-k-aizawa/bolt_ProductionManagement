@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalendarDays, Plus, Filter, TrendingUp, TrendingDown, Clock, CheckCircle, AlertTriangle, Edit, ChevronLeft, ChevronRight, Package, FileText, ClipboardList } from 'lucide-react';
+import { CalendarDays, Plus, Filter, TrendingUp, TrendingDown, Clock, CheckCircle, AlertTriangle, Edit, ChevronLeft, ChevronRight, Package, FileText, ClipboardList, Truck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { useProductionSchedule } from '../hooks/useProductionSchedule';
@@ -12,7 +12,7 @@ const Production: React.FC = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
-  const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'inventory'>('schedule');
+  const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
   
   // 現在の週の日付を生成
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 }); // 月曜日開始
@@ -212,6 +212,53 @@ const Production: React.FC = () => {
 
   const productInventoryForecast = generateProductInventoryForecast();
 
+  // 製品出庫データを生成（サンプル）
+  const generateProductShipmentData = () => {
+    const shipmentData: { [key: string]: { [date: string]: number } } = {};
+    
+    productInventoryItems.forEach(product => {
+      // 製品レベルの出庫予定
+      shipmentData[product.product_id] = {};
+      
+      // 顧客・出荷先レベルの出庫予定
+      product.customers.forEach(customer => {
+        customer.destinations.forEach(destination => {
+          const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+          shipmentData[key] = {};
+          
+          dates.forEach((date) => {
+            // 出荷予定数（サンプル値）
+            const dayOfWeek = new Date(date).getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+            
+            if (isWeekend) {
+              shipmentData[key][date] = 0;
+            } else {
+              const baseShipment = Math.floor(Math.random() * 100) + 20;
+              shipmentData[key][date] = baseShipment;
+            }
+          });
+        });
+      });
+      
+      // 製品レベルの合計出庫を計算
+      dates.forEach(date => {
+        let dailyTotal = 0;
+        product.customers.forEach(customer => {
+          customer.destinations.forEach(destination => {
+            const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+            dailyTotal += shipmentData[key][date] || 0;
+          });
+        });
+        shipmentData[product.product_id][date] = dailyTotal;
+      });
+    });
+    
+    return shipmentData;
+  };
+
+  const productShipmentData = generateProductShipmentData();
+
   const getCompletionRateColor = (rate: number) => {
     if (rate >= 95) return 'text-green-600';
     if (rate >= 80) return 'text-amber-600';
@@ -327,6 +374,14 @@ const Production: React.FC = () => {
               生産編集
             </button>
           )}
+          {activeTab === 'shipment' && (
+            <button 
+              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <Edit size={16} className="mr-2" />
+              出庫編集
+            </button>
+          )}
           {activeTab === 'inventory' && (
             <button 
               onClick={() => navigate('/production/inventory/edit')}
@@ -362,6 +417,17 @@ const Production: React.FC = () => {
             }`}
           >
             生産集計
+          </button>
+          <button
+            onClick={() => setActiveTab('shipment')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'shipment'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Truck size={16} className="inline mr-1" />
+            製品出庫
           </button>
           <button
             onClick={() => setActiveTab('inventory')}
@@ -712,6 +778,177 @@ const Production: React.FC = () => {
             </table>
           </div>
         </Card>
+      )}
+
+      {activeTab === 'shipment' && (
+        <>
+          {/* 週ナビゲーション */}
+          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-1.5">
+            <button
+              onClick={() => navigateWeek('prev')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            
+            <div className="text-center">
+              <h3 className="text-xs font-medium text-gray-900">
+                製品出庫予定: {format(weekStart, 'yyyy年M月d日', { locale: ja })} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'M月d日', { locale: ja })}
+              </h3>
+              <button
+                onClick={goToCurrentWeek}
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                今週
+              </button>
+            </div>
+            
+            <button
+              onClick={() => navigateWeek('next')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+
+          <Card>
+            <div className="mb-4">
+              <h2 className="text-lg font-medium text-gray-900">製品出庫予定（階層別・日別）</h2>
+              <p className="text-sm text-gray-500">顧客・出荷先別の出庫予定と配送計画</p>
+            </div>
+            
+            <div className="overflow-x-auto -mx-5">
+              <div className="inline-block min-w-full align-middle">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-64">
+                        製品 / 出荷顧客 / 出荷先
+                      </th>
+                      <th className="sticky left-64 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-24">
+                        単価
+                      </th>
+                      {dates.map((date) => (
+                        <th key={date} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
+                          <div className="flex flex-col">
+                            <span>{format(new Date(date), 'M/d', { locale: ja })}</span>
+                            <span className="text-xs text-gray-400">{format(new Date(date), 'EEE', { locale: ja })}</span>
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {productInventoryItems.map((product) => (
+                      <React.Fragment key={product.product_id}>
+                        {/* 製品レベル（合計行） */}
+                        <tr className="bg-orange-50 border-t-2 border-orange-200">
+                          <td className="sticky left-0 z-10 bg-orange-50 px-4 py-4 whitespace-nowrap text-sm font-bold text-orange-900 border-r border-gray-200">
+                            <div className="flex items-center">
+                              <Truck size={18} className="text-orange-600 mr-3" />
+                              <div>
+                                <div className="font-bold text-orange-900">{product.product_name}</div>
+                                <div className="text-xs text-orange-600">{product.product_id} - 日別合計出庫</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="sticky left-64 z-10 bg-orange-50 px-4 py-4 whitespace-nowrap text-sm text-orange-900 border-r border-gray-200">
+                            <div className="text-center">
+                              <span className="text-orange-600">-</span>
+                            </div>
+                          </td>
+                          {dates.map((date) => {
+                            const totalShipment = productShipmentData[product.product_id]?.[date] || 0;
+                            const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                            const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                            
+                            return (
+                              <td key={`${product.product_id}-total-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
+                                isToday ? 'bg-orange-100' : isWeekend ? 'bg-orange-100' : ''
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-lg font-bold text-orange-800">
+                                    {totalShipment.toLocaleString()}
+                                  </div>
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                        
+                        {/* 顧客・出荷先レベル */}
+                        {product.customers.map((customer, customerIndex) => (
+                          <React.Fragment key={`${product.product_id}-${customer.customer_name}`}>
+                            {customer.destinations.map((destination, destIndex) => {
+                              const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+                              const isFirstDestination = destIndex === 0;
+                              
+                              return (
+                                <tr key={key} className="hover:bg-gray-50">
+                                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
+                                    <div className="flex items-center">
+                                      <div className="w-6 mr-2"></div> {/* インデント */}
+                                      <div className="flex items-center">
+                                        <div className="w-4 h-4 border-l border-b border-gray-300 mr-2"></div>
+                                        <div>
+                                          {isFirstDestination && (
+                                            <div className="font-medium text-gray-700 mb-1">
+                                              {customer.customer_name}
+                                            </div>
+                                          )}
+                                          <div className="text-sm text-gray-600 ml-4">
+                                            {destination.destination_name}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                    <div className="text-center">
+                                      {isFirstDestination ? (
+                                        <span className="font-medium text-gray-900">¥{customer.unit_price.toLocaleString()}</span>
+                                      ) : (
+                                        <span className="text-gray-400">-</span>
+                                      )}
+                                    </div>
+                                  </td>
+                                  {dates.map((date) => {
+                                    const shipmentQuantity = productShipmentData[key]?.[date] || 0;
+                                    const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                                    
+                                    return (
+                                      <td key={`${key}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
+                                        isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                                      }`}>
+                                        <div className="text-center">
+                                          <div className={`font-medium ${
+                                            shipmentQuantity > 0 ? 'text-orange-600' : 'text-gray-400'
+                                          }`}>
+                                            {shipmentQuantity > 0 ? shipmentQuantity.toLocaleString() : '-'}
+                                          </div>
+                                          {shipmentQuantity > 0 && isFirstDestination && (
+                                            <div className="text-xs text-gray-500 mt-1">
+                                              ¥{(shipmentQuantity * customer.unit_price).toLocaleString()}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
+                              );
+                            })}
+                          </React.Fragment>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Card>
+        </>
       )}
 
       {activeTab === 'inventory' && (
