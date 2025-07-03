@@ -1020,7 +1020,6 @@ const Production: React.FC = () => {
                               <div className="text-xs text-gray-500">{product.product_id}</div>
                             </div>
                           </div>
-                        </tr>
                         <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
                           <div className="text-center">
                             <span className="text-gray-400">-</span>
