@@ -635,26 +635,6 @@ Email: ${requestData.contactEmail}
         </div>
       </Card>
 
-      {/* 依頼サマリー */}
-      <Card className="bg-green-50 border-green-200">
-        <h2 className="text-lg font-medium text-green-900 mb-4">依頼サマリー</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <p className="text-sm text-green-700">依頼番号</p>
-            <p className="font-medium text-green-900">{requestData.requestNumber}</p>
-          </div>
-          <div>
-            <p className="text-sm text-green-700">緊急度</p>
-            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getUrgencyColor(requestData.urgency)}`}>
-              {getUrgencyLabel(requestData.urgency)}
-            </span>
-          </div>
-          <div>
-            <p className="text-sm text-green-700">総パレット数</p>
-            <p className="font-bold text-green-900">{getTotalQuantity().toLocaleString()} パレット</p>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 };
