@@ -406,7 +406,7 @@ const Production: React.FC = () => {
             }`}
           >
             <CalendarDays size={16} className="inline mr-1" />
-            生産スケジュール
+            生産計画
           </button>
           <button
             onClick={() => setActiveTab('monthly')}
