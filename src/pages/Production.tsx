@@ -1,6 +1,3 @@
-Here's the fixed version with all missing closing brackets added:
-
-```jsx
 import React, { useState } from 'react';
 import { CalendarDays, Plus, Filter, TrendingUp, TrendingDown, Clock, CheckCircle, AlertTriangle, Edit, ChevronLeft, ChevronRight, Package, FileText, ClipboardList, Truck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -671,4 +668,387 @@ const Production: React.FC = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {/* 目標生産数行 */}
                   <tr className="bg-green-50">
-                    <td className="
+                    <td className="sticky left-0 z-10 bg-green-50 px-6 py-3 whitespace-nowrap text-sm font-medium text-green-800 border-r border-gray-200">
+                      目標生産数
+                    </td>
+                    {monthlyData.map((month) => {
+                      const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
+                      return (
+                        <td key={`target-${month.month}`} className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium text-green-800">
+                          {monthlyTarget.toLocaleString()}
+                        </td>
+                      );
+                    })}
+                    <td className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium text-green-800">
+                      {monthlyData.reduce((sum, month) => sum + month.data.reduce((monthSum, product) => monthSum + product.target, 0), 0).toLocaleString()}
+                    </td>
+                  </tr>
+
+                  {/* 最低生産数行 */}
+                  <tr className="bg-amber-50">
+                    <td className="sticky left-0 z-10 bg-amber-50 px-6 py-3 whitespace-nowrap text-sm font-medium text-amber-800 border-r border-gray-200">
+                      最低生産数
+                    </td>
+                    {monthlyData.map((month) => {
+                      const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
+                      return (
+                        <td key={`min-target-${month.month}`} className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium text-amber-800">
+                          {monthlyMinTarget.toLocaleString()}
+                        </td>
+                      );
+                    })}
+                    <td className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium text-amber-800">
+                      {monthlyData.reduce((sum, month) => sum + month.data.reduce((monthSum, product) => monthSum + product.minTarget, 0), 0).toLocaleString()}
+                    </td>
+                  </tr>
+
+                  {/* 製品別月次生産実績 */}
+                  {uniqueProducts.map((product) => (
+                    <tr key={product?.product_id} className="hover:bg-gray-50">
+                      <td className="sticky left-0 z-10 bg-white px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+                        <div>
+                          <div className="font-medium">{product?.product_name}</div>
+                          <div className="text-xs text-gray-500">{product?.product_id}</div>
+                        </div>
+                      </td>
+                      {monthlyData.map((month) => {
+                        const productData = month.data.find(p => p.product_id === product?.product_id);
+                        const total = productData?.total || 0;
+                        const target = productData?.target || 0;
+                        const minTarget = productData?.minTarget || 0;
+                        
+                        // 目標達成状況の色分け
+                        let textColor = 'text-gray-900';
+                        if (total >= target) {
+                          textColor = 'text-green-600';
+                        } else if (total >= minTarget) {
+                          textColor = 'text-amber-600';
+                        } else {
+                          textColor = 'text-red-600';
+                        }
+                        
+                        return (
+                          <td key={`${product?.product_id}-${month.month}`} className={`px-6 py-3 whitespace-nowrap text-center text-sm ${textColor}`}>
+                            <div>
+                              <span className="font-medium">{total.toLocaleString()}</span>
+                              <div className="text-xs text-gray-500">
+                                {target > 0 ? `${Math.round((total / target) * 100)}%` : '-'}
+                              </div>
+                            </div>
+                          </td>
+                        );
+                      })}
+                      <td className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                        {monthlyData.reduce((sum, month) => {
+                          const productData = month.data.find(p => p.product_id === product?.product_id);
+                          return sum + (productData?.total || 0);
+                        }, 0).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+
+                  {/* 月別合計行 */}
+                  <tr className="bg-blue-50 font-medium">
+                    <td className="sticky left-0 z-10 bg-blue-50 px-6 py-3 whitespace-nowrap text-sm font-medium text-blue-800 border-r border-gray-200">
+                      月別合計
+                    </td>
+                    {monthlyData.map((month) => {
+                      const monthlyTotal = month.data.reduce((sum, product) => sum + product.total, 0);
+                      const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
+                      const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
+                      
+                      // 目標達成状況の色分け
+                      let textColor = 'text-blue-800';
+                      if (monthlyTotal >= monthlyTarget) {
+                        textColor = 'text-green-800';
+                      } else if (monthlyTotal >= monthlyMinTarget) {
+                        textColor = 'text-amber-800';
+                      } else {
+                        textColor = 'text-red-800';
+                      }
+                      
+                      return (
+                        <td key={`total-${month.month}`} className={`px-6 py-3 whitespace-nowrap text-center text-sm font-medium ${textColor}`}>
+                          <div>
+                            <span className="font-medium">{monthlyTotal.toLocaleString()}</span>
+                            <div className="text-xs">
+                              {monthlyTarget > 0 ? `${Math.round((monthlyTotal / monthlyTarget) * 100)}%` : '-'}
+                            </div>
+                          </div>
+                        </td>
+                      );
+                    })}
+                    <td className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium text-blue-800">
+                      {monthlyData.reduce((sum, month) => sum + month.data.reduce((monthSum, product) => monthSum + product.total, 0), 0).toLocaleString()}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
+
+      {activeTab === 'shipment' && (
+        <>
+          {/* 週ナビゲーション */}
+          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-1.5">
+            <button
+              onClick={() => navigateWeek('prev')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            
+            <div className="text-center">
+              <h3 className="text-xs font-medium text-gray-900">
+                製品出庫: {format(weekStart, 'yyyy年M月d日', { locale: ja })} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'M月d日', { locale: ja })}
+              </h3>
+              <button
+                onClick={goToCurrentWeek}
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                今週
+              </button>
+            </div>
+            
+            <button
+              onClick={() => navigateWeek('next')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+
+          <Card className="p-0">
+            <div className="overflow-x-auto">
+              <div className="inline-block min-w-full align-middle">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                        製品・顧客・出荷先
+                      </th>
+                      {dates.map((date) => (
+                        <th key={date} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
+                          <div className="flex flex-col">
+                            <span>{format(new Date(date), 'M/d', { locale: ja })}</span>
+                            <span className="text-xs text-gray-400">{format(new Date(date), 'EEE', { locale: ja })}</span>
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {productInventoryItems.map((product) => (
+                      <React.Fragment key={product.product_id}>
+                        {/* 製品レベルの合計行 */}
+                        <tr className="bg-blue-50 font-medium">
+                          <td className="sticky left-0 z-10 bg-blue-50 px-4 py-3 whitespace-nowrap text-sm font-medium text-blue-800 border-r border-gray-200">
+                            <div className="flex items-center">
+                              <Package size={16} className="mr-2" />
+                              <div>
+                                <div className="font-medium">{product.product_name}</div>
+                                <div className="text-xs text-blue-600">{product.product_id}</div>
+                              </div>
+                            </div>
+                          </td>
+                          {dates.map((date) => {
+                            const shipmentTotal = productShipmentData[product.product_id]?.[date] || 0;
+                            const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                            
+                            return (
+                              <td key={`${product.product_id}-total-${date}`} className={`px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-blue-800 ${
+                                isWeekend ? 'bg-blue-100' : ''
+                              }`}>
+                                {shipmentTotal > 0 ? shipmentTotal.toLocaleString() : '-'}
+                              </td>
+                            );
+                          })}
+                        </tr>
+
+                        {/* 顧客・出荷先レベルの詳細行 */}
+                        {product.customers.map((customer) =>
+                          customer.destinations.map((destination) => {
+                            const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+                            return (
+                              <tr key={key} className="hover:bg-gray-50">
+                                <td className="sticky left-0 z-10 bg-white px-4 py-3 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
+                                  <div className="pl-6">
+                                    <div className="font-medium text-gray-700">{customer.customer_name}</div>
+                                    <div className="text-xs text-gray-500">{destination.destination_name}</div>
+                                    <div className="text-xs text-gray-400">
+                                      単価: ¥{customer.unit_price.toLocaleString()} | 
+                                      最小: {destination.min_quantity} | 
+                                      最大: {destination.max_quantity}
+                                    </div>
+                                  </div>
+                                </td>
+                                {dates.map((date) => {
+                                  const shipmentAmount = productShipmentData[key]?.[date] || 0;
+                                  const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                                  const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                                  
+                                  return (
+                                    <td key={`${key}-${date}`} className={`px-4 py-3 whitespace-nowrap text-sm text-gray-500 ${
+                                      isToday ? 'bg-blue-50' : ''
+                                    } ${isWeekend ? 'bg-gray-50' : ''}`}>
+                                      {shipmentAmount > 0 ? (
+                                        <div className="text-center">
+                                          <span className="font-medium">{shipmentAmount.toLocaleString()}</span>
+                                          <div className="text-xs text-gray-400">
+                                            ¥{(shipmentAmount * customer.unit_price).toLocaleString()}
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="text-center text-gray-400 text-xs">
+                                          {isWeekend ? '休日' : '-'}
+                                        </div>
+                                      )}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            );
+                          })
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
+
+      {activeTab === 'inventory' && (
+        <>
+          {/* 週ナビゲーション */}
+          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-1.5">
+            <button
+              onClick={() => navigateWeek('prev')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            
+            <div className="text-center">
+              <h3 className="text-xs font-medium text-gray-900">
+                製品在庫: {format(weekStart, 'yyyy年M月d日', { locale: ja })} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'M月d日', { locale: ja })}
+              </h3>
+              <button
+                onClick={goToCurrentWeek}
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                今週
+              </button>
+            </div>
+            
+            <button
+              onClick={() => navigateWeek('next')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+
+          <Card className="p-0">
+            <div className="overflow-x-auto">
+              <div className="inline-block min-w-full align-middle">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                        製品・顧客・出荷先
+                      </th>
+                      {dates.map((date) => (
+                        <th key={date} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
+                          <div className="flex flex-col">
+                            <span>{format(new Date(date), 'M/d', { locale: ja })}</span>
+                            <span className="text-xs text-gray-400">{format(new Date(date), 'EEE', { locale: ja })}</span>
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {productInventoryItems.map((product) => (
+                      <React.Fragment key={product.product_id}>
+                        {/* 製品レベルの合計行 */}
+                        <tr className="bg-blue-50 font-medium">
+                          <td className="sticky left-0 z-10 bg-blue-50 px-4 py-3 whitespace-nowrap text-sm font-medium text-blue-800 border-r border-gray-200">
+                            <div className="flex items-center">
+                              <Package size={16} className="mr-2" />
+                              <div>
+                                <div className="font-medium">{product.product_name}</div>
+                                <div className="text-xs text-blue-600">{product.product_id}</div>
+                              </div>
+                            </div>
+                          </td>
+                          {dates.map((date) => {
+                            const inventoryTotal = productInventoryForecast[product.product_id]?.[date] || 0;
+                            const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                            
+                            return (
+                              <td key={`${product.product_id}-total-${date}`} className={`px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-blue-800 ${
+                                isToday ? 'bg-blue-100' : ''
+                              }`}>
+                                {inventoryTotal.toLocaleString()}
+                              </td>
+                            );
+                          })}
+                        </tr>
+
+                        {/* 顧客・出荷先レベルの詳細行 */}
+                        {product.customers.map((customer) =>
+                          customer.destinations.map((destination) => {
+                            const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+                            return (
+                              <tr key={key} className="hover:bg-gray-50">
+                                <td className="sticky left-0 z-10 bg-white px-4 py-3 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
+                                  <div className="pl-6">
+                                    <div className="font-medium text-gray-700">{customer.customer_name}</div>
+                                    <div className="text-xs text-gray-500">{destination.destination_name}</div>
+                                    <div className="text-xs text-gray-400">
+                                      最小: {destination.min_quantity} | 最大: {destination.max_quantity}
+                                    </div>
+                                  </div>
+                                </td>
+                                {dates.map((date) => {
+                                  const inventoryAmount = productInventoryForecast[key]?.[date] || 0;
+                                  const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                                  const levelColor = getInventoryLevelColor(inventoryAmount, destination.min_quantity, destination.max_quantity);
+                                  const levelStatus = getInventoryLevelStatus(inventoryAmount, destination.min_quantity, destination.max_quantity);
+                                  
+                                  return (
+                                    <td key={`${key}-${date}`} className={`px-4 py-3 whitespace-nowrap text-sm ${
+                                      isToday ? 'bg-blue-50' : ''
+                                    }`}>
+                                      <div className="text-center">
+                                        <span className={`font-medium ${levelColor}`}>{inventoryAmount.toLocaleString()}</span>
+                                        <div className={`text-xs ${levelColor}`}>
+                                          {levelStatus}
+                                        </div>
+                                      </div>
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            );
+                          })
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Production;
