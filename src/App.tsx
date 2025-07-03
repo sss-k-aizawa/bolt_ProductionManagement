@@ -40,7 +40,6 @@ function App() {
             <Route path="/production" element={<Production />} />
             <Route path="/production/schedule/edit" element={<ProductionScheduleEdit />} />
             <Route path="/production/shipment/edit" element={<ProductShipmentEdit />} />
-            <Route path="/production/inventory/edit" element={<ProductInventoryEdit />} />
             <Route path="/production/manufacturing-instruction" element={<ManufacturingInstruction />} />
             <Route path="/manufacturing-instructions" element={<ManufacturingInstructionList />} />
             <Route path="/manufacturing-instructions/new" element={<ManufacturingInstruction />} />
