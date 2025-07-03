@@ -662,7 +662,7 @@ const Production: React.FC = () => {
                     月別合計
                   </td>
                   {monthlyData.map((month) => (
-                    {
+                    (() => {
                       const monthlyTotal = month.data.reduce((sum, product) => sum + product.total, 0);
                       const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
                       const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
@@ -679,7 +679,7 @@ const Production: React.FC = () => {
                       };
                       
                       return (
-                       <td key={`total-${month.month}`} className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                        <td key={`total-${month.month}`} className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
                          <div className="space-y-1">
                            <div className="text-lg font-bold">
                              {monthlyTotal.toLocaleString()}
@@ -693,9 +693,9 @@ const Production: React.FC = () => {
                              </div>
                            </div>
                          </div>
-                      </td>
+                        </td>
                       );
-                    }
+                    })()
                   ))}
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-gray-900">
                     <div className="space-y-1">
