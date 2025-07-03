@@ -10,6 +10,7 @@ import { ja } from 'date-fns/locale';
 const Production: React.FC = () => {
   const navigate = useNavigate();
   const [currentWeek, setCurrentWeek] = useState(new Date());
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(2); // 中央の月（現在月）から開始
   const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
@@ -27,14 +28,17 @@ const Production: React.FC = () => {
     .filter(Boolean);
 
   // 月次データの生成（当月前後2か月）
-  const generateMonthlyData = () => {
+  const generateMonthlyData = (centerIndex: number = 2) => {
     const currentMonth = new Date();
     const months = [];
     
-    for (let i = -2; i <= 2; i++) {
+    // centerIndexを中心に前後2か月、計5か月分のデータを生成
+    const startOffset = centerIndex - 2;
+    for (let i = startOffset; i <= startOffset + 4; i++) {
       const month = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + i, 1);
       months.push({
         month: format(month, 'yyyy年M月'),
+        monthIndex: i,
         data: uniqueProducts.map(product => ({
           product_id: product?.product_id || '',
           product_name: product?.product_name || '',
@@ -48,7 +52,19 @@ const Production: React.FC = () => {
     return months;
   };
 
-  const monthlyData = generateMonthlyData();
+  const monthlyData = generateMonthlyData(currentMonthIndex);
+
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      setCurrentMonthIndex(currentMonthIndex - 1);
+    } else {
+      setCurrentMonthIndex(currentMonthIndex + 1);
+    }
+  };
+
+  const goToCurrentMonth = () => {
+    setCurrentMonthIndex(2); // 現在月に戻る
+  };
 
   // 製品在庫のサンプルデータを生成
   const generateProductInventoryData = () => {
@@ -600,6 +616,36 @@ const Production: React.FC = () => {
       )}
 
       {activeTab === 'monthly' && (
+        <>
+          {/* 月ナビゲーション */}
+          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-1.5">
+            <button
+              onClick={() => navigateMonth('prev')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            
+            <div className="text-center">
+              <h3 className="text-xs font-medium text-gray-900">
+                生産集計: {monthlyData[0]?.month} - {monthlyData[4]?.month}
+              </h3>
+              <button
+                onClick={goToCurrentMonth}
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                今月
+              </button>
+            </div>
+            
+            <button
+              onClick={() => navigateMonth('next')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+
         <Card>
           <div className="overflow-x-auto -mx-5">
             <table className="min-w-full divide-y divide-gray-200">
@@ -626,7 +672,7 @@ const Production: React.FC = () => {
                   </td>
                   {monthlyData.map((month) => {
                     const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
-                    const isCurrentMonth = month.month.includes(format(new Date(), 'yyyy年M月'));
+                    const isCurrentMonth = month.monthIndex === 0; // 現在月は monthIndex が 0
                     
                     return (
                       <td key={`target-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium ${isCurrentMonth ? 'bg-green-100 text-green-900' : 'text-green-800'}`}>
@@ -648,7 +694,7 @@ const Production: React.FC = () => {
                   </td>
                   {monthlyData.map((month) => {
                     const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
-                    const isCurrentMonth = month.month.includes(format(new Date(), 'yyyy年M月'));
+                    const isCurrentMonth = month.monthIndex === 0; // 現在月は monthIndex が 0
                     
                     return (
                       <td key={`min-target-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium ${isCurrentMonth ? 'bg-amber-100 text-amber-900' : 'text-amber-800'}`}>
@@ -673,7 +719,7 @@ const Production: React.FC = () => {
                     </td>
                     {monthlyData.map((month) => {
                       const productData = month.data.find(d => d.product_id === product?.product_id);
-                      const isCurrentMonth = month.month.includes(format(new Date(), 'yyyy年M月'));
+                      const isCurrentMonth = month.monthIndex === 0; // 現在月は monthIndex が 0
                       
                       return (
                         <td key={`${product?.product_id}-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm ${isCurrentMonth ? 'bg-blue-50 font-medium text-blue-900' : 'text-gray-900'}`}>
@@ -778,6 +824,7 @@ const Production: React.FC = () => {
             </table>
           </div>
         </Card>
+        </>
       )}
 
       {activeTab === 'shipment' && (
