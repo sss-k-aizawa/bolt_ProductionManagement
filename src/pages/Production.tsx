@@ -406,7 +406,6 @@ const Production: React.FC = () => {
             </button>
           )}
           {activeTab === 'inventory' && (
-          )}
         </div>
       </div>
 
