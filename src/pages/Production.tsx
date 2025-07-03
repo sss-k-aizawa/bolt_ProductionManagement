@@ -521,11 +521,6 @@ const Production: React.FC = () => {
                             <div>
                               <span className="font-medium">{total.toLocaleString()}</span>
                             </div>
-                            <div className="text-xs text-gray-500 mt-1">
-                              {target > 0 && (
-                                <>目標: {target.toLocaleString()}</>
-                              )}
-                            </div>
                           </td>
                         );
                       })}
