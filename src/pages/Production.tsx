@@ -1011,109 +1011,47 @@ const Production: React.FC = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {productInventoryItems.map((product) => (
-                      <React.Fragment key={product.product_id}>
-                        {/* 製品レベル（合計行） */}
-                        <tr className="bg-blue-50 border-t-2 border-blue-200">
-                          <td className="sticky left-0 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap text-sm font-bold text-blue-900 border-r border-gray-200">
-                            <div className="flex items-center">
-                              <Package size={18} className="text-blue-600 mr-3" />
-                              <div>
-                                <div className="font-bold text-blue-900">{product.product_name}</div>
-                                <div className="text-xs text-blue-600">{product.product_id} - 日別合計在庫</div>
-                              </div>
+                      <tr key={product.product_id} className="hover:bg-gray-50">
+                        <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+                          <div className="flex items-center">
+                            <Package size={18} className="text-blue-600 mr-3" />
+                            <div>
+                              <div className="font-medium text-gray-900">{product.product_name}</div>
+                              <div className="text-xs text-gray-500">{product.product_id}</div>
                             </div>
-                          </td>
-                          <td className="sticky left-64 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap text-sm text-blue-900 border-r border-gray-200">
-                            <div className="text-center">
-                              <span className="text-blue-600">-</span>
-                            </div>
-                          </td>
-                          {dates.map((date) => {
-                            const totalStock = productInventoryForecast[product.product_id]?.[date] || 0;
-                            const isToday = format(new Date(), 'yyyy-MM-dd') === date;
-                            const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                            
-                            // 製品全体の最小・最大在庫を計算（全出荷先の合計）
-                            const totalMinQuantity = product.customers.reduce((sum, customer) => 
-                              sum + customer.destinations.reduce((destSum, dest) => destSum + dest.min_quantity, 0), 0
-                            );
-                            const totalMaxQuantity = product.customers.reduce((sum, customer) => 
-                              sum + customer.destinations.reduce((destSum, dest) => destSum + dest.max_quantity, 0), 0
-                            );
-                            
-                            return (
-                              <td key={`${product.product_id}-total-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
-                                isToday ? 'bg-blue-100' : isWeekend ? 'bg-blue-100' : ''
-                              }`}>
-                                <div className="text-center">
-                                  <div className="text-lg font-bold text-blue-800">
-                                    {totalStock.toLocaleString()}
-                                  </div>
+                          </div>
+                        </td>
+                        <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                          <div className="text-center">
+                            <span className="font-medium text-gray-900">¥{product.unit_price.toLocaleString()}</span>
+                          </div>
+                        </td>
+                        {dates.map((date) => {
+                          const totalStock = productInventoryForecast[product.product_id]?.[date] || 0;
+                          const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                          const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                          
+                          // 製品全体の最小・最大在庫を計算（全出荷先の合計）
+                          const totalMinQuantity = product.customers.reduce((sum, customer) => 
+                            sum + customer.destinations.reduce((destSum, dest) => destSum + dest.min_quantity, 0), 0
+                          );
+                          const totalMaxQuantity = product.customers.reduce((sum, customer) => 
+                            sum + customer.destinations.reduce((destSum, dest) => destSum + dest.max_quantity, 0), 0
+                          );
+                          
+                          return (
+                            <td key={`${product.product_id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
+                              isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                            }`}>
+                              <div className="text-center">
+                                <div className={`font-medium ${getInventoryLevelColor(totalStock, totalMinQuantity, totalMaxQuantity)}`}>
+                                  {totalStock.toLocaleString()}
                                 </div>
-                              </td>
-                            );
-                          })}
-                        </tr>
-                        
-                        {/* 顧客・出荷先レベル */}
-                        {product.customers.map((customer, customerIndex) => (
-                          <React.Fragment key={`${product.product_id}-${customer.customer_name}`}>
-                            {customer.destinations.map((destination, destIndex) => {
-                              const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
-                              const isFirstDestination = destIndex === 0;
-                              
-                              return (
-                                <tr key={key} className="hover:bg-gray-50">
-                                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
-                                    <div className="flex items-center">
-                                      <div className="w-6 mr-2"></div> {/* インデント */}
-                                      <div className="flex items-center">
-                                        <div className="w-4 h-4 border-l border-b border-gray-300 mr-2"></div>
-                                        <div>
-                                          {isFirstDestination && (
-                                            <div className="font-medium text-gray-700 mb-1">
-                                              {customer.customer_name}
-                                            </div>
-                                          )}
-                                          <div className="text-sm text-gray-600 ml-4">
-                                            {destination.destination_name}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                                    <div className="text-center">
-                                      {isFirstDestination ? (
-                                        <span className="font-medium text-gray-900">¥{customer.unit_price.toLocaleString()}</span>
-                                      ) : (
-                                        <span className="text-gray-400">-</span>
-                                      )}
-                                    </div>
-                                  </td>
-                                  {dates.map((date) => {
-                                    const forecastStock = productInventoryForecast[key]?.[date] || 0;
-                                    const isToday = format(new Date(), 'yyyy-MM-dd') === date;
-                                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                                    
-                                    return (
-                                      <td key={`${key}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
-                                        isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
-                                      }`}>
-                                        <div className="text-center">
-                                          <div className={`font-medium ${getInventoryLevelColor(forecastStock, destination.min_quantity, destination.max_quantity)}`}>
-                                            {forecastStock.toLocaleString()}
-                                          </div>
-                                        </div>
-                                      </td>
-                                    );
-                                  })}
-                                </tr>
-                              );
-                            })}
-                          </React.Fragment>
-                        ))}
-                      </React.Fragment>
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
                     ))}
                   </tbody>
                 </table>
