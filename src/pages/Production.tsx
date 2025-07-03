@@ -728,6 +728,7 @@ const Production: React.FC = () => {
                            </div>
                          </div>
                         </td>
+                        </td>
                       );
                     })()
                   ))}
