@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
-import { Calendar, Package, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Edit, Download, FileText, Mail } from 'lucide-react';
+import { Calendar, Package, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Edit } from 'lucide-react';
 import { format, addDays, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -107,13 +107,6 @@ const PalletPlanning: React.FC = () => {
     setCurrentWeek(new Date());
   };
 
-  const handleSPRRequest = () => {
-    navigate('/pallet-planning/spr-request');
-  };
-
-  const handleJPRRequest = () => {
-    navigate('/pallet-planning/jpr-request');
-  };
 
   return (
     <div className="space-y-6">
@@ -128,47 +121,6 @@ const PalletPlanning: React.FC = () => {
             <span onClick={() => navigate('/pallet-planning/edit')}>計画編集</span>
           </button>
         </div>
-      </div>
-
-      {/* パレット引取手配依頼ボタン */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Package size={24} className="text-blue-500 mr-4" />
-              <div>
-                <h3 className="text-lg font-medium text-gray-900">SPRパレット</h3>
-                <p className="text-sm text-gray-500">引取手配依頼書を作成</p>
-              </div>
-            </div>
-            <button
-              onClick={handleSPRRequest}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <FileText size={16} className="mr-2" />
-              依頼書作成
-            </button>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Package size={24} className="text-green-500 mr-4" />
-              <div>
-                <h3 className="text-lg font-medium text-gray-900">JPRパレット</h3>
-                <p className="text-sm text-gray-500">引取手配依頼をメール送信</p>
-              </div>
-            </div>
-            <button
-              onClick={handleJPRRequest}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <Mail size={16} className="mr-2" />
-              メール送信
-            </button>
-          </div>
-        </Card>
       </div>
 
       {/* 週ナビゲーション */}

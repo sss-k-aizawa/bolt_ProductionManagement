@@ -10,8 +10,6 @@ import InventoryOrder from './pages/InventoryOrder';
 import InventoryOrderConfirm from './pages/InventoryOrderConfirm';
 import InventoryOrderHistory from './pages/InventoryOrderHistory';
 import PalletPlanning from './pages/PalletPlanning';
-import SPRPalletRequest from './pages/SPRPalletRequest';
-import JPRPalletRequest from './pages/JPRPalletRequest';
 import PalletPlanningEdit from './pages/PalletPlanningEdit';
 import Production from './pages/Production';
 import ProductionScheduleEdit from './pages/ProductionScheduleEdit';
@@ -37,8 +35,6 @@ function App() {
             <Route path="/inventory/order/confirm" element={<InventoryOrderConfirm />} />
             <Route path="/inventory/order/history" element={<InventoryOrderHistory />} />
             <Route path="/pallet-planning" element={<PalletPlanning />} />
-            <Route path="/pallet-planning/spr-request" element={<SPRPalletRequest />} />
-            <Route path="/pallet-planning/jpr-request" element={<JPRPalletRequest />} />
             <Route path="/pallet-planning/edit" element={<PalletPlanningEdit />} />
             <Route path="/production" element={<Production />} />
             <Route path="/production/schedule/edit" element={<ProductionScheduleEdit />} />
