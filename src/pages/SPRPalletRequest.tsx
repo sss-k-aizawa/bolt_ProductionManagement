@@ -454,26 +454,6 @@ const SPRPalletRequest: React.FC = () => {
         />
       </Card>
 
-      {/* 依頼書サマリー */}
-      <Card className="bg-blue-50 border-blue-200">
-        <h2 className="text-lg font-medium text-blue-900 mb-4">依頼書サマリー</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <p className="text-sm text-blue-700">依頼番号</p>
-            <p className="font-medium text-blue-900">{requestData.requestNumber}</p>
-          </div>
-          <div>
-            <p className="text-sm text-blue-700">緊急度</p>
-            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getUrgencyColor(requestData.urgency)}`}>
-              {getUrgencyLabel(requestData.urgency)}
-            </span>
-          </div>
-          <div>
-            <p className="text-sm text-blue-700">総パレット数</p>
-            <p className="font-bold text-blue-900">{getTotalQuantity().toLocaleString()} パレット</p>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 };
