@@ -380,21 +380,21 @@ const Production: React.FC = () => {
       {activeTab === 'schedule' && (
         <>
           {/* スリムな週ナビゲーション */}
-          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-4 py-2">
+          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-1.5">
             <button
               onClick={() => navigateWeek('prev')}
-              className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900"
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={14} />
             </button>
             
             <div className="text-center">
-              <h3 className="text-sm font-medium text-gray-900">
+              <h3 className="text-xs font-medium text-gray-900">
                 {format(weekStart, 'yyyy年M月d日', { locale: ja })} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'M月d日', { locale: ja })}
               </h3>
               <button
                 onClick={goToCurrentWeek}
-                className="text-xs text-blue-600 hover:text-blue-800"
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
               >
                 今週
               </button>
@@ -402,9 +402,9 @@ const Production: React.FC = () => {
             
             <button
               onClick={() => navigateWeek('next')}
-              className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900"
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={14} />
             </button>
           </div>
 
@@ -503,7 +503,6 @@ const Production: React.FC = () => {
                         const total = getDailyTotal(date);
                         const { target, minTarget } = getDailyTargets(date);
                         const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        const isPast = new Date(date) < new Date(format(new Date(), 'yyyy-MM-dd'));
                         
                         // 目標達成状況の色分け
                         let textColor = 'text-blue-800';
@@ -514,43 +513,17 @@ const Production: React.FC = () => {
                         } else if (target > 0) {
                           textColor = 'text-red-800';
                         }
-
-                        // 実績データ（サンプル）
-                        const actualTotal = isPast ? Math.floor(total * (0.85 + Math.random() * 0.3)) : 0;
-                        const completionRate = target > 0 ? (actualTotal / target) * 100 : 0;
                         
                         return (
                           <td key={`total-${date}`} className={`px-4 py-3 whitespace-nowrap text-center text-sm font-medium ${textColor} ${
                             isWeekend ? 'bg-blue-100' : ''
                           }`}>
-                            <div className="space-y-1">
-                              <div>
-                                <span className="font-medium">{total.toLocaleString()}</span>
-                              </div>
-                              {isPast && (
-                                <div className="text-xs">
-                                  <div className="flex items-center justify-center">
-                                    <span className="text-blue-600 mr-1">実績:</span>
-                                    <span className="text-blue-600 flex items-center">
-                                      {actualTotal.toLocaleString()}
-                                      {actualTotal >= total ? 
-                                        <TrendingUp size={10} className="ml-1 text-green-600" /> : 
-                                        <TrendingDown size={10} className="ml-1 text-red-600" />
-                                      }
-                                    </span>
-                                  </div>
-                                  <div className="mt-1">
-                                    <span className="text-gray-400 mr-1">達成率:</span>
-                                    <span className={`font-medium ${getCompletionRateColor(completionRate)}`}>
-                                      {completionRate.toFixed(1)}%
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                              {target > 0 && !isPast && (
-                                <div className="text-xs text-gray-500">
-                                  目標: {target.toLocaleString()}
-                                </div>
+                            <div>
+                              <span className="font-medium">{total.toLocaleString()}</span>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {target > 0 && (
+                                <>目標: {target.toLocaleString()}</>
                               )}
                             </div>
                           </td>
@@ -749,21 +722,21 @@ const Production: React.FC = () => {
       {activeTab === 'inventory' && (
         <>
           {/* 週ナビゲーション */}
-          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-4 py-2">
+          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-1.5">
             <button
               onClick={() => navigateWeek('prev')}
-              className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900"
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={14} />
             </button>
             
             <div className="text-center">
-              <h3 className="text-sm font-medium text-gray-900">
+              <h3 className="text-xs font-medium text-gray-900">
                 製品在庫予測: {format(weekStart, 'yyyy年M月d日', { locale: ja })} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'M月d日', { locale: ja })}
               </h3>
               <button
                 onClick={goToCurrentWeek}
-                className="text-xs text-blue-600 hover:text-blue-800"
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
               >
                 今週
               </button>
@@ -771,9 +744,9 @@ const Production: React.FC = () => {
             
             <button
               onClick={() => navigateWeek('next')}
-              className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900"
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={14} />
             </button>
           </div>
 
