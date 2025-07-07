@@ -444,8 +444,7 @@ const MasterManagement: React.FC = () => {
         alert('資材追加機能は今後実装予定です');
         break;
       case 'product-customer':
-        // 製品顧客紐付追加の処理（今後実装）
-        alert('製品顧客紐付追加機能は今後実装予定です');
+        navigate('/master-management/product-customer/add');
         break;
     }
   };

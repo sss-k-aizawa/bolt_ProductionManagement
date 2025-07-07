@@ -20,6 +20,7 @@ import ProductInventoryEdit from './pages/ProductInventoryEdit';
 import Settings from './pages/Settings';
 import MasterManagement from './pages/MasterManagement';
 import CustomerAdd from './pages/CustomerAdd';
+import ProductCustomerMappingAdd from './pages/ProductCustomerMappingAdd';
 import AuthGuard from './components/auth/AuthGuard';
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
             <Route path="/manufacturing-instructions/:id/edit" element={<ManufacturingInstruction />} />
             <Route path="/master-management" element={<MasterManagement />} />
             <Route path="/master-management/customer/add" element={<CustomerAdd />} />
+            <Route path="/master-management/product-customer/add" element={<ProductCustomerMappingAdd />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </Layout>
