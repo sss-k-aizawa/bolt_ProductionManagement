@@ -828,16 +828,10 @@ const MasterManagement: React.FC = () => {
                         顧客情報
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        基本単価
+                        単価
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        割引率
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        最小発注数
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        出荷先別単価
+                        出荷先
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         操作
@@ -862,21 +856,10 @@ const MasterManagement: React.FC = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {customer.discount_rate}%
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {customer.min_order_quantity.toLocaleString()} {mapping.unit}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="space-y-1">
                             {customer.delivery_destinations.map((dest, destIndex) => (
-                              <div key={destIndex} className="flex items-center justify-between text-xs">
-                                <span className="text-gray-600 truncate max-w-32">{dest.name}</span>
-                                <span className="font-medium text-gray-900 ml-2">¥{dest.unit_price.toLocaleString()}</span>
+                              <div key={destIndex} className="text-xs">
+                                <span className="text-gray-600">{dest.name}</span>
                               </div>
                             ))}
                           </div>
