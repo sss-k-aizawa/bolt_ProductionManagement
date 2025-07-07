@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
-import { Search, Filter, Plus, Edit, Trash2, Building, Package, Users, Phone, Mail, MapPin, Calendar, Tag, Layers } from 'lucide-react';
+import { Search, Filter, Plus, Edit, Trash2, Building, Package, Users, Phone, Mail, MapPin, Calendar, Tag, Layers, UserPlus } from 'lucide-react';
 
 interface Customer {
   id: string;
@@ -41,6 +42,7 @@ interface Material {
 }
 
 const MasterManagement: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'customers' | 'products' | 'materials'>('customers');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -295,6 +297,52 @@ const MasterManagement: React.FC = () => {
     material.supplier.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleAddCustomer = () => {
+    navigate('/master-management/customer/add');
+  };
+
+  const getAddButtonText = () => {
+    switch (activeTab) {
+      case 'customers':
+        return '顧客追加';
+      case 'products':
+        return '製品追加';
+      case 'materials':
+        return '資材追加';
+      default:
+        return '新規追加';
+    }
+  };
+
+  const getAddButtonIcon = () => {
+    switch (activeTab) {
+      case 'customers':
+        return <UserPlus size={16} className="mr-2" />;
+      case 'products':
+        return <Package size={16} className="mr-2" />;
+      case 'materials':
+        return <Layers size={16} className="mr-2" />;
+      default:
+        return <Plus size={16} className="mr-2" />;
+    }
+  };
+
+  const handleAddClick = () => {
+    switch (activeTab) {
+      case 'customers':
+        handleAddCustomer();
+        break;
+      case 'products':
+        // 製品追加の処理（今後実装）
+        alert('製品追加機能は今後実装予定です');
+        break;
+      case 'materials':
+        // 資材追加の処理（今後実装）
+        alert('資材追加機能は今後実装予定です');
+        break;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -302,9 +350,12 @@ const MasterManagement: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">マスタ管理</h1>
           <p className="mt-1 text-sm text-gray-500">顧客、製品、資材の基本情報を管理</p>
         </div>
-        <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <Plus size={16} className="mr-2" />
-          新規追加
+        <button 
+          onClick={handleAddClick}
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {getAddButtonIcon()}
+          {getAddButtonText()}
         </button>
       </div>
 
