@@ -18,6 +18,7 @@ import ManufacturingInstructionList from './pages/ManufacturingInstructionList';
 import ManufacturingInstruction from './pages/ManufacturingInstruction';
 import ProductInventoryEdit from './pages/ProductInventoryEdit';
 import Settings from './pages/Settings';
+import MasterManagement from './pages/MasterManagement';
 import AuthGuard from './components/auth/AuthGuard';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/manufacturing-instructions/new" element={<ManufacturingInstruction />} />
             <Route path="/manufacturing-instructions/:id" element={<ManufacturingInstruction />} />
             <Route path="/manufacturing-instructions/:id/edit" element={<ManufacturingInstruction />} />
+            <Route path="/master-management" element={<MasterManagement />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </Layout>

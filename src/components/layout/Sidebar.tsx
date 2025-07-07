@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Package, Settings, X, User, Truck, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, Calendar, Package, Settings, X, User, Truck, ClipboardList, Database } from 'lucide-react';
 
 interface SidebarProps {
   closeSidebar: () => void;
@@ -13,6 +13,7 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
     { name: '資材在庫', path: '/inventory', icon: <Package size={20} /> },
     { name: 'パレット入荷計画', path: '/pallet-planning', icon: <Truck size={20} /> },
     { name: '製造指示書', path: '/manufacturing-instructions', icon: <ClipboardList size={20} /> },
+    { name: 'マスタ管理', path: '/master-management', icon: <Database size={20} /> },
     { name: '設定', path: '/settings', icon: <Settings size={20} /> },
   ];
 

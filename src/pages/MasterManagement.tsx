@@ -1,0 +1,632 @@
+import React, { useState } from 'react';
+import Card from '../components/ui/Card';
+import { Search, Filter, Plus, Edit, Trash2, Building, Package, Users, Phone, Mail, MapPin, Calendar, Tag, Layers } from 'lucide-react';
+
+interface Customer {
+  id: string;
+  code: string;
+  name: string;
+  type: '法人' | '個人';
+  contact_person: string;
+  phone: string;
+  email: string;
+  address: string;
+  created_at: string;
+  status: 'アクティブ' | '非アクティブ';
+}
+
+interface Product {
+  id: string;
+  code: string;
+  name: string;
+  category: string;
+  unit: string;
+  standard_price: number;
+  description: string;
+  created_at: string;
+  status: 'アクティブ' | '廃止';
+}
+
+interface Material {
+  id: string;
+  code: string;
+  name: string;
+  category: string;
+  unit: string;
+  standard_cost: number;
+  supplier: string;
+  lead_time: number;
+  created_at: string;
+  status: 'アクティブ' | '廃止';
+}
+
+const MasterManagement: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'customers' | 'products' | 'materials'>('customers');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // サンプルデータ
+  const [customers] = useState<Customer[]>([
+    {
+      id: '1',
+      code: 'CUST-001',
+      name: 'A商事株式会社',
+      type: '法人',
+      contact_person: '田中一郎',
+      phone: '03-1234-5678',
+      email: 'tanaka@a-shoji.co.jp',
+      address: '東京都港区赤坂1-1-1',
+      created_at: '2024-01-15',
+      status: 'アクティブ'
+    },
+    {
+      id: '2',
+      code: 'CUST-002',
+      name: 'B流通株式会社',
+      type: '法人',
+      contact_person: '佐藤花子',
+      phone: '06-2345-6789',
+      email: 'sato@b-ryutsu.co.jp',
+      address: '大阪府大阪市中央区本町2-2-2',
+      created_at: '2024-02-20',
+      status: 'アクティブ'
+    },
+    {
+      id: '3',
+      code: 'CUST-003',
+      name: 'Cマート',
+      type: '法人',
+      contact_person: '鈴木次郎',
+      phone: '052-3456-7890',
+      email: 'suzuki@c-mart.co.jp',
+      address: '愛知県名古屋市中区栄3-3-3',
+      created_at: '2024-03-10',
+      status: 'アクティブ'
+    },
+    {
+      id: '4',
+      code: 'CUST-004',
+      name: 'D食品株式会社',
+      type: '法人',
+      contact_person: '高橋三郎',
+      phone: '092-4567-8901',
+      email: 'takahashi@d-foods.co.jp',
+      address: '福岡県福岡市博多区博多駅前4-4-4',
+      created_at: '2024-01-25',
+      status: 'アクティブ'
+    },
+    {
+      id: '5',
+      code: 'CUST-005',
+      name: 'E商店',
+      type: '個人',
+      contact_person: '山田太郎',
+      phone: '011-5678-9012',
+      email: 'yamada@e-shop.com',
+      address: '北海道札幌市中央区大通5-5-5',
+      created_at: '2024-02-05',
+      status: '非アクティブ'
+    }
+  ]);
+
+  const [products] = useState<Product[]>([
+    {
+      id: '1',
+      code: 'PROD-A001',
+      name: 'ミネラルウォーター 500ml',
+      category: '飲料',
+      unit: '本',
+      standard_price: 120,
+      description: '天然水を使用したミネラルウォーター',
+      created_at: '2024-01-10',
+      status: 'アクティブ'
+    },
+    {
+      id: '2',
+      code: 'PROD-A002',
+      name: 'お茶 350ml',
+      category: '飲料',
+      unit: '本',
+      standard_price: 150,
+      description: '国産茶葉を使用した緑茶',
+      created_at: '2024-01-15',
+      status: 'アクティブ'
+    },
+    {
+      id: '3',
+      code: 'PROD-A003',
+      name: 'スポーツドリンク 500ml',
+      category: '飲料',
+      unit: '本',
+      standard_price: 180,
+      description: 'イオン補給に最適なスポーツドリンク',
+      created_at: '2024-01-20',
+      status: 'アクティブ'
+    },
+    {
+      id: '4',
+      code: 'PROD-A004',
+      name: 'コーヒー 250ml',
+      category: '飲料',
+      unit: '本',
+      standard_price: 200,
+      description: 'アラビカ豆100%使用のブラックコーヒー',
+      created_at: '2024-02-01',
+      status: 'アクティブ'
+    },
+    {
+      id: '5',
+      code: 'PROD-A005',
+      name: 'フルーツジュース 1L',
+      category: '飲料',
+      unit: '本',
+      standard_price: 350,
+      description: '100%果汁のミックスフルーツジュース',
+      created_at: '2024-02-10',
+      status: '廃止'
+    }
+  ]);
+
+  const [materials] = useState<Material[]>([
+    {
+      id: '1',
+      code: 'MAT-R001',
+      name: '原材料A',
+      category: '原材料',
+      unit: 'kg',
+      standard_cost: 150,
+      supplier: 'サプライヤーX',
+      lead_time: 7,
+      created_at: '2024-01-05',
+      status: 'アクティブ'
+    },
+    {
+      id: '2',
+      code: 'MAT-P001',
+      name: '部品B',
+      category: '部品',
+      unit: '個',
+      standard_cost: 2500,
+      supplier: 'サプライヤーX',
+      lead_time: 14,
+      created_at: '2024-01-08',
+      status: 'アクティブ'
+    },
+    {
+      id: '3',
+      code: 'MAT-T001',
+      name: '工具C',
+      category: '工具',
+      unit: 'セット',
+      standard_cost: 8000,
+      supplier: 'サプライヤーY',
+      lead_time: 21,
+      created_at: '2024-01-12',
+      status: 'アクティブ'
+    },
+    {
+      id: '4',
+      code: 'MAT-R002',
+      name: '材料D',
+      category: '原材料',
+      unit: 'kg',
+      standard_cost: 200,
+      supplier: 'サプライヤーZ',
+      lead_time: 10,
+      created_at: '2024-01-18',
+      status: 'アクティブ'
+    },
+    {
+      id: '5',
+      code: 'MAT-P002',
+      name: '部品E',
+      category: '部品',
+      unit: '個',
+      standard_cost: 1200,
+      supplier: 'サプライヤーX',
+      lead_time: 7,
+      created_at: '2024-01-25',
+      status: 'アクティブ'
+    },
+    {
+      id: '6',
+      code: 'MAT-PT001',
+      name: 'パーツF',
+      category: 'パーツ',
+      unit: '個',
+      standard_cost: 3500,
+      supplier: 'サプライヤーY',
+      lead_time: 28,
+      created_at: '2024-02-02',
+      status: 'アクティブ'
+    },
+    {
+      id: '7',
+      code: 'MAT-R003',
+      name: '材料G',
+      category: '原材料',
+      unit: 'リットル',
+      standard_cost: 800,
+      supplier: 'サプライヤーZ',
+      lead_time: 14,
+      created_at: '2024-02-08',
+      status: '廃止'
+    }
+  ]);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'アクティブ':
+        return 'bg-green-100 text-green-800';
+      case '非アクティブ':
+      case '廃止':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case '法人':
+        return 'bg-blue-100 text-blue-800';
+      case '個人':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const filteredCustomers = customers.filter(customer =>
+    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.contact_person.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredMaterials = materials.filter(material =>
+    material.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    material.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    material.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    material.supplier.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">マスタ管理</h1>
+          <p className="mt-1 text-sm text-gray-500">顧客、製品、資材の基本情報を管理</p>
+        </div>
+        <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <Plus size={16} className="mr-2" />
+          新規追加
+        </button>
+      </div>
+
+      {/* タブナビゲーション */}
+      <div className="border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8">
+          <button
+            onClick={() => setActiveTab('customers')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'customers'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Users size={16} className="inline mr-1" />
+            顧客
+          </button>
+          <button
+            onClick={() => setActiveTab('products')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'products'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Package size={16} className="inline mr-1" />
+            製品
+          </button>
+          <button
+            onClick={() => setActiveTab('materials')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'materials'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Layers size={16} className="inline mr-1" />
+            資材
+          </button>
+        </nav>
+      </div>
+
+      {/* 検索・フィルター */}
+      <Card>
+        <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder={`${activeTab === 'customers' ? '顧客' : activeTab === 'products' ? '製品' : '資材'}を検索...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div className="flex items-center">
+            <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <Filter size={16} className="mr-2" />
+              フィルター
+            </button>
+          </div>
+        </div>
+      </Card>
+
+      {/* 顧客一覧 */}
+      {activeTab === 'customers' && (
+        <Card>
+          <div className="overflow-x-auto -mx-5">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    顧客コード
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    顧客名
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    種別
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    担当者
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    連絡先
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ステータス
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredCustomers.map((customer) => (
+                  <tr key={customer.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {customer.code}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Building size={16} className="text-blue-500 mr-2" />
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{customer.name}</div>
+                          <div className="text-sm text-gray-500 flex items-center">
+                            <MapPin size={12} className="mr-1" />
+                            {customer.address}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getTypeColor(customer.type)}`}>
+                        {customer.type}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {customer.contact_person}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="space-y-1">
+                        <div className="flex items-center">
+                          <Phone size={12} className="mr-1" />
+                          {customer.phone}
+                        </div>
+                        <div className="flex items-center">
+                          <Mail size={12} className="mr-1" />
+                          {customer.email}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(customer.status)}`}>
+                        {customer.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button className="text-blue-600 hover:text-blue-900 mr-3">
+                        <Edit size={16} />
+                      </button>
+                      <button className="text-red-600 hover:text-red-900">
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* 製品一覧 */}
+      {activeTab === 'products' && (
+        <Card>
+          <div className="overflow-x-auto -mx-5">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    製品コード
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    製品名
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    カテゴリー
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    単位
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    標準価格
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ステータス
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredProducts.map((product) => (
+                  <tr key={product.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {product.code}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Package size={16} className="text-green-500 mr-2" />
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                          <div className="text-sm text-gray-500">{product.description}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        {product.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {product.unit}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      ¥{product.standard_price.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(product.status)}`}>
+                        {product.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button className="text-blue-600 hover:text-blue-900 mr-3">
+                        <Edit size={16} />
+                      </button>
+                      <button className="text-red-600 hover:text-red-900">
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* 資材一覧 */}
+      {activeTab === 'materials' && (
+        <Card>
+          <div className="overflow-x-auto -mx-5">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    資材コード
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    資材名
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    カテゴリー
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    単位
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    標準原価
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    サプライヤー
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    リードタイム
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ステータス
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredMaterials.map((material) => (
+                  <tr key={material.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {material.code}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Layers size={16} className="text-orange-500 mr-2" />
+                        <div className="text-sm font-medium text-gray-900">{material.name}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                        {material.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {material.unit}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      ¥{material.standard_cost.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {material.supplier}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex items-center">
+                        <Calendar size={12} className="mr-1" />
+                        {material.lead_time}日
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(material.status)}`}>
+                        {material.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button className="text-blue-600 hover:text-blue-900 mr-3">
+                        <Edit size={16} />
+                      </button>
+                      <button className="text-red-600 hover:text-red-900">
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default MasterManagement;
