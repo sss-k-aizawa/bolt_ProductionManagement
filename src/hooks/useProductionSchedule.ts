@@ -1,101 +1,102 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { format, addDays, startOfWeek } from 'date-fns';
+import { useState } from 'react';
 
-export interface ProductionScheduleItem {
-  date: string;
-  product_id: string;
-  product_name: string;
-  planned_quantity: number;
-  actual_quantity: number;
-  status: 'scheduled' | 'in_progress' | 'completed' | 'delayed';
-  priority: 'high' | 'medium' | 'low';
+interface ProductionItem {
+  id: string;
+  customer_id: string;
+  product: string;
+  customer: string;
+  quantity: number;
+  status: 'pending' | 'in-progress' | 'completed';
+  priority: 'low' | 'medium' | 'high';
+  dueDate: string;
+  startDate?: string;
+  completedDate?: string;
 }
 
-export interface WeeklyProductionData {
-  date: string;
-  product_id: string;
-  product_name: string;
-  planned_quantity: number;
-  actual_quantity: number;
-  status: string;
-  completion_rate: number;
-}
+export function useProductionSchedule() {
+  const [productionItems] = useState<ProductionItem[]>([
+    {
+      id: '1',
+      customer_id: 'CUST-001',
+      product: 'ミネラルウォーター 500ml',
+      customer: 'A商事株式会社',
+      quantity: 10000,
+      status: 'pending',
+      priority: 'high',
+      dueDate: '2024-01-15',
+    },
+    {
+      id: '2',
+      customer_id: 'CUST-002',
+      product: 'お茶 350ml',
+      customer: 'B流通株式会社',
+      quantity: 8000,
+      status: 'in-progress',
+      priority: 'medium',
+      dueDate: '2024-01-18',
+      startDate: '2024-01-10',
+    },
+    {
+      id: '3',
+      customer_id: 'CUST-003',
+      product: 'スポーツドリンク 500ml',
+      customer: 'Cマート',
+      quantity: 15000,
+      status: 'pending',
+      priority: 'high',
+      dueDate: '2024-01-20',
+    },
+    {
+      id: '4',
+      customer_id: 'CUST-004',
+      product: 'コーヒー 250ml',
+      customer: 'D食品株式会社',
+      quantity: 5000,
+      status: 'completed',
+      priority: 'low',
+      dueDate: '2024-01-12',
+      startDate: '2024-01-08',
+      completedDate: '2024-01-11',
+    },
+    {
+      id: '5',
+      customer_id: 'CUST-005',
+      product: 'フルーツジュース 1L',
+      customer: 'E商店',
+      quantity: 3000,
+      status: 'pending',
+      priority: 'medium',
+      dueDate: '2024-01-25',
+    },
+  ]);
 
-export const useProductionSchedule = (currentWeek?: Date) => {
-  const [scheduleData, setScheduleData] = useState<WeeklyProductionData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchProductionSchedule = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // 指定された週の開始日から1週間分の日付を生成
-      const weekStart = currentWeek ? startOfWeek(currentWeek, { weekStartsOn: 1 }) : startOfWeek(new Date(), { weekStartsOn: 1 });
-      const dates = Array.from({ length: 7 }, (_, i) => {
-        const date = addDays(weekStart, i);
-        return format(date, 'yyyy-MM-dd');
-      });
-
-      // モックデータ（実際の実装では、production_schedules テーブルから取得）
-      const products = [
-        { id: 'PROD-A', name: '製品A' },
-        { id: 'PROD-B', name: '製品B' },
-        { id: 'PROD-C', name: '製品C' },
-        { id: 'PROD-D', name: '製品D' },
-        { id: 'PROD-E', name: '製品E' },
-      ];
-
-      // 各日付・製品の組み合わせでスケジュールデータを生成
-      const schedulePromises = dates.map(async (date) => {
-        return products.map(product => {
-          // 実際の実装では、データベースから取得
-          const dayOfWeek = new Date(date).getDay();
-          const baseQuantity = Math.floor(Math.random() * 500) + 100;
-          const plannedQuantity = dayOfWeek === 0 || dayOfWeek === 6 ? 0 : baseQuantity; // 土日は生産なし
-          const actualQuantity = Math.floor(plannedQuantity * (0.8 + Math.random() * 0.4)); // 80-120%の範囲
-          
-          let status = 'scheduled';
-          const today = format(new Date(), 'yyyy-MM-dd');
-          if (date < today) {
-            status = actualQuantity >= plannedQuantity * 0.95 ? 'completed' : 'delayed';
-          } else if (date === today) {
-            status = 'in_progress';
-          }
-
-          const completionRate = plannedQuantity > 0 ? (actualQuantity / plannedQuantity) * 100 : 0;
-
-          return {
-            date,
-            product_id: product.id,
-            product_name: product.name,
-            planned_quantity: plannedQuantity,
-            actual_quantity: date <= today ? actualQuantity : 0,
-            status,
-            completion_rate: Math.min(completionRate, 100),
-          };
-        });
-      });
-
-      const allSchedule = await Promise.all(schedulePromises);
-      setScheduleData(allSchedule.flat());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'エラーが発生しました');
-    } finally {
-      setLoading(false);
-    }
+  const updateItemStatus = (id: string, status: ProductionItem['status']) => {
+    // Implementation would update the item status
+    console.log(`Updating item ${id} to status ${status}`);
   };
 
-  useEffect(() => {
-    fetchProductionSchedule();
-  }, [currentWeek]);
+  const getPendingItems = () => {
+    return productionItems.filter(item => item.status === 'pending');
+  };
+
+  const getInProgressItems = () => {
+    return productionItems.filter(item => item.status === 'in-progress');
+  };
+
+  const getCompletedItems = () => {
+    return productionItems.filter(item => item.status === 'completed');
+  };
+
+  const getItemsByPriority = (priority: ProductionItem['priority']) => {
+    return productionItems.filter(item => item.priority === priority);
+  };
 
   return {
-    scheduleData,
-    loading,
-    error,
-    refetch: fetchProductionSchedule,
+    productionItems,
+    updateItemStatus,
+    getPendingItems,
+    getInProgressItems,
+    getCompletedItems,
+    getItemsByPriority,
   };
-};
+}
