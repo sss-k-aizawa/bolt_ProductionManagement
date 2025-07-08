@@ -23,8 +23,8 @@ const Production: React.FC = () => {
   });
 
   // ユニークな製品リストを取得
-  const uniqueProducts = Array.from(new Set(scheduleData.map(s => s.product_id)))
-    .map(productId => scheduleData.find(s => s.product_id === productId))
+  const uniqueProducts = Array.from(new Set((scheduleData || []).map(s => s.product_id)))
+    .map(productId => (scheduleData || []).find(s => s.product_id === productId))
     .filter(Boolean);
 
   // 月次データの生成（当月前後2か月）
@@ -313,7 +313,7 @@ const Production: React.FC = () => {
 
   // 日別合計を計算
   const getDailyTotal = (date: string) => {
-    return scheduleData
+    return (scheduleData || [])
       .filter(item => item.date === date)
       .reduce((sum, item) => sum + item.planned_quantity, 0);
   };
@@ -562,7 +562,7 @@ const Production: React.FC = () => {
                           </div>
                         </td>
                         {dates.map((date) => {
-                          const dayData = scheduleData.find(s => s.date === date && s.product_id === product?.product_id);
+                          const dayData = (scheduleData || []).find(s => s.date === date && s.product_id === product?.product_id);
                           const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                           
                           return (
@@ -923,7 +923,7 @@ const Production: React.FC = () => {
                                   <div className="text-lg font-bold text-orange-800">
                                     {totalShipment.toLocaleString()}
                                   </div>
-                                </div>
+                            const productionData = (scheduleData || []).find(s => 
                               </td>
                             );
                           })}
