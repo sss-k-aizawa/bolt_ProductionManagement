@@ -11,7 +11,7 @@ const Production: React.FC = () => {
   const navigate = useNavigate();
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [currentMonthIndex, setCurrentMonthIndex] = useState(2); // 中央の月（現在月）から開始
-  const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
+  const { scheduleData = [], loading, error } = useProductionSchedule(currentWeek);
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
   
@@ -23,8 +23,8 @@ const Production: React.FC = () => {
   });
 
   // ユニークな製品リストを取得
-  const uniqueProducts = Array.from(new Set(scheduleData.map(s => s.product_id)))
-    .map(productId => scheduleData.find(s => s.product_id === productId))
+  const uniqueProducts = Array.from(new Set((scheduleData || []).map(s => s.product_id)))
+    .map(productId => (scheduleData || []).find(s => s.product_id === productId))
     .filter(Boolean);
 
   // 月次データの生成（当月前後2か月）
