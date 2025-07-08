@@ -768,10 +768,7 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      {dates.reduce((sum, date) => {
-                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 200) + 100);
-                      }, 0).toLocaleString()}
+                      1,150
                     </span>
                   </td>
                 </tr>
@@ -801,10 +798,7 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      {dates.reduce((sum, date) => {
-                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 150) + 80);
-                      }, 0).toLocaleString()}
+                      875
                     </span>
                   </td>
                 </tr>
@@ -834,10 +828,7 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      {dates.reduce((sum, date) => {
-                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 120) + 60);
-                      }, 0).toLocaleString()}
+                      900
                     </span>
                   </td>
                 </tr>
