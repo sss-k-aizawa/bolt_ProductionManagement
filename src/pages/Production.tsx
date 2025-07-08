@@ -922,12 +922,6 @@ const Production: React.FC = () => {
                                 <div className="text-center">
                                   <div className="text-lg font-bold text-orange-800">
                                     {totalShipment.toLocaleString()}
-                                    <Link
-                                      to={`/shipment-history/${customer.customer_id}?customerName=${encodeURIComponent(customer.customer_name)}`}
-                                      className="text-xs text-blue-600 hover:text-blue-800 underline"
-                                    >
-                                      出荷履歴を見る
-                                    </Link>
                                   </div>
                                 </div>
                               </td>
