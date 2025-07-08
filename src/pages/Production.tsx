@@ -377,8 +377,8 @@ const Production: React.FC = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">生産計画</h1>
-          <p className="mt-1 text-sm text-gray-500">生産活動の計画と管理</p>
+          <h1 className="text-2xl font-bold text-gray-900">生産</h1>
+          <p className="mt-1 text-sm text-gray-500">週間生産スケジュールと製品出庫管理</p>
         </div>
         <div className="flex space-x-2">
           {(activeTab === 'schedule' || activeTab === 'monthly') && (
