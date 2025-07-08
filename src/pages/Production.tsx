@@ -755,7 +755,7 @@ const Production: React.FC = () => {
                   </td>
                   {dates.map((date) => {
                     const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    const sampleQuantity = isWeekend ? 0 : 250;
+                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 200) + 100;
                     return (
                       <td key={`sample-1-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
                         isWeekend ? 'bg-gray-50' : ''
@@ -768,7 +768,10 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      1,250
+                      {dates.reduce((sum, date) => {
+                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 200) + 100);
+                      }, 0).toLocaleString()}
                     </span>
                   </td>
                 </tr>
@@ -785,17 +788,7 @@ const Production: React.FC = () => {
                   </td>
                   {dates.map((date) => {
                     const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    const dayOfWeek = new Date(date).getDay();
-                    let sampleQuantity = 0;
-                    if (!isWeekend) {
-                      switch (dayOfWeek) {
-                        case 1: sampleQuantity = 180; break; // 月
-                        case 2: sampleQuantity = 200; break; // 火
-                        case 3: sampleQuantity = 0; break;   // 水（メンテナンス）
-                        case 4: sampleQuantity = 220; break; // 木
-                        case 5: sampleQuantity = 190; break; // 金
-                      }
-                    }
+                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 150) + 80;
                     return (
                       <td key={`sample-2-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
                         isWeekend ? 'bg-gray-50' : ''
@@ -808,7 +801,10 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      790
+                      {dates.reduce((sum, date) => {
+                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 150) + 80);
+                      }, 0).toLocaleString()}
                     </span>
                   </td>
                 </tr>
@@ -825,17 +821,7 @@ const Production: React.FC = () => {
                   </td>
                   {dates.map((date) => {
                     const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    const dayOfWeek = new Date(date).getDay();
-                    let sampleQuantity = 0;
-                    if (!isWeekend) {
-                      switch (dayOfWeek) {
-                        case 1: sampleQuantity = 150; break; // 月
-                        case 2: sampleQuantity = 180; break; // 火
-                        case 3: sampleQuantity = 160; break; // 水
-                        case 4: sampleQuantity = 200; break; // 木
-                        case 5: sampleQuantity = 170; break; // 金
-                      }
-                    }
+                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 120) + 60;
                     return (
                       <td key={`sample-3-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
                         isWeekend ? 'bg-gray-50' : ''
@@ -848,87 +834,10 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      860
-                    </span>
-                  </td>
-                </tr>
-
-                <tr className="hover:bg-gray-50">
-                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                    <div className="flex items-center">
-                      <Package size={16} className="text-orange-500 mr-2" />
-                      <div>
-                        <div className="font-medium text-gray-900">コーヒー 250ml</div>
-                        <div className="text-xs text-gray-500">PROD-A004</div>
-                      </div>
-                    </div>
-                  </td>
-                  {dates.map((date) => {
-                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    const dayOfWeek = new Date(date).getDay();
-                    let sampleQuantity = 0;
-                    if (!isWeekend) {
-                      switch (dayOfWeek) {
-                        case 1: sampleQuantity = 120; break; // 月
-                        case 2: sampleQuantity = 140; break; // 火
-                        case 3: sampleQuantity = 130; break; // 水
-                        case 4: sampleQuantity = 150; break; // 木
-                        case 5: sampleQuantity = 135; break; // 金
-                      }
-                    }
-                    return (
-                      <td key={`sample-4-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
-                        isWeekend ? 'bg-gray-50' : ''
-                      }`}>
-                        <span className="text-sm font-medium text-gray-900">
-                          {sampleQuantity.toLocaleString()}
-                        </span>
-                      </td>
-                    );
-                  })}
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
-                    <span className="text-sm font-medium text-gray-900">
-                      675
-                    </span>
-                  </td>
-                </tr>
-
-                <tr className="hover:bg-gray-50">
-                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                    <div className="flex items-center">
-                      <Package size={16} className="text-red-500 mr-2" />
-                      <div>
-                        <div className="font-medium text-gray-900">フルーツジュース 1L</div>
-                        <div className="text-xs text-gray-500">PROD-A005</div>
-                      </div>
-                    </div>
-                  </td>
-                  {dates.map((date) => {
-                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    const dayOfWeek = new Date(date).getDay();
-                    let sampleQuantity = 0;
-                    if (!isWeekend) {
-                      switch (dayOfWeek) {
-                        case 1: sampleQuantity = 80; break;  // 月
-                        case 2: sampleQuantity = 90; break;  // 火
-                        case 3: sampleQuantity = 85; break;  // 水
-                        case 4: sampleQuantity = 95; break;  // 木
-                        case 5: sampleQuantity = 88; break;  // 金
-                      }
-                    }
-                    return (
-                      <td key={`sample-5-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
-                        isWeekend ? 'bg-gray-50' : ''
-                      }`}>
-                        <span className="text-sm font-medium text-gray-900">
-                          {sampleQuantity.toLocaleString()}
-                        </span>
-                      </td>
-                    );
-                  })}
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
-                    <span className="text-sm font-medium text-gray-900">
-                      438
+                      {dates.reduce((sum, date) => {
+                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 120) + 60);
+                      }, 0).toLocaleString()}
                     </span>
                   </td>
                 </tr>
