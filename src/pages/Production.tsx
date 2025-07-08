@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CalendarDays, Plus, Filter, TrendingUp, TrendingDown, Clock, CheckCircle, AlertTriangle, Edit, ChevronLeft, ChevronRight, Package, FileText, ClipboardList, Truck } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { useProductionSchedule } from '../hooks/useProductionSchedule';
 import { useInventory } from '../hooks/useInventory';
