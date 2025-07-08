@@ -188,7 +188,7 @@ const Production: React.FC = () => {
           
           dates.forEach((date) => {
             // 生産による在庫増加
-            const productionData = scheduleData.find(s => 
+            const productionData = (scheduleData || []).find(s => 
               s.date === date && s.product_id === product.product_id
             );
             const production = Math.floor((productionData?.planned_quantity || 0) * 0.3); // 出荷先別に分散
