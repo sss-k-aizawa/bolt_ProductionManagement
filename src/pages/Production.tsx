@@ -946,7 +946,12 @@ const Production: React.FC = () => {
                                         <div>
                                           {isFirstDestination && (
                                             <div className="font-medium text-gray-700 mb-1">
-                                              {customer.customer_name}
+                                              <Link
+                                                to={`/shipment-history/${encodeURIComponent(customer.customer_name)}?customerName=${encodeURIComponent(customer.customer_name)}`}
+                                                className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                                              >
+                                                {customer.customer_name}
+                                              </Link>
                                             </div>
                                           )}
                                           <div className="text-sm text-gray-600 ml-4">
