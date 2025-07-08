@@ -673,57 +673,45 @@ const Production: React.FC = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {/* 目標生産数行 */}
                 <tr className="bg-green-50">
-                  <td className="sticky left-0 z-10 bg-green-50 px-4 py-4 whitespace-nowrap text-sm font-medium text-green-800 border-r border-gray-200">
+                  <td className="sticky left-0 z-10 bg-green-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-green-800 border-r border-gray-200">
                     目標生産数
                   </td>
-                  {dates.map((date) => {
-                    const dayOfWeek = new Date(date).getDay();
-                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                    const targetValue = isWeekend ? 0 : Math.floor(Math.random() * 200) + 800; // 800-1000の範囲
+                  {monthlyData.map((month) => {
+                    const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
+                    const isCurrentMonth = month.monthIndex === 0; // 現在月は monthIndex が 0
+                    
                     return (
-                      <td key={`target-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
-                        new Date(date).getDay() === 0 || new Date(date).getDay() === 6 ? 'bg-green-100' : ''
-                      }`}>
-                        <span className="font-medium text-green-800">
-                          {targetValue.toLocaleString()}
-                        </span>
+                      <td key={`target-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium ${isCurrentMonth ? 'bg-green-100 text-green-900' : 'text-green-800'}`}>
+                        {monthlyTarget.toLocaleString()}
                       </td>
                     );
                   })}
-                  <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium text-green-800">
-                    {dates.reduce((sum, date) => {
-                      const dayOfWeek = new Date(date).getDay();
-                      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                      return sum + (isWeekend ? 0 : Math.floor(Math.random() * 200) + 800);
-                    }, 0).toLocaleString()}
+                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-green-800">
+                    {monthlyData.reduce((sum, month) => 
+                      sum + month.data.reduce((monthSum, product) => monthSum + product.target, 0), 0
+                    ).toLocaleString()}
                   </td>
                 </tr>
 
                 {/* 最低生産数行 */}
-                <tr className="bg-red-50">
-                  <td className="sticky left-0 z-10 bg-red-50 px-4 py-4 whitespace-nowrap text-sm font-medium text-red-800 border-r border-gray-200">
+                <tr className="bg-amber-50">
+                  <td className="sticky left-0 z-10 bg-amber-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-amber-800 border-r border-gray-200">
                     最低生産数
                   </td>
-                  {dates.map((date) => {
-                    const dayOfWeek = new Date(date).getDay();
-                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                    const minValue = isWeekend ? 0 : Math.floor(Math.random() * 100) + 500; // 500-600の範囲
+                  {monthlyData.map((month) => {
+                    const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
+                    const isCurrentMonth = month.monthIndex === 0; // 現在月は monthIndex が 0
+                    
                     return (
-                      <td key={`min-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
-                        new Date(date).getDay() === 0 || new Date(date).getDay() === 6 ? 'bg-red-100' : ''
-                      }`}>
-                        <span className="font-medium text-red-800">
-                          {minValue.toLocaleString()}
-                        </span>
+                      <td key={`min-target-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium ${isCurrentMonth ? 'bg-amber-100 text-amber-900' : 'text-amber-800'}`}>
+                        {monthlyMinTarget.toLocaleString()}
                       </td>
                     );
                   })}
-                  <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium text-red-800">
-                    {dates.reduce((sum, date) => {
-                      const dayOfWeek = new Date(date).getDay();
-                      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                      return sum + (isWeekend ? 0 : Math.floor(Math.random() * 100) + 500);
-                    }, 0).toLocaleString()}
+                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-amber-800">
+                    {monthlyData.reduce((sum, month) => 
+                      sum + month.data.reduce((monthSum, product) => monthSum + product.minTarget, 0), 0
+                    ).toLocaleString()}
                   </td>
                 </tr>
 
@@ -851,34 +839,6 @@ const Production: React.FC = () => {
                         return sum + (isWeekend ? 0 : Math.floor(Math.random() * 120) + 60);
                       }, 0).toLocaleString()}
                     </span>
-                  </td>
-                </tr>
-
-                {/* 月別合計行 */}
-                <tr className="bg-purple-50 font-bold border-t-2 border-purple-200">
-                  <td className="sticky left-0 z-10 bg-purple-50 px-4 py-4 whitespace-nowrap text-sm font-bold text-purple-800 border-r border-gray-200">
-                    月別合計
-                  </td>
-                  {dates.map((date) => {
-                    const dayOfWeek = new Date(date).getDay();
-                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                    const monthlyValue = isWeekend ? 0 : Math.floor(Math.random() * 300) + 700; // 700-1000の範囲
-                    return (
-                      <td key={`monthly-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
-                        new Date(date).getDay() === 0 || new Date(date).getDay() === 6 ? 'bg-purple-100' : ''
-                      }`}>
-                        <span className="font-bold text-purple-800">
-                          {monthlyValue.toLocaleString()}
-                        </span>
-                      </td>
-                    );
-                  })}
-                  <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-bold text-purple-800">
-                    {dates.reduce((sum, date) => {
-                      const dayOfWeek = new Date(date).getDay();
-                      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                      return sum + (isWeekend ? 0 : Math.floor(Math.random() * 300) + 700);
-                    }, 0).toLocaleString()}
                   </td>
                 </tr>
 
