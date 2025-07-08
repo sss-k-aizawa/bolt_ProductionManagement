@@ -755,7 +755,7 @@ const Production: React.FC = () => {
                   </td>
                   {dates.map((date) => {
                     const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 200) + 100;
+                    const sampleQuantity = isWeekend ? 0 : 250;
                     return (
                       <td key={`sample-1-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
                         isWeekend ? 'bg-gray-50' : ''
@@ -768,10 +768,7 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      {dates.reduce((sum, date) => {
-                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 200) + 100);
-                      }, 0).toLocaleString()}
+                      {(250 * 5).toLocaleString()}
                     </span>
                   </td>
                 </tr>
@@ -788,7 +785,7 @@ const Production: React.FC = () => {
                   </td>
                   {dates.map((date) => {
                     const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 150) + 80;
+                    const sampleQuantity = isWeekend ? 0 : 180;
                     return (
                       <td key={`sample-2-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
                         isWeekend ? 'bg-gray-50' : ''
@@ -801,10 +798,7 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      {dates.reduce((sum, date) => {
-                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 150) + 80);
-                      }, 0).toLocaleString()}
+                      {(180 * 5).toLocaleString()}
                     </span>
                   </td>
                 </tr>
@@ -821,7 +815,7 @@ const Production: React.FC = () => {
                   </td>
                   {dates.map((date) => {
                     const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 120) + 60;
+                    const sampleQuantity = isWeekend ? 0 : 150;
                     return (
                       <td key={`sample-3-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
                         isWeekend ? 'bg-gray-50' : ''
@@ -834,10 +828,7 @@ const Production: React.FC = () => {
                   })}
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <span className="text-sm font-medium text-gray-900">
-                      {dates.reduce((sum, date) => {
-                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 120) + 60);
-                      }, 0).toLocaleString()}
+                      {(150 * 5).toLocaleString()}
                     </span>
                   </td>
                 </tr>
@@ -849,6 +840,8 @@ const Production: React.FC = () => {
                   </td>
                   {monthlyData.map((month) => (
                     (() => {
+                    // 各製品の日別生産数を合計
+                    const dailyTotal = isWeekend ? 0 : (250 + 180 + 150); // ミネラルウォーター + お茶 + スポーツドリンク
                       const monthlyTotal = month.data.reduce((sum, product) => sum + product.total, 0);
                       const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
                       const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
@@ -917,13 +910,13 @@ const Production: React.FC = () => {
                                 目標: {totalTargetRate.toFixed(1)}%
                               </div>
                               <div className={`${getAchievementColor(totalMinTargetRate)}`}>
-                                最低: {totalMinTargetRate.toFixed(1)}%
+                          {dailyTotal.toLocaleString()}
                               </div>
                             </>
                           );
                         })()}
                       </div>
-                    </div>
+                    {((250 + 180 + 150) * 5).toLocaleString()}
                   </td>
                 </tr>
               </tbody>
