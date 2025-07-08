@@ -191,9 +191,6 @@ const Production: React.FC = () => {
             const productionData = scheduleData.find(s => 
               s.date === date && s.product_id === product.product_id
             );
-            const productionData = (scheduleData || []).find(s => 
-              s.date === date && s.product_id === product.product_id
-            );
             const production = Math.floor((productionData?.planned_quantity || 0) * 0.3); // 出荷先別に分散
             
             // 出荷・使用による在庫減少（サンプル値）
