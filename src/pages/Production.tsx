@@ -771,6 +771,12 @@ const Production: React.FC = () => {
                       1,150
                     </span>
                   </td>
+                </tr>
+                
+                <tr className="hover:bg-gray-50">
+                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                    <div className="flex items-center">
+                      <Package size={16} className="text-green-500 mr-2" />
                       <div>
                         <div className="font-medium text-gray-900">お茶 350ml</div>
                         <div className="text-xs text-gray-500">PROD-A002</div>
@@ -801,6 +807,12 @@ const Production: React.FC = () => {
                   <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
                     <div className="flex items-center">
                       <Package size={16} className="text-purple-500 mr-2" />
+                      <div>
+                        <div className="font-medium text-gray-900">コーヒー 250ml</div>
+                        <div className="text-xs text-gray-500">PROD-A003</div>
+                      </div>
+                    </div>
+                  </td>
                   {dates.map((date) => {
                     const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                     const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 120) + 60;
@@ -831,6 +843,8 @@ const Production: React.FC = () => {
                       const monthlyTotal = month.data.reduce((sum, product) => sum + product.total, 0);
                       const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
                       const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
+                      const targetAchievementRate = monthlyTarget > 0 ? (monthlyTotal / monthlyTarget) * 100 : 0;
+                      const minTargetAchievementRate = monthlyMinTarget > 0 ? (monthlyTotal / monthlyMinTarget) * 100 : 0;
                       const getAchievementColor = (rate: number) => {
                         if (rate >= 100) return 'text-green-600';
                         if (rate >= 80) return 'text-amber-600';
