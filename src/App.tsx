@@ -16,6 +16,7 @@ import ProductionScheduleEdit from './pages/ProductionScheduleEdit';
 import ProductShipmentEdit from './pages/ProductShipmentEdit';
 import ManufacturingInstructionList from './pages/ManufacturingInstructionList';
 import ManufacturingInstruction from './pages/ManufacturingInstruction';
+import ShipmentHistory from './pages/ShipmentHistory';
 import ProductInventoryEdit from './pages/ProductInventoryEdit';
 import Settings from './pages/Settings';
 import MasterManagement from './pages/MasterManagement';
@@ -48,6 +49,8 @@ function App() {
             <Route path="/manufacturing-instructions/new" element={<ManufacturingInstruction />} />
             <Route path="/manufacturing-instructions/:id" element={<ManufacturingInstruction />} />
             <Route path="/manufacturing-instructions/:id/edit" element={<ManufacturingInstruction />} />
+            <Route path="/shipment-history" element={<ShipmentHistory />} />
+            <Route path="/shipment-history/:customerId" element={<ShipmentHistory />} />
             <Route path="/master-management" element={<MasterManagement />} />
             <Route path="/master-management/customer/add" element={<CustomerAdd />} />
             <Route path="/master-management/product-customer/add" element={<ProductCustomerMappingAdd />} />

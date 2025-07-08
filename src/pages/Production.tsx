@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CalendarDays, Plus, Filter, TrendingUp, TrendingDown, Clock, CheckCircle, AlertTriangle, Edit, ChevronLeft, ChevronRight, Package, FileText, ClipboardList, Truck } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { useProductionSchedule } from '../hooks/useProductionSchedule';
 import { useInventory } from '../hooks/useInventory';
@@ -922,6 +922,12 @@ const Production: React.FC = () => {
                                 <div className="text-center">
                                   <div className="text-lg font-bold text-orange-800">
                                     {totalShipment.toLocaleString()}
+                                    <Link
+                                      to={`/shipment-history/${customer.customer_id}?customerName=${encodeURIComponent(customer.customer_name)}`}
+                                      className="text-xs text-blue-600 hover:text-blue-800 underline"
+                                    >
+                                      出荷履歴を見る
+                                    </Link>
                                   </div>
                                 </div>
                               </td>
