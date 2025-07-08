@@ -43,13 +43,13 @@ const ProductionScheduleEdit: React.FC = () => {
 
   // 製品マスターデータ
   const products = [
-    { id: 'PROD-A001', name: 'ミネラルウォーター 500ml' },
-    { id: 'PROD-A002', name: 'お茶 350ml' },
-    { id: 'PROD-A003', name: 'スポーツドリンク 500ml' },
-    { id: 'PROD-A004', name: 'コーヒー 250ml' },
-    { id: 'PROD-A005', name: 'フルーツジュース 1L' },
-    { id: 'PROD-A006', name: '炭酸水 500ml' },
-    { id: 'PROD-A007', name: 'エナジードリンク 250ml' },
+    { id: 'PROD-A', name: '製品A' },
+    { id: 'PROD-B', name: '製品B' },
+    { id: 'PROD-C', name: '製品C' },
+    { id: 'PROD-D', name: '製品D' },
+    { id: 'PROD-E', name: '製品E' },
+    { id: 'PROD-F', name: '製品F' },
+    { id: 'PROD-G', name: '製品G' },
   ];
 
   // 在庫予測データを生成（サンプル）
@@ -95,8 +95,8 @@ const ProductionScheduleEdit: React.FC = () => {
     // モックデータで初期化（固定の製品リスト）
     const initialData: ProductionScheduleItem[] = [
       {
-        product_id: 'PROD-A001',
-        product_name: 'ミネラルウォーター 500ml',
+        product_id: 'PROD-A',
+        product_name: '製品A',
         quantities: {
           [dates[0]]: 200,
           [dates[1]]: 250,
@@ -106,11 +106,11 @@ const ProductionScheduleEdit: React.FC = () => {
           [dates[5]]: 0,
           [dates[6]]: 0,
         },
-        notes: '主力商品・通常生産',
+        notes: '通常生産',
       },
       {
-        product_id: 'PROD-A002',
-        product_name: 'お茶 350ml',
+        product_id: 'PROD-B',
+        product_name: '製品B',
         quantities: {
           [dates[0]]: 150,
           [dates[1]]: 180,
@@ -120,11 +120,11 @@ const ProductionScheduleEdit: React.FC = () => {
           [dates[5]]: 0,
           [dates[6]]: 0,
         },
-        notes: '季節商品',
+        notes: '',
       },
       {
-        product_id: 'PROD-A003',
-        product_name: 'スポーツドリンク 500ml',
+        product_id: 'PROD-C',
+        product_name: '製品C',
         quantities: {
           [dates[0]]: 100,
           [dates[1]]: 120,
@@ -137,8 +137,8 @@ const ProductionScheduleEdit: React.FC = () => {
         notes: '水曜日メンテナンス',
       },
       {
-        product_id: 'PROD-A004',
-        product_name: 'コーヒー 250ml',
+        product_id: 'PROD-D',
+        product_name: '製品D',
         quantities: {
           [dates[0]]: 80,
           [dates[1]]: 90,
@@ -148,11 +148,11 @@ const ProductionScheduleEdit: React.FC = () => {
           [dates[5]]: 0,
           [dates[6]]: 0,
         },
-        notes: '高単価商品',
+        notes: '',
       },
       {
-        product_id: 'PROD-A005',
-        product_name: 'フルーツジュース 1L',
+        product_id: 'PROD-E',
+        product_name: '製品E',
         quantities: {
           [dates[0]]: 60,
           [dates[1]]: 70,
@@ -162,7 +162,7 @@ const ProductionScheduleEdit: React.FC = () => {
           [dates[5]]: 0,
           [dates[6]]: 0,
         },
-        notes: '限定商品',
+        notes: '',
       },
     ];
     setScheduleItems(initialData);
