@@ -774,11 +774,6 @@ const Production: React.FC = () => {
                       }, 0).toLocaleString()}
                     </span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
-                    <button className="text-blue-600 hover:text-blue-900 text-sm">
-                      編集
-                    </button>
-                  </td>
                 </tr>
 
                 <tr className="hover:bg-gray-50">
@@ -812,11 +807,6 @@ const Production: React.FC = () => {
                       }, 0).toLocaleString()}
                     </span>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
-                    <button className="text-blue-600 hover:text-blue-900 text-sm">
-                      編集
-                    </button>
-                  </td>
                 </tr>
 
                 <tr className="hover:bg-gray-50">
@@ -849,11 +839,6 @@ const Production: React.FC = () => {
                         return sum + (isWeekend ? 0 : Math.floor(Math.random() * 120) + 60);
                       }, 0).toLocaleString()}
                     </span>
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
-                    <button className="text-blue-600 hover:text-blue-900 text-sm">
-                      編集
-                    </button>
                   </td>
                 </tr>
 
