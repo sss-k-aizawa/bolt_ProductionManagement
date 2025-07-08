@@ -923,7 +923,7 @@ const Production: React.FC = () => {
                                   <div className="text-lg font-bold text-orange-800">
                                     {totalShipment.toLocaleString()}
                                   </div>
-                            const productionData = (scheduleData || []).find(s => 
+                                </div>
                               </td>
                             );
                           })}
