@@ -277,6 +277,34 @@ const InventoryOrderHistory: React.FC = () => {
         </div>
       </div>
 
+      {/* 統計サマリー */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="p-4">
+          <div className="text-center">
+            <p className="text-sm font-medium text-gray-500">総発注数</p>
+            <p className="mt-1 text-3xl font-semibold text-gray-900">{stats.totalOrders}</p>
+          </div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-center">
+            <p className="text-sm font-medium text-gray-500">総発注金額</p>
+            <p className="mt-1 text-3xl font-semibold text-gray-900">¥{stats.totalAmount.toLocaleString()}</p>
+          </div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-center">
+            <p className="text-sm font-medium text-gray-500">処理中</p>
+            <p className="mt-1 text-3xl font-semibold text-amber-600">{stats.pendingOrders}</p>
+          </div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-center">
+            <p className="text-sm font-medium text-gray-500">サプライヤー数</p>
+            <p className="mt-1 text-3xl font-semibold text-blue-600">{orderHistory.length}</p>
+          </div>
+        </Card>
+      </div>
+
       {/* フィルター */}
       <Card>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

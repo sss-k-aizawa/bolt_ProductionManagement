@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CalendarDays, Plus, Filter, TrendingUp, TrendingDown, Clock, CheckCircle, AlertTriangle, Edit, ChevronLeft, ChevronRight, Package, FileText, ClipboardList, Truck } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { useProductionSchedule } from '../hooks/useProductionSchedule';
 import { useInventory } from '../hooks/useInventory';
@@ -377,8 +377,8 @@ const Production: React.FC = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">生産計画</h1>
-          <p className="mt-1 text-sm text-gray-500">生産活動の計画と管理</p>
+          <h1 className="text-2xl font-bold text-gray-900">生産</h1>
+          <p className="mt-1 text-sm text-gray-500">週間生産スケジュールと製品出庫管理</p>
         </div>
         <div className="flex space-x-2">
           {(activeTab === 'schedule' || activeTab === 'monthly') && (
@@ -742,6 +742,97 @@ const Production: React.FC = () => {
                   </tr>
                 ))}
                 
+                {/* 製品別生産予定（サンプルデータ） */}
+                <tr className="hover:bg-gray-50">
+                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                    <div className="flex items-center">
+                      <Package size={16} className="text-blue-500 mr-2" />
+                      <div>
+                        <div className="font-medium text-gray-900">ミネラルウォーター 500ml</div>
+                        <div className="text-xs text-gray-500">PROD-A001</div>
+                      </div>
+                    </div>
+                  </td>
+                  {dates.map((date) => {
+                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 200) + 100;
+                    return (
+                      <td key={`sample-1-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
+                        isWeekend ? 'bg-gray-50' : ''
+                      }`}>
+                        <span className="text-sm font-medium text-gray-900">
+                          {sampleQuantity.toLocaleString()}
+                        </span>
+                      </td>
+                    );
+                  })}
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
+                    <span className="text-sm font-medium text-gray-900">
+                      1,150
+                    </span>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-gray-50">
+                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                    <div className="flex items-center">
+                      <Package size={16} className="text-green-500 mr-2" />
+                      <div>
+                        <div className="font-medium text-gray-900">お茶 350ml</div>
+                        <div className="text-xs text-gray-500">PROD-A002</div>
+                      </div>
+                    </div>
+                  </td>
+                  {dates.map((date) => {
+                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 150) + 80;
+                    return (
+                      <td key={`sample-2-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
+                        isWeekend ? 'bg-gray-50' : ''
+                      }`}>
+                        <span className="text-sm font-medium text-gray-900">
+                          {sampleQuantity.toLocaleString()}
+                        </span>
+                      </td>
+                    );
+                  })}
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
+                    <span className="text-sm font-medium text-gray-900">
+                      875
+                    </span>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-gray-50">
+                  <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                    <div className="flex items-center">
+                      <Package size={16} className="text-purple-500 mr-2" />
+                      <div>
+                        <div className="font-medium text-gray-900">スポーツドリンク 500ml</div>
+                        <div className="text-xs text-gray-500">PROD-A003</div>
+                      </div>
+                    </div>
+                  </td>
+                  {dates.map((date) => {
+                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                    const sampleQuantity = isWeekend ? 0 : Math.floor(Math.random() * 120) + 60;
+                    return (
+                      <td key={`sample-3-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
+                        isWeekend ? 'bg-gray-50' : ''
+                      }`}>
+                        <span className="text-sm font-medium text-gray-900">
+                          {sampleQuantity.toLocaleString()}
+                        </span>
+                      </td>
+                    );
+                  })}
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
+                    <span className="text-sm font-medium text-gray-900">
+                      900
+                    </span>
+                  </td>
+                </tr>
+
                 {/* 月別合計行 */}
                 <tr className="bg-gray-50 font-medium">
                   <td className="sticky left-0 z-10 bg-gray-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
@@ -946,7 +1037,12 @@ const Production: React.FC = () => {
                                         <div>
                                           {isFirstDestination && (
                                             <div className="font-medium text-gray-700 mb-1">
-                                              {customer.customer_name}
+                                              <Link
+                                                to={`/shipment-history/${encodeURIComponent(customer.customer_name)}?customerName=${encodeURIComponent(customer.customer_name)}`}
+                                                className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                                              >
+                                                {customer.customer_name}
+                                              </Link>
                                             </div>
                                           )}
                                           <div className="text-sm text-gray-600 ml-4">
