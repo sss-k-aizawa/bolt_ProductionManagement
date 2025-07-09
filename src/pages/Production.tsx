@@ -742,6 +742,152 @@ const Production: React.FC = () => {
                   </tr>
                 ))}
                 
+                  {/* サンプル製品データ */}
+                  <tr className="hover:bg-gray-50">
+                    <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                      <div className="flex items-center">
+                        <Package size={16} className="text-blue-500 mr-2" />
+                        <div>
+                          <div className="font-medium text-gray-900">製品A</div>
+                          <div className="text-xs text-gray-500">PROD-A001</div>
+                        </div>
+                      </div>
+                    </td>
+                    {dates.map((date) => {
+                      const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                      const sampleValue = isWeekend ? 0 : Math.floor(Math.random() * 200) + 100;
+                      return (
+                        <td key={`prod-a-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
+                          isWeekend ? 'bg-gray-50' : ''
+                        }`}>
+                          <span className="font-medium text-gray-900">{sampleValue}</span>
+                        </td>
+                      );
+                    })}
+                    <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                      {dates.reduce((sum, date) => {
+                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 200) + 100);
+                      }, 0).toLocaleString()}
+                    </td>
+                  </tr>
+                  
+                  <tr className="hover:bg-gray-50">
+                    <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                      <div className="flex items-center">
+                        <Package size={16} className="text-blue-500 mr-2" />
+                        <div>
+                          <div className="font-medium text-gray-900">製品B</div>
+                          <div className="text-xs text-gray-500">PROD-B001</div>
+                        </div>
+                      </div>
+                    </td>
+                    {dates.map((date) => {
+                      const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                      const sampleValue = isWeekend ? 0 : Math.floor(Math.random() * 150) + 80;
+                      return (
+                        <td key={`prod-b-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
+                          isWeekend ? 'bg-gray-50' : ''
+                        }`}>
+                          <span className="font-medium text-gray-900">{sampleValue}</span>
+                        </td>
+                      );
+                    })}
+                    <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                      {dates.reduce((sum, date) => {
+                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 150) + 80);
+                      }, 0).toLocaleString()}
+                    </td>
+                  </tr>
+                  
+                  <tr className="hover:bg-gray-50">
+                    <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                      <div className="flex items-center">
+                        <Package size={16} className="text-blue-500 mr-2" />
+                        <div>
+                          <div className="font-medium text-gray-900">製品C</div>
+                          <div className="text-xs text-gray-500">PROD-C001</div>
+                        </div>
+                      </div>
+                    </td>
+                    {dates.map((date) => {
+                      const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                      const sampleValue = isWeekend ? 0 : Math.floor(Math.random() * 120) + 60;
+                      return (
+                        <td key={`prod-c-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
+                          isWeekend ? 'bg-gray-50' : ''
+                        }`}>
+                          <span className="font-medium text-gray-900">{sampleValue}</span>
+                        </td>
+                      );
+                    })}
+                    <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                      {dates.reduce((sum, date) => {
+                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 120) + 60);
+                      }, 0).toLocaleString()}
+                    </td>
+                  </tr>
+                  
+                  <tr className="hover:bg-gray-50">
+                    <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                      <div className="flex items-center">
+                        <Package size={16} className="text-blue-500 mr-2" />
+                        <div>
+                          <div className="font-medium text-gray-900">製品D</div>
+                          <div className="text-xs text-gray-500">PROD-D001</div>
+                        </div>
+                      </div>
+                    </td>
+                    {dates.map((date) => {
+                      const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                      const sampleValue = isWeekend ? 0 : Math.floor(Math.random() * 100) + 50;
+                      return (
+                        <td key={`prod-d-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
+                          isWeekend ? 'bg-gray-50' : ''
+                        }`}>
+                          <span className="font-medium text-gray-900">{sampleValue}</span>
+                        </td>
+                      );
+                    })}
+                    <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                      {dates.reduce((sum, date) => {
+                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 100) + 50);
+                      }, 0).toLocaleString()}
+                    </td>
+                  </tr>
+                  
+                  <tr className="hover:bg-gray-50">
+                    <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                      <div className="flex items-center">
+                        <Package size={16} className="text-blue-500 mr-2" />
+                        <div>
+                          <div className="font-medium text-gray-900">製品E</div>
+                          <div className="text-xs text-gray-500">PROD-E001</div>
+                        </div>
+                      </div>
+                    </td>
+                    {dates.map((date) => {
+                      const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                      const sampleValue = isWeekend ? 0 : Math.floor(Math.random() * 80) + 40;
+                      return (
+                        <td key={`prod-e-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
+                          isWeekend ? 'bg-gray-50' : ''
+                        }`}>
+                          <span className="font-medium text-gray-900">{sampleValue}</span>
+                        </td>
+                      );
+                    })}
+                    <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                      {dates.reduce((sum, date) => {
+                        const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                        return sum + (isWeekend ? 0 : Math.floor(Math.random() * 80) + 40);
+                      }, 0).toLocaleString()}
+                    </td>
+                  </tr>
+
                 {/* 製品別生産予定（サンプルデータ） */}
                 <tr className="hover:bg-gray-50">
                   <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
