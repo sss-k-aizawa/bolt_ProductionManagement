@@ -185,7 +185,6 @@ export function useProductionSchedule(): UseProductionScheduleReturn {
 
   useEffect(() => {
     fetchScheduleItems();
-    fetchProductionSchedule();
   }, []);
 
   return {
@@ -196,6 +195,5 @@ export function useProductionSchedule(): UseProductionScheduleReturn {
     updateScheduleItem,
     deleteScheduleItem,
     refreshSchedule,
-    refetch: fetchProductionSchedule,
   };
 }
