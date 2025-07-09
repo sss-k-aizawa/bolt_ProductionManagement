@@ -10,7 +10,7 @@ import { ja } from 'date-fns/locale';
 const Production: React.FC = () => {
   const navigate = useNavigate();
   const [currentWeek, setCurrentWeek] = useState(new Date());
-  const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
+  const { scheduleItems: scheduleData, loading, error } = useProductionSchedule(currentWeek);
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'inventory'>('schedule');
   
