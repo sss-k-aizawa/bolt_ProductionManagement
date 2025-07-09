@@ -241,33 +241,6 @@ const ShipmentHistory: React.FC = () => {
         </div>
       </div>
 
-      {/* 統計サマリー */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">総出荷件数</p>
-            <p className="mt-1 text-3xl font-semibold text-gray-900">{stats.totalShipments}</p>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">総売上金額</p>
-            <p className="mt-1 text-3xl font-semibold text-gray-900">¥{stats.totalAmount.toLocaleString()}</p>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">総出荷数（c/s）</p>
-            <p className="mt-1 text-3xl font-semibold text-gray-900">{stats.totalCases.toLocaleString()}</p>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">総出荷数（本）</p>
-            <p className="mt-1 text-3xl font-semibold text-gray-900">{stats.totalPieces.toLocaleString()}</p>
-          </div>
-        </Card>
-      </div>
 
       {/* フィルター */}
       <Card>
