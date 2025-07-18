@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
-import { Save, ArrowLeft, Plus, Trash2, Truck, Phone, Mail, MapPin, User, FileText, CreditCard } from 'lucide-react';
+import { Save, ArrowLeft, Plus, Trash2, Truck, Phone, Mail, MapPin, User, FileText, CreditCard, Layers } from 'lucide-react';
 
 interface SupplierFormData {
   code: string;
