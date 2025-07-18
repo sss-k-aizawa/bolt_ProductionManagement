@@ -14,8 +14,6 @@ import PalletPlanningEdit from './pages/PalletPlanningEdit';
 import Production from './pages/Production';
 import ProductionScheduleEdit from './pages/ProductionScheduleEdit';
 import ProductShipmentEdit from './pages/ProductShipmentEdit';
-import ManufacturingInstructionList from './pages/ManufacturingInstructionList';
-import ManufacturingInstruction from './pages/ManufacturingInstruction';
 import ShipmentHistory from './pages/ShipmentHistory';
 import ProductInventoryEdit from './pages/ProductInventoryEdit';
 import Settings from './pages/Settings';
@@ -44,13 +42,8 @@ function App() {
             <Route path="/pallet-planning/edit" element={<PalletPlanningEdit />} />
             <Route path="/production" element={<Production />} />
             <Route path="/production/schedule/edit" element={<ProductionScheduleEdit />} />
-            <Route path="/production/manufacturing-instruction" element={<ManufacturingInstruction />} />
             <Route path="/shipment" element={<Shipment />} />
             <Route path="/shipment/edit" element={<ProductShipmentEdit />} />
-            <Route path="/manufacturing-instructions" element={<ManufacturingInstructionList />} />
-            <Route path="/manufacturing-instructions/new" element={<ManufacturingInstruction />} />
-            <Route path="/manufacturing-instructions/:id" element={<ManufacturingInstruction />} />
-            <Route path="/manufacturing-instructions/:id/edit" element={<ManufacturingInstruction />} />
             <Route path="/shipment-history" element={<ShipmentHistory />} />
             <Route path="/shipment-history/:customerId" element={<ShipmentHistory />} />
             <Route path="/master-management" element={<MasterManagement />} />
