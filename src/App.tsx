@@ -16,6 +16,7 @@ import ProductionScheduleEdit from './pages/ProductionScheduleEdit';
 import ProductShipmentEdit from './pages/ProductShipmentEdit';
 import ManufacturingInstructionList from './pages/ManufacturingInstructionList';
 import ManufacturingInstruction from './pages/ManufacturingInstruction';
+import Shipment from './pages/Shipment';
 import ShipmentHistory from './pages/ShipmentHistory';
 import ProductInventoryEdit from './pages/ProductInventoryEdit';
 import Settings from './pages/Settings';

@@ -10,6 +10,7 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
   const navItems = [
     { name: 'ダッシュボード', path: '/', icon: <LayoutDashboard size={20} /> },
     { name: '生産', path: '/production', icon: <Calendar size={20} /> },
+    { name: '出荷', path: '/shipment', icon: <Truck size={20} /> },
     { name: '資材在庫', path: '/inventory', icon: <Package size={20} /> },
     { name: 'パレット入荷計画', path: '/pallet-planning', icon: <Truck size={20} /> },
     { name: '製造指示書', path: '/manufacturing-instructions', icon: <ClipboardList size={20} /> },
