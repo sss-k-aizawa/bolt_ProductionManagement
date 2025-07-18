@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, AlertTriangle, Calendar, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Edit, History, Package, Truck, ExclamationTriangle } from 'lucide-react';
+import { Plus, AlertTriangle, Calendar, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Edit, History, Package, Truck, Triangle as ExclamationTriangle } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { useInventory } from '../hooks/useInventory';
