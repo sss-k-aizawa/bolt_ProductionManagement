@@ -8,8 +8,6 @@ import InventoryDailyEdit from './pages/InventoryDailyEdit';
 import InventoryOrder from './pages/InventoryOrder';
 import InventoryOrderConfirm from './pages/InventoryOrderConfirm';
 import InventoryOrderHistory from './pages/InventoryOrderHistory';
-import PalletPlanning from './pages/PalletPlanning';
-import PalletPlanningEdit from './pages/PalletPlanningEdit';
 import Production from './pages/Production';
 import ProductionScheduleEdit from './pages/ProductionScheduleEdit';
 import ProductShipmentEdit from './pages/ProductShipmentEdit';
@@ -36,8 +34,6 @@ function App() {
             <Route path="/inventory/order" element={<InventoryOrder />} />
             <Route path="/inventory/order/confirm" element={<InventoryOrderConfirm />} />
             <Route path="/inventory/order/history" element={<InventoryOrderHistory />} />
-            <Route path="/pallet-planning" element={<PalletPlanning />} />
-            <Route path="/pallet-planning/edit" element={<PalletPlanningEdit />} />
             <Route path="/production" element={<Production />} />
             <Route path="/production/schedule/edit" element={<ProductionScheduleEdit />} />
             <Route path="/shipment" element={<Shipment />} />
