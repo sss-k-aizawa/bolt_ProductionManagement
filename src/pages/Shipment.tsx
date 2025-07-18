@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { Edit, Package, ChevronLeft, ChevronRight, Truck, Calendar, Send } from 'lucide-react';
 import { format, addDays, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
@@ -326,9 +326,12 @@ const Shipment: React.FC = () => {
                                         <div className="w-4 h-4 border-l border-b border-gray-300 mr-2"></div>
                                         <div className="space-y-2">
                                           {isFirstDestination && (
-                                            <div className="font-medium text-gray-900">
+                                            <Link
+                                              to={`/shipment-history?customerName=${encodeURIComponent(customer.customer_name)}`}
+                                              className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                                            >
                                               {customer.customer_name}
-                                            </div>
+                                            </Link>
                                           )}
                                           <div className="ml-4 text-sm text-gray-600">
                                             {destination.destination_name}
