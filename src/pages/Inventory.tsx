@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Filter, Plus, ArrowUpDown, AlertTriangle, Calendar, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Edit, ShoppingCart, History } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { useInventory } from '../hooks/useInventory';
 import { useInventoryHistory } from '../hooks/useInventoryHistory';
@@ -443,7 +443,12 @@ const Inventory: React.FC = () => {
                       <tr key={item.item_id} className="hover:bg-gray-50">
                         <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
                           <div>
-                            <div className="font-medium">{item.item_name}</div>
+                            <Link
+                              to={`/inventory/order?materialId=${item.item_id}`}
+                              className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                              {item.item_name}
+                            </Link>
                             <div className="text-xs text-gray-500">{item.item_id}</div>
                           </div>
                         </td>
