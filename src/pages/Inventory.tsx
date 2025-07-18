@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, AlertTriangle, Calendar, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Edit, History, Package, Truck } from 'lucide-react';
+import { Plus, AlertTriangle, Calendar, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Edit, History, Package, Truck, ExclamationTriangle } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { useInventory } from '../hooks/useInventory';
@@ -175,6 +175,37 @@ const Inventory: React.FC = () => {
   const handleOrder = (itemId: string) => {
     // 発注ページに遷移（クエリパラメータで資材IDを渡す）
     navigate(`/inventory/order?materialId=${itemId}`);
+  };
+
+  // 在庫不足をチェックする関数
+  const checkInventoryShortage = (itemId: string) => {
+    const shortages = [];
+    
+    dates.forEach(date => {
+      const dayData = historyData.find(h => h.date === date && h.item_id === itemId);
+      const currentStock = dayData?.current_stock || 0;
+      
+      // 在庫が0または10以下の場合を在庫不足とする
+      if (currentStock === 0) {
+        shortages.push({ date, level: 'critical', stock: currentStock });
+      } else if (currentStock <= 10) {
+        shortages.push({ date, level: 'warning', stock: currentStock });
+      }
+    });
+    
+    return shortages;
+  };
+
+  // 在庫不足アラートの色を取得
+  const getShortageAlertColor = (level: string) => {
+    switch (level) {
+      case 'critical':
+        return 'text-red-600 bg-red-50';
+      case 'warning':
+        return 'text-amber-600 bg-amber-50';
+      default:
+        return 'text-gray-600 bg-gray-50';
+    }
   };
 
   // 日別パレット全体在庫数を計算
@@ -378,7 +409,37 @@ const Inventory: React.FC = () => {
                     {extendedItemsData.map((item) => (
                       <tr key={item.item_id} className="hover:bg-gray-50">
                         <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
-                          <div>
+                          <div className="flex items-center">
+                            {(() => {
+                              const shortages = checkInventoryShortage(item.item_id);
+                              const hasCritical = shortages.some(s => s.level === 'critical');
+                              const hasWarning = shortages.some(s => s.level === 'warning');
+                              
+                              if (hasCritical || hasWarning) {
+                                return (
+                                  <div className="mr-2 relative group">
+                                    <ExclamationTriangle 
+                                      size={16} 
+                                      className={hasCritical ? 'text-red-500' : 'text-amber-500'} 
+                                    />
+                                    {/* ツールチップ */}
+                                    <div className="absolute left-0 top-6 hidden group-hover:block z-20 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg">
+                                      <div className="font-medium mb-1">在庫不足アラート</div>
+                                      {shortages.map((shortage, index) => (
+                                        <div key={index} className="flex justify-between">
+                                          <span>{format(new Date(shortage.date), 'M/d', { locale: ja })}</span>
+                                          <span className={shortage.level === 'critical' ? 'text-red-300' : 'text-amber-300'}>
+                                            {shortage.stock === 0 ? '在庫切れ' : `在庫少(${shortage.stock})`}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })()}
+                            <div>
                             <Link
                               to={`/inventory/order?materialId=${item.item_id}`}
                               className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
@@ -386,6 +447,7 @@ const Inventory: React.FC = () => {
                               {item.item_name}
                             </Link>
                             <div className="text-xs text-gray-500">{item.item_id}</div>
+                            </div>
                           </div>
                         </td>
                         <td className="sticky left-48 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
@@ -401,15 +463,34 @@ const Inventory: React.FC = () => {
                           const dayData = historyData.find(h => h.date === date && h.item_id === item.item_id);
                           const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                           const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                          const currentStock = dayData?.current_stock || 0;
+                          
+                          // 在庫レベルに応じた背景色
+                          const getStockBackgroundColor = () => {
+                            if (currentStock === 0) return 'bg-red-100';
+                            if (currentStock <= 10) return 'bg-amber-100';
+                            return '';
+                          };
                           
                           return (
                             <td key={`${item.item_id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm text-gray-500 ${
-                              isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                              isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : getStockBackgroundColor()
                             }`}>
                               <div className="space-y-1">
                                 <div className="flex items-center justify-between">
                                   <span className="text-xs text-gray-400">在庫:</span>
-                                  <span className="font-medium">{dayData?.current_stock || 0}</span>
+                                  <span className={`font-medium ${
+                                    currentStock === 0 ? 'text-red-600' : 
+                                    currentStock <= 10 ? 'text-amber-600' : 'text-gray-900'
+                                  }`}>
+                                    {currentStock}
+                                    {currentStock === 0 && (
+                                      <ExclamationTriangle size={12} className="inline ml-1 text-red-500" />
+                                    )}
+                                    {currentStock > 0 && currentStock <= 10 && (
+                                      <ExclamationTriangle size={12} className="inline ml-1 text-amber-500" />
+                                    )}
+                                  </span>
                                 </div>
                                 <div className="flex items-center justify-between">
                                   <span className="text-xs text-green-600">入庫:</span>
