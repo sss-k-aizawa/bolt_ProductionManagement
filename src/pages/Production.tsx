@@ -581,22 +581,37 @@ const Production: React.FC = () => {
                         const { target, minTarget } = getDailyTargets(date);
                         const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                         
-                        // 目標達成状況の色分け
-                        let textColor = 'text-blue-800';
-                        if (total >= target && target > 0) {
-                          textColor = 'text-green-800';
-                        } else if (total >= minTarget && minTarget > 0) {
-                          textColor = 'text-amber-800';
-                        } else if (target > 0) {
-                          textColor = 'text-red-800';
-                        }
+                        // 達成率計算
+                        const targetAchievementRate = target > 0 ? (total / target) * 100 : 0;
+                        const minTargetAchievementRate = minTarget > 0 ? (total / minTarget) * 100 : 0;
+                        
+                        // 達成率の色分け
+                        const getAchievementColor = (rate: number) => {
+                          if (rate >= 100) return 'text-green-800';
+                          if (rate >= 80) return 'text-amber-800';
+                          return 'text-red-800';
+                        };
                         
                         return (
-                          <td key={`total-${date}`} className={`px-4 py-3 whitespace-nowrap text-center text-sm font-medium ${textColor} ${
+                          <td key={`total-${date}`} className={`px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-blue-800 ${
                             isWeekend ? 'bg-blue-100' : ''
                           }`}>
-                            <div>
-                              <span className="font-medium">{total.toLocaleString()}</span>
+                            <div className="space-y-1">
+                              <div className="text-lg font-bold">
+                                {total.toLocaleString()}
+                              </div>
+                              {target > 0 && (
+                                <div className="text-xs space-y-1">
+                                  <div className={`${getAchievementColor(targetAchievementRate)}`}>
+                                    目標達成率: {targetAchievementRate.toFixed(1)}%
+                                  </div>
+                                  {minTarget > 0 && (
+                                    <div className={`${getAchievementColor(minTargetAchievementRate)}`}>
+                                      最低達成率: {minTargetAchievementRate.toFixed(1)}%
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </td>
                         );
