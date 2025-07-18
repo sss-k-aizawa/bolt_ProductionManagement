@@ -533,12 +533,9 @@ const MasterManagement: React.FC = () => {
         alert('製品追加機能は今後実装予定です');
         break;
       case 'materials':
-        // 資材追加の処理（今後実装）
-        alert('資材追加機能は今後実装予定です');
+        navigate('/master-management/material/add');
         break;
-      case 'suppliers':
-        // サプライヤー追加の処理（今後実装）
-        alert('サプライヤー追加機能は今後実装予定です');
+        navigate('/master-management/product/add');
         break;
       case 'product-customer':
         navigate('/master-management/product-customer/add');

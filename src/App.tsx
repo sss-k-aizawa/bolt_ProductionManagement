@@ -16,6 +16,9 @@ import ProductInventoryEdit from './pages/ProductInventoryEdit';
 import Settings from './pages/Settings';
 import MasterManagement from './pages/MasterManagement';
 import CustomerAdd from './pages/CustomerAdd';
+import ProductAdd from './pages/ProductAdd';
+import MaterialAdd from './pages/MaterialAdd';
+import SupplierAdd from './pages/SupplierAdd';
 import ProductCustomerMappingAdd from './pages/ProductCustomerMappingAdd';
 import Shipment from './pages/Shipment';
 import AuthGuard from './components/auth/AuthGuard';
@@ -42,6 +45,9 @@ function App() {
             <Route path="/shipment-history/:customerId" element={<ShipmentHistory />} />
             <Route path="/master-management" element={<MasterManagement />} />
             <Route path="/master-management/customer/add" element={<CustomerAdd />} />
+            <Route path="/master-management/product/add" element={<ProductAdd />} />
+            <Route path="/master-management/material/add" element={<MaterialAdd />} />
+            <Route path="/master-management/supplier/add" element={<SupplierAdd />} />
             <Route path="/master-management/product-customer/add" element={<ProductCustomerMappingAdd />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
