@@ -15,6 +15,58 @@ const Production: React.FC = () => {
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
   
+  // サンプル生産スケジュールデータを生成
+  const generateSampleScheduleData = () => {
+    const sampleProducts = [
+      { id: 'PROD-A', name: '製品A' },
+      { id: 'PROD-B', name: '製品B' },
+      { id: 'PROD-C', name: '製品C' },
+    ];
+
+    const sampleData = [];
+    dates.forEach(date => {
+      sampleProducts.forEach(product => {
+        const dayOfWeek = new Date(date).getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+        
+        let plannedQuantity = 0;
+        if (!isWeekend) {
+          // 製品別の基本生産量
+          const baseQuantity = product.id === 'PROD-A' ? 200 : 
+                              product.id === 'PROD-B' ? 150 : 100;
+          plannedQuantity = baseQuantity + Math.floor(Math.random() * 100) - 50;
+          plannedQuantity = Math.max(0, plannedQuantity);
+        }
+        
+        const actualQuantity = Math.floor(plannedQuantity * (0.85 + Math.random() * 0.3));
+        const completionRate = plannedQuantity > 0 ? (actualQuantity / plannedQuantity) * 100 : 0;
+        
+        let status = 'scheduled';
+        const today = format(new Date(), 'yyyy-MM-dd');
+        if (date < today) {
+          status = actualQuantity >= plannedQuantity * 0.95 ? 'completed' : 'delayed';
+        } else if (date === today) {
+          status = 'in_progress';
+        }
+
+        sampleData.push({
+          date,
+          product_id: product.id,
+          product_name: product.name,
+          planned_quantity: plannedQuantity,
+          actual_quantity: date <= today ? actualQuantity : 0,
+          status,
+          completion_rate: Math.min(completionRate, 100),
+        });
+      });
+    });
+    
+    return sampleData;
+  };
+
+  // サンプルデータを使用（実際のデータがない場合）
+  const displayScheduleData = scheduleData && scheduleData.length > 0 ? scheduleData : generateSampleScheduleData();
+
   // 現在の週の日付を生成
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 }); // 月曜日開始
   const dates = Array.from({ length: 7 }, (_, i) => {
@@ -23,8 +75,8 @@ const Production: React.FC = () => {
   });
 
   // ユニークな製品リストを取得
-  const uniqueProducts = Array.from(new Set((scheduleData || []).map(s => s.product_id)))
-    .map(productId => (scheduleData || []).find(s => s.product_id === productId))
+  const uniqueProducts = Array.from(new Set(displayScheduleData.map(s => s.product_id)))
+    .map(productId => displayScheduleData.find(s => s.product_id === productId))
     .filter(Boolean);
 
   // 月次データの生成（当月前後2か月）
@@ -39,13 +91,29 @@ const Production: React.FC = () => {
       months.push({
         month: format(month, 'yyyy年M月'),
         monthIndex: i,
-        data: uniqueProducts.map(product => ({
-          product_id: product?.product_id || '',
-          product_name: product?.product_name || '',
-          total: Math.floor(Math.random() * 5000) + 1000, // サンプルデータ
-          target: Math.floor(Math.random() * 6000) + 1200, // 目標生産数
-          minTarget: Math.floor(Math.random() * 4500) + 900, // 最低生産数
-        }))
+        data: [
+          {
+            product_id: 'PROD-A',
+            product_name: '製品A',
+            total: Math.floor(Math.random() * 5000) + 3000,
+            target: Math.floor(Math.random() * 6000) + 3500,
+            minTarget: Math.floor(Math.random() * 4500) + 2800,
+          },
+          {
+            product_id: 'PROD-B',
+            product_name: '製品B',
+            total: Math.floor(Math.random() * 4000) + 2000,
+            target: Math.floor(Math.random() * 5000) + 2500,
+            minTarget: Math.floor(Math.random() * 3500) + 1800,
+          },
+          {
+            product_id: 'PROD-C',
+            product_name: '製品C',
+            total: Math.floor(Math.random() * 3000) + 1500,
+            target: Math.floor(Math.random() * 4000) + 2000,
+            minTarget: Math.floor(Math.random() * 2500) + 1200,
+          }
+        ]
       });
     }
     
@@ -313,7 +381,7 @@ const Production: React.FC = () => {
 
   // 日別合計を計算
   const getDailyTotal = (date: string) => {
-    return (scheduleData || [])
+    return displayScheduleData
       .filter(item => item.date === date)
       .reduce((sum, item) => sum + item.planned_quantity, 0);
   };
@@ -551,7 +619,7 @@ const Production: React.FC = () => {
                           </div>
                         </td>
                         {dates.map((date) => {
-                          const dayData = (scheduleData || []).find(s => s.date === date && s.product_id === product?.product_id);
+                          const dayData = displayScheduleData.find(s => s.date === date && s.product_id === product?.product_id);
                           const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                           
                           return (
@@ -738,10 +806,9 @@ const Production: React.FC = () => {
                       );
                     })}
                     <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-gray-900">
-                      {monthlyData.reduce((sum, month) => {
-                        const productData = month.data.find(d => d.product_id === product?.product_id);
-                        return sum + (productData?.total || 0);
-                      }, 0).toLocaleString()}
+                      {monthlyData.reduce((sum, month) => 
+                        sum + (month.data.find(d => d.product_id === product?.product_id)?.total || 0), 0
+                      ).toLocaleString()}
                     </td>
                   </tr>
                 ))}
