@@ -22,6 +22,7 @@ import Settings from './pages/Settings';
 import MasterManagement from './pages/MasterManagement';
 import CustomerAdd from './pages/CustomerAdd';
 import ProductCustomerMappingAdd from './pages/ProductCustomerMappingAdd';
+import Shipment from './pages/Shipment';
 import AuthGuard from './components/auth/AuthGuard';
 
 function App() {
@@ -43,8 +44,9 @@ function App() {
             <Route path="/pallet-planning/edit" element={<PalletPlanningEdit />} />
             <Route path="/production" element={<Production />} />
             <Route path="/production/schedule/edit" element={<ProductionScheduleEdit />} />
-            <Route path="/production/shipment/edit" element={<ProductShipmentEdit />} />
             <Route path="/production/manufacturing-instruction" element={<ManufacturingInstruction />} />
+            <Route path="/shipment" element={<Shipment />} />
+            <Route path="/shipment/edit" element={<ProductShipmentEdit />} />
             <Route path="/manufacturing-instructions" element={<ManufacturingInstructionList />} />
             <Route path="/manufacturing-instructions/new" element={<ManufacturingInstruction />} />
             <Route path="/manufacturing-instructions/:id" element={<ManufacturingInstruction />} />

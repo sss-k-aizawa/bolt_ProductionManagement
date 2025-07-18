@@ -356,7 +356,7 @@ const ProductShipmentEdit: React.FC = () => {
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <button
-            onClick={() => navigate('/production')}
+            onClick={() => navigate('/shipment')}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeft className="h-6 w-6 text-gray-600" />
