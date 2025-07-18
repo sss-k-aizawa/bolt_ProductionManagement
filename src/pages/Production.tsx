@@ -10,7 +10,7 @@ import { ja } from 'date-fns/locale';
 const Production: React.FC = () => {
   const navigate = useNavigate();
   const [currentWeek, setCurrentWeek] = useState(new Date());
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(2); // 中央の月（現在月）から開始
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
@@ -79,18 +79,19 @@ const Production: React.FC = () => {
     .map(productId => displayScheduleData.find(s => s.product_id === productId))
     .filter(Boolean);
 
-  // 月次データの生成（当月前後2か月）
-  const generateMonthlyData = (centerIndex: number = 2) => {
-    const currentMonth = new Date();
+  // 年度データの生成（11月～翌年10月）
+  const generateYearlyData = (year: number) => {
     const months = [];
     
-    // centerIndexを中心に前後2か月、計5か月分のデータを生成
-    const startOffset = centerIndex - 2;
-    for (let i = startOffset; i <= startOffset + 4; i++) {
-      const month = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + i, 1);
+    // 11月から翌年10月まで（年度）
+    for (let i = 0; i < 12; i++) {
+      const monthIndex = (10 + i) % 12; // 10=11月, 11=12月, 0=1月, ..., 9=10月
+      const yearOffset = i < 2 ? 0 : 1; // 11月、12月は当年、1月～10月は翌年
+      const month = new Date(year + yearOffset, monthIndex, 1);
+      
       months.push({
         month: format(month, 'yyyy年M月'),
-        monthIndex: i,
+        monthIndex: i, // 年度内での順序（0=11月, 1=12月, 2=1月, ..., 11=10月）
         data: [
           {
             product_id: 'PROD-A',
@@ -120,18 +121,18 @@ const Production: React.FC = () => {
     return months;
   };
 
-  const monthlyData = generateMonthlyData(currentMonthIndex);
+  const yearlyData = generateYearlyData(currentYear);
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
+  const navigateYear = (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
-      setCurrentMonthIndex(currentMonthIndex - 1);
+      setCurrentYear(currentYear - 1);
     } else {
-      setCurrentMonthIndex(currentMonthIndex + 1);
+      setCurrentYear(currentYear + 1);
     }
   };
 
-  const goToCurrentMonth = () => {
-    setCurrentMonthIndex(2); // 現在月に戻る
+  const goToCurrentYear = () => {
+    setCurrentYear(new Date().getFullYear());
   };
 
   // 製品在庫のサンプルデータを生成
@@ -695,10 +696,10 @@ const Production: React.FC = () => {
 
       {activeTab === 'monthly' && (
         <>
-          {/* 月ナビゲーション */}
+          {/* 年ナビゲーション */}
           <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-1.5">
             <button
-              onClick={() => navigateMonth('prev')}
+              onClick={() => navigateYear('prev')}
               className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
             >
               <ChevronLeft size={14} />
@@ -706,18 +707,18 @@ const Production: React.FC = () => {
             
             <div className="text-center">
               <h3 className="text-xs font-medium text-gray-900">
-                生産集計: {monthlyData[0]?.month} - {monthlyData[4]?.month}
+                生産集計: {currentYear}年度（{currentYear}年11月 - {currentYear + 1}年10月）
               </h3>
               <button
-                onClick={goToCurrentMonth}
+                onClick={goToCurrentYear}
                 className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
               >
-                今月
+                今年度
               </button>
             </div>
             
             <button
-              onClick={() => navigateMonth('next')}
+              onClick={() => navigateYear('next')}
               className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
             >
               <ChevronRight size={14} />
@@ -732,7 +733,7 @@ const Production: React.FC = () => {
                   <th className="sticky left-0 z-10 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
                     製品
                   </th>
-                  {monthlyData.map((month) => (
+                  {yearlyData.map((month) => (
                     <th key={month.month} className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32">
                       {month.month}
                     </th>
@@ -748,9 +749,11 @@ const Production: React.FC = () => {
                   <td className="sticky left-0 z-10 bg-green-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-green-800 border-r border-gray-200">
                     目標生産数
                   </td>
-                  {monthlyData.map((month) => {
+                  {yearlyData.map((month) => {
                     const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
-                    const isCurrentMonth = month.monthIndex === 0; // 現在月は monthIndex が 0
+                    const currentDate = new Date();
+                    const currentMonthYear = format(currentDate, 'yyyy年M月');
+                    const isCurrentMonth = month.month === currentMonthYear;
                     
                     return (
                       <td key={`target-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium ${isCurrentMonth ? 'bg-green-100 text-green-900' : 'text-green-800'}`}>
@@ -759,7 +762,7 @@ const Production: React.FC = () => {
                     );
                   })}
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-green-800">
-                    {monthlyData.reduce((sum, month) => 
+                    {yearlyData.reduce((sum, month) => 
                       sum + month.data.reduce((monthSum, product) => monthSum + product.target, 0), 0
                     ).toLocaleString()}
                   </td>
@@ -770,9 +773,11 @@ const Production: React.FC = () => {
                   <td className="sticky left-0 z-10 bg-amber-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-amber-800 border-r border-gray-200">
                     最低生産数
                   </td>
-                  {monthlyData.map((month) => {
+                  {yearlyData.map((month) => {
                     const monthlyMinTarget = month.data.reduce((sum, product) => sum + product.minTarget, 0);
-                    const isCurrentMonth = month.monthIndex === 0; // 現在月は monthIndex が 0
+                    const currentDate = new Date();
+                    const currentMonthYear = format(currentDate, 'yyyy年M月');
+                    const isCurrentMonth = month.month === currentMonthYear;
                     
                     return (
                       <td key={`min-target-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm font-medium ${isCurrentMonth ? 'bg-amber-100 text-amber-900' : 'text-amber-800'}`}>
@@ -781,7 +786,7 @@ const Production: React.FC = () => {
                     );
                   })}
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-amber-800">
-                    {monthlyData.reduce((sum, month) => 
+                    {yearlyData.reduce((sum, month) => 
                       sum + month.data.reduce((monthSum, product) => monthSum + product.minTarget, 0), 0
                     ).toLocaleString()}
                   </td>
@@ -795,9 +800,11 @@ const Production: React.FC = () => {
                         <div className="text-xs text-gray-500">{product?.product_id}</div>
                       </div>
                     </td>
-                    {monthlyData.map((month) => {
+                    {yearlyData.map((month) => {
                       const productData = month.data.find(d => d.product_id === product?.product_id);
-                      const isCurrentMonth = month.monthIndex === 0; // 現在月は monthIndex が 0
+                      const currentDate = new Date();
+                      const currentMonthYear = format(currentDate, 'yyyy年M月');
+                      const isCurrentMonth = month.month === currentMonthYear;
                       
                       return (
                         <td key={`${product?.product_id}-${month.month}`} className={`px-6 py-4 whitespace-nowrap text-center text-sm ${isCurrentMonth ? 'bg-blue-50 font-medium text-blue-900' : 'text-gray-900'}`}>
@@ -806,7 +813,7 @@ const Production: React.FC = () => {
                       );
                     })}
                     <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-gray-900">
-                      {monthlyData.reduce((sum, month) => 
+                      {yearlyData.reduce((sum, month) => 
                         sum + (month.data.find(d => d.product_id === product?.product_id)?.total || 0), 0
                       ).toLocaleString()}
                     </td>
@@ -818,7 +825,7 @@ const Production: React.FC = () => {
                   <td className="sticky left-0 z-10 bg-gray-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
                     月別合計
                   </td>
-                  {monthlyData.map((month) => (
+                  {yearlyData.map((month) => (
                     (() => {
                       const monthlyTotal = month.data.reduce((sum, product) => sum + product.total, 0);
                       const monthlyTarget = month.data.reduce((sum, product) => sum + product.target, 0);
@@ -857,19 +864,19 @@ const Production: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-gray-900">
                     <div className="space-y-1">
                       <div className="text-lg font-bold">
-                        {monthlyData.reduce((sum, month) => 
+                        {yearlyData.reduce((sum, month) => 
                           sum + month.data.reduce((monthSum, product) => monthSum + product.total, 0), 0
                         ).toLocaleString()}
                       </div>
                       <div className="text-xs space-y-1">
                         {(() => {
-                          const totalActual = monthlyData.reduce((sum, month) => 
+                          const totalActual = yearlyData.reduce((sum, month) => 
                             sum + month.data.reduce((monthSum, product) => monthSum + product.total, 0), 0
                           );
-                          const totalTarget = monthlyData.reduce((sum, month) => 
+                          const totalTarget = yearlyData.reduce((sum, month) => 
                             sum + month.data.reduce((monthSum, product) => monthSum + product.target, 0), 0
                           );
-                          const totalMinTarget = monthlyData.reduce((sum, month) => 
+                          const totalMinTarget = yearlyData.reduce((sum, month) => 
                             sum + month.data.reduce((monthSum, product) => monthSum + product.minTarget, 0), 0
                           );
                           
