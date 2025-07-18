@@ -14,6 +14,7 @@ const Production: React.FC = () => {
   const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(2);
   
   // 現在の週の日付を生成
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 }); // 月曜日開始
@@ -936,6 +937,65 @@ const Production: React.FC = () => {
                                           {isFirstDestination && (
                                             <div className="font-medium text-gray-700 mb-1">
                                               <Link
+                                                to={`/customers/${customer.customer_name}`}
+                                                className="text-blue-600 hover:text-blue-800 hover:underline"
+                                              >
+                                                {customer.customer_name}
+                                              </Link>
+                                            </div>
+                                          )}
+                                          <div className="text-sm text-gray-600">
+                                            {destination.destination_name}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
+                                    <div className="text-center">
+                                      <span className="font-medium">¥{customer.unit_price.toLocaleString()}</span>
+                                    </div>
+                                  </td>
+                                  {dates.map((date) => {
+                                    const shipmentAmount = productShipmentData[key]?.[date] || 0;
+                                    const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                                    
+                                    return (
+                                      <td key={`${key}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
+                                        isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                                      }`}>
+                                        <div className="text-center">
+                                          {shipmentAmount > 0 ? (
+                                            <div className="space-y-1">
+                                              <div className="font-medium text-gray-900">
+                                                {shipmentAmount.toLocaleString()}
+                                              </div>
+                                              <div className="text-xs text-gray-500">
+                                                ¥{(shipmentAmount * customer.unit_price).toLocaleString()}
+                                              </div>
+                                            </div>
+                                          ) : (
+                                            <span className="text-gray-400 text-xs">-</span>
+                                          )}
+                                        </div>
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
+                              );
+                            })}
+                          </React.Fragment>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
     </div>
   );
 };
