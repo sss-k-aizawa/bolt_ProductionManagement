@@ -340,6 +340,7 @@ const Shipment: React.FC = () => {
                                   <td className="sticky left-64 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
                                     <div className="text-center">
                                       {isFirstDestination ? (
+                                        <span className="text-sm font-medium text-gray-900">
                                           ¥{customer.unit_price.toLocaleString()}
                                         </span>
                                       ) : (
