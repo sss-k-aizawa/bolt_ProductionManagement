@@ -11,7 +11,6 @@ const Production: React.FC = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [activeTab, setActiveTab] = useState<'schedule'>('schedule');
   const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
-  const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
   const [currentMonthIndex, setCurrentMonthIndex] = useState(2);
   
