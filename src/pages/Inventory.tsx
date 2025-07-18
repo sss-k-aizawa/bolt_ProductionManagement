@@ -160,6 +160,46 @@ const Inventory: React.FC = () => {
     }
   ];
 
+  // パレット在庫不足をチェックする関数
+  const checkPalletShortage = (company: string) => {
+    const shortages = [];
+    const companyData = palletData.find(p => p.company === company);
+    
+    if (!companyData) return shortages;
+    
+    dates.forEach(date => {
+      const dayData = companyData.dailyData[date];
+      const currentStock = dayData?.stock || 0;
+      
+      // パレットの場合、在庫が500以下を警告、200以下を重要とする
+      if (currentStock <= 200) {
+        shortages.push({ date, level: 'critical', stock: currentStock });
+      } else if (currentStock <= 500) {
+        shortages.push({ date, level: 'warning', stock: currentStock });
+      }
+    });
+    
+    return shortages;
+  };
+
+  // パレット全体在庫不足をチェックする関数
+  const checkTotalPalletShortage = () => {
+    const shortages = [];
+    
+    dates.forEach(date => {
+      const totalStock = getTotalStockForDate(date);
+      
+      // 全体在庫が1000以下を警告、500以下を重要とする
+      if (totalStock <= 500) {
+        shortages.push({ date, level: 'critical', stock: totalStock });
+      } else if (totalStock <= 1000) {
+        shortages.push({ date, level: 'warning', stock: totalStock });
+      }
+    });
+    
+    return shortages;
+  };
+
   const navigateWeek = (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
       setCurrentWeek(subWeeks(currentWeek, 1));
@@ -552,6 +592,35 @@ const Inventory: React.FC = () => {
                       <tr key={company.company} className="hover:bg-gray-50">
                         <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
                           <div className="flex items-center">
+                            {(() => {
+                              const shortages = checkPalletShortage(company.company);
+                              const hasCritical = shortages.some(s => s.level === 'critical');
+                              const hasWarning = shortages.some(s => s.level === 'warning');
+                              
+                              if (hasCritical || hasWarning) {
+                                return (
+                                  <div className="mr-2 relative group">
+                                    <ExclamationTriangle 
+                                      size={16} 
+                                      className={hasCritical ? 'text-red-500' : 'text-amber-500'} 
+                                    />
+                                    {/* ツールチップ */}
+                                    <div className="absolute left-0 top-6 hidden group-hover:block z-20 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg">
+                                      <div className="font-medium mb-1">在庫不足アラート</div>
+                                      {shortages.map((shortage, index) => (
+                                        <div key={index} className="flex justify-between">
+                                          <span>{format(new Date(shortage.date), 'M/d', { locale: ja })}</span>
+                                          <span className={shortage.level === 'critical' ? 'text-red-300' : 'text-amber-300'}>
+                                            在庫少({shortage.stock})
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })()}
                             <Package size={16} className="text-blue-500 mr-3" />
                             <div>
                               <div className="font-medium text-gray-900">{company.companyName}</div>
@@ -563,10 +632,18 @@ const Inventory: React.FC = () => {
                           const dayData = company.dailyData[date];
                           const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                           const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                          const currentStock = dayData?.stock || 0;
+                          
+                          // 在庫レベルに応じた背景色
+                          const getStockBackgroundColor = () => {
+                            if (currentStock <= 200) return 'bg-red-100';
+                            if (currentStock <= 500) return 'bg-amber-100';
+                            return '';
+                          };
                           
                           return (
                             <td key={`${company.company}-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
-                              isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                              isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : getStockBackgroundColor()
                             }`}>
                               <div className="space-y-2">
                                 <div className="flex items-center justify-center">
@@ -581,7 +658,18 @@ const Inventory: React.FC = () => {
                                 </div>
                                 <div className="flex items-center justify-center pt-1 border-t border-gray-200">
                                   <span className="text-xs text-blue-600 mr-1">在庫:</span>
-                                  <span className="font-bold text-blue-600">{dayData?.stock.toLocaleString()}</span>
+                                  <span className={`font-bold ${
+                                    currentStock <= 200 ? 'text-red-600' : 
+                                    currentStock <= 500 ? 'text-amber-600' : 'text-blue-600'
+                                  }`}>
+                                    {currentStock.toLocaleString()}
+                                    {currentStock <= 200 && (
+                                      <ExclamationTriangle size={12} className="inline ml-1 text-red-500" />
+                                    )}
+                                    {currentStock > 200 && currentStock <= 500 && (
+                                      <ExclamationTriangle size={12} className="inline ml-1 text-amber-500" />
+                                    )}
+                                  </span>
                                 </div>
                               </div>
                             </td>
@@ -594,6 +682,35 @@ const Inventory: React.FC = () => {
                     <tr className="bg-blue-50 font-bold border-t-2 border-blue-200">
                       <td className="sticky left-0 z-10 bg-blue-50 px-4 py-4 whitespace-nowrap text-sm font-bold text-blue-800 border-r border-gray-200">
                         <div className="flex items-center">
+                          {(() => {
+                            const shortages = checkTotalPalletShortage();
+                            const hasCritical = shortages.some(s => s.level === 'critical');
+                            const hasWarning = shortages.some(s => s.level === 'warning');
+                            
+                            if (hasCritical || hasWarning) {
+                              return (
+                                <div className="mr-2 relative group">
+                                  <ExclamationTriangle 
+                                    size={16} 
+                                    className={hasCritical ? 'text-red-500' : 'text-amber-500'} 
+                                  />
+                                  {/* ツールチップ */}
+                                  <div className="absolute left-0 top-6 hidden group-hover:block z-20 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg">
+                                    <div className="font-medium mb-1">全体在庫不足アラート</div>
+                                    {shortages.map((shortage, index) => (
+                                      <div key={index} className="flex justify-between">
+                                        <span>{format(new Date(shortage.date), 'M/d', { locale: ja })}</span>
+                                        <span className={shortage.level === 'critical' ? 'text-red-300' : 'text-amber-300'}>
+                                          在庫少({shortage.stock})
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
                           <Package size={16} className="text-blue-600 mr-3" />
                           <div>
                             <div className="font-bold text-blue-900">パレット全体</div>
@@ -607,9 +724,16 @@ const Inventory: React.FC = () => {
                         const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                         const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                         
+                        // 全体在庫レベルに応じた背景色
+                        const getTotalStockBackgroundColor = () => {
+                          if (totalStock <= 500) return 'bg-red-100';
+                          if (totalStock <= 1000) return 'bg-amber-100';
+                          return '';
+                        };
+                        
                         return (
                           <td key={`total-stock-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm ${
-                            isToday ? 'bg-blue-100' : isWeekend ? 'bg-blue-100' : ''
+                            isToday ? 'bg-blue-100' : isWeekend ? 'bg-blue-100' : getTotalStockBackgroundColor()
                           }`}>
                             <div className="space-y-2">
                               <div className="text-xs text-red-700">
@@ -619,8 +743,17 @@ const Inventory: React.FC = () => {
                                 入庫: {totals.inbound.toLocaleString()}
                               </div>
                               <div className="pt-1 border-t border-blue-300">
-                                <div className="text-lg font-bold text-blue-800">
+                                <div className={`text-lg font-bold ${
+                                  totalStock <= 500 ? 'text-red-800' : 
+                                  totalStock <= 1000 ? 'text-amber-800' : 'text-blue-800'
+                                }`}>
                                   {totalStock.toLocaleString()}
+                                  {totalStock <= 500 && (
+                                    <ExclamationTriangle size={12} className="inline ml-1 text-red-500" />
+                                  )}
+                                  {totalStock > 500 && totalStock <= 1000 && (
+                                    <ExclamationTriangle size={12} className="inline ml-1 text-amber-500" />
+                                  )}
                                 </div>
                                 <div className="text-xs text-blue-600">総在庫</div>
                               </div>
