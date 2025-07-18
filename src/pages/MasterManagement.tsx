@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
-import { Search, Filter, Plus, Edit, Trash2, Building, Package, Users, Phone, Mail, MapPin, Calendar, Tag, Layers, UserPlus } from 'lucide-react';
+import { Search, Filter, Plus, Edit, Trash2, Building, Package, Users, Phone, Mail, MapPin, Calendar, Tag, Layers, UserPlus, Truck } from 'lucide-react';
 
 interface Customer {
   id: string;
@@ -41,9 +41,25 @@ interface Material {
   status: 'アクティブ' | '廃止';
 }
 
+interface Supplier {
+  id: string;
+  code: string;
+  name: string;
+  type: '法人' | '個人';
+  contact_person: string;
+  phone: string;
+  email: string;
+  address: string;
+  payment_terms: string;
+  lead_time: number;
+  rating: 'A' | 'B' | 'C';
+  created_at: string;
+  status: 'アクティブ' | '非アクティブ';
+}
+
 const MasterManagement: React.FC = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'customers' | 'products' | 'materials' | 'product-customer'>('customers');
+  const [activeTab, setActiveTab] = useState<'customers' | 'products' | 'materials' | 'suppliers' | 'product-customer'>('customers');
   const [searchTerm, setSearchTerm] = useState('');
 
   // サンプルデータ
@@ -255,6 +271,84 @@ const MasterManagement: React.FC = () => {
     }
   ]);
 
+  const [suppliers] = useState<Supplier[]>([
+    {
+      id: '1',
+      code: 'SUP-001',
+      name: 'サプライヤーX株式会社',
+      type: '法人',
+      contact_person: '営業部 鈴木',
+      phone: '03-1111-2222',
+      email: 'suzuki@supplier-x.co.jp',
+      address: '東京都千代田区丸の内1-1-1',
+      payment_terms: '月末締め翌月末払い',
+      lead_time: 7,
+      rating: 'A',
+      created_at: '2024-01-10',
+      status: 'アクティブ'
+    },
+    {
+      id: '2',
+      code: 'SUP-002',
+      name: 'サプライヤーY有限会社',
+      type: '法人',
+      contact_person: '購買部 田中',
+      phone: '06-3333-4444',
+      email: 'tanaka@supplier-y.co.jp',
+      address: '大阪府大阪市北区梅田2-2-2',
+      payment_terms: '20日締め翌月10日払い',
+      lead_time: 14,
+      rating: 'B',
+      created_at: '2024-01-15',
+      status: 'アクティブ'
+    },
+    {
+      id: '3',
+      code: 'SUP-003',
+      name: 'サプライヤーZ商事',
+      type: '法人',
+      contact_person: '代表 佐藤',
+      phone: '052-5555-6666',
+      email: 'sato@supplier-z.co.jp',
+      address: '愛知県名古屋市中区栄3-3-3',
+      payment_terms: '15日締め当月末払い',
+      lead_time: 10,
+      rating: 'A',
+      created_at: '2024-02-01',
+      status: 'アクティブ'
+    },
+    {
+      id: '4',
+      code: 'SUP-004',
+      name: '九州サプライ株式会社',
+      type: '法人',
+      contact_person: '営業課 山田',
+      phone: '092-7777-8888',
+      email: 'yamada@kyushu-supply.co.jp',
+      address: '福岡県福岡市博多区博多駅前4-4-4',
+      payment_terms: '月末締め翌々月10日払い',
+      lead_time: 21,
+      rating: 'B',
+      created_at: '2024-02-10',
+      status: 'アクティブ'
+    },
+    {
+      id: '5',
+      code: 'SUP-005',
+      name: '北海道マテリアル',
+      type: '法人',
+      contact_person: '部長 高橋',
+      phone: '011-9999-0000',
+      email: 'takahashi@hokkaido-material.co.jp',
+      address: '北海道札幌市中央区大通5-5-5',
+      payment_terms: '月末締め翌月20日払い',
+      lead_time: 28,
+      rating: 'C',
+      created_at: '2024-03-01',
+      status: '非アクティブ'
+    }
+  ]);
+
   // 製品顧客紐付データ
   const [productCustomerMappings] = useState([
     {
@@ -396,6 +490,13 @@ const MasterManagement: React.FC = () => {
     material.supplier.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredSuppliers = suppliers.filter(supplier =>
+    supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    supplier.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    supplier.contact_person.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    supplier.address.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const handleAddCustomer = () => {
     navigate('/master-management/customer/add');
   };
@@ -408,6 +509,8 @@ const MasterManagement: React.FC = () => {
         return '製品追加';
       case 'materials':
         return '資材追加';
+      case 'suppliers':
+        return 'サプライヤー追加';
       case 'product-customer':
         return '紐付追加';
       default:
@@ -423,6 +526,8 @@ const MasterManagement: React.FC = () => {
         return <Package size={16} className="mr-2" />;
       case 'materials':
         return <Layers size={16} className="mr-2" />;
+      case 'suppliers':
+        return <Truck size={16} className="mr-2" />;
       case 'product-customer':
         return <Plus size={16} className="mr-2" />;
       default:
@@ -442,6 +547,10 @@ const MasterManagement: React.FC = () => {
       case 'materials':
         // 資材追加の処理（今後実装）
         alert('資材追加機能は今後実装予定です');
+        break;
+      case 'suppliers':
+        // サプライヤー追加の処理（今後実装）
+        alert('サプライヤー追加機能は今後実装予定です');
         break;
       case 'product-customer':
         navigate('/master-management/product-customer/add');
@@ -502,6 +611,17 @@ const MasterManagement: React.FC = () => {
             資材
           </button>
           <button
+            onClick={() => setActiveTab('suppliers')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'suppliers'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Truck size={16} className="inline mr-1" />
+            サプライヤー
+          </button>
+          <button
             onClick={() => setActiveTab('product-customer')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'product-customer'
@@ -528,6 +648,7 @@ const MasterManagement: React.FC = () => {
                 activeTab === 'customers' ? '顧客' : 
                 activeTab === 'products' ? '製品' : 
                 activeTab === 'materials' ? '資材' :
+                activeTab === 'suppliers' ? 'サプライヤー' :
                 activeTab === 'product-customer' ? '製品・顧客' : ''
               }を検索...`}
               value={searchTerm}
@@ -781,6 +902,122 @@ const MasterManagement: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(material.status)}`}>
                         {material.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button className="text-blue-600 hover:text-blue-900 mr-3">
+                        <Edit size={16} />
+                      </button>
+                      <button className="text-red-600 hover:text-red-900">
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* サプライヤー一覧 */}
+      {activeTab === 'suppliers' && (
+        <Card>
+          <div className="overflow-x-auto -mx-5">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    サプライヤーコード
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    サプライヤー名
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    種別
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    担当者
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    連絡先
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    支払条件
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    リードタイム
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    評価
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ステータス
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredSuppliers.map((supplier) => (
+                  <tr key={supplier.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {supplier.code}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Truck size={16} className="text-orange-500 mr-2" />
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{supplier.name}</div>
+                          <div className="text-sm text-gray-500 flex items-center">
+                            <MapPin size={12} className="mr-1" />
+                            {supplier.address}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getTypeColor(supplier.type)}`}>
+                        {supplier.type}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {supplier.contact_person}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="space-y-1">
+                        <div className="flex items-center">
+                          <Phone size={12} className="mr-1" />
+                          {supplier.phone}
+                        </div>
+                        <div className="flex items-center">
+                          <Mail size={12} className="mr-1" />
+                          {supplier.email}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {supplier.payment_terms}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex items-center">
+                        <Calendar size={12} className="mr-1" />
+                        {supplier.lead_time}日
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        supplier.rating === 'A' ? 'bg-green-100 text-green-800' :
+                        supplier.rating === 'B' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {supplier.rating}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(supplier.status)}`}>
+                        {supplier.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
