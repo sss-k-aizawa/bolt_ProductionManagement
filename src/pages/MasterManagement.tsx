@@ -534,7 +534,8 @@ const MasterManagement: React.FC = () => {
       case 'materials':
         navigate('/master-management/material/add');
         break;
-        navigate('/master-management/product/add');
+      case 'suppliers':
+        navigate('/master-management/supplier/add');
         break;
       case 'product-customer':
         navigate('/master-management/product-customer/add');
