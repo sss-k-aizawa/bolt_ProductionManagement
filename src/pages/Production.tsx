@@ -316,7 +316,7 @@ const Production: React.FC = () => {
 
   // 日別合計を計算
   const getDailyTotal = (date: string) => {
-    return (scheduleData || [])
+    return sampleScheduleData
       .filter(item => item.date === date)
       .reduce((sum, item) => sum + item.planned_quantity, 0);
   };
