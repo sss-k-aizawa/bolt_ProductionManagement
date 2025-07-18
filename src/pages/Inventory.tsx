@@ -248,8 +248,8 @@ const Inventory: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">資材在庫管理</h1>
-          <p className="mt-1 text-sm text-gray-500">資材在庫レベルの追跡と管理</p>
+          <h1 className="text-2xl font-bold text-gray-900">在庫管理</h1>
+          <p className="mt-1 text-sm text-gray-500">在庫の追跡と管理</p>
         </div>
         <div className="flex space-x-2">
           <button 
@@ -299,7 +299,7 @@ const Inventory: React.FC = () => {
             }`}
           >
             <Calendar size={16} className="inline mr-1" />
-            日別在庫推移
+            資材在庫
           </button>
           <button
             onClick={() => setActiveTab('pallet')}
@@ -310,7 +310,7 @@ const Inventory: React.FC = () => {
             }`}
           >
             <Truck size={16} className="inline mr-1" />
-            パレット入荷計画
+            パレット在庫
           </button>
         </nav>
       </div>
