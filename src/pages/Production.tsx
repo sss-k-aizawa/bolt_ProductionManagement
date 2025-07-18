@@ -235,7 +235,12 @@ const Production: React.FC = () => {
 
   // 製品の日別在庫予測を生成（階層構造対応）
   const generateProductInventoryForecast = () => {
-    const forecast: { [key: string]: { [date: string]: number } } = {};
+    const forecast: { [key: string]: { [date: string]: { 
+      inbound: number; 
+      outbound: number; 
+      external_transfer: number; 
+      stock: number; 
+    } } } = {};
     
     productInventoryItems.forEach(product => {
       // 製品レベルの予測
@@ -260,35 +265,60 @@ const Production: React.FC = () => {
             const productionData = (scheduleData || []).find(s => 
               s.date === date && s.product_id === product.product_id
             );
-            const production = Math.floor((productionData?.planned_quantity || 0) * 0.3); // 出荷先別に分散
+            const inbound = Math.floor((productionData?.planned_quantity || 0) * 0.3); // 出荷先別に分散
             
             // 出荷・使用による在庫減少（サンプル値）
             const baseUsage = Math.floor(currentStock * 0.1);
             const dailyVariation = Math.floor(Math.random() * baseUsage * 0.6);
-            const usage = Math.max(0, baseUsage + dailyVariation - (baseUsage * 0.3));
+            const outbound = Math.max(0, baseUsage + dailyVariation - (baseUsage * 0.3));
+            
+            // 外部移送（他の拠点への移送など）
+            const externalTransfer = Math.floor(Math.random() * 30); // 0-30の範囲
             
             // 週末は使用量を減らす
             const dayOfWeek = new Date(date).getDay();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-            const adjustedUsage = isWeekend ? Math.floor(usage * 0.2) : usage;
+            const adjustedOutbound = isWeekend ? Math.floor(outbound * 0.2) : outbound;
+            const adjustedExternalTransfer = isWeekend ? Math.floor(externalTransfer * 0.1) : externalTransfer;
             
             // 在庫計算
-            currentStock = Math.max(0, Math.floor(currentStock + production - adjustedUsage));
-            forecast[key][date] = currentStock;
+            currentStock = Math.max(0, Math.floor(currentStock + inbound - adjustedOutbound - adjustedExternalTransfer));
+            forecast[key][date] = {
+              inbound,
+              outbound: adjustedOutbound,
+              external_transfer: adjustedExternalTransfer,
+              stock: currentStock
+            };
           });
         });
       });
       
       // 製品レベルの合計在庫を計算
       dates.forEach(date => {
-        let dailyTotal = 0;
+        let totalInbound = 0;
+        let totalOutbound = 0;
+        let totalExternalTransfer = 0;
+        let totalStock = 0;
+        
         product.customers.forEach(customer => {
           customer.destinations.forEach(destination => {
             const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
-            dailyTotal += forecast[key][date] || 0;
+            const dayData = forecast[key][date];
+            if (dayData) {
+              totalInbound += dayData.inbound;
+              totalOutbound += dayData.outbound;
+              totalExternalTransfer += dayData.external_transfer;
+              totalStock += dayData.stock;
+            }
           });
         });
-        forecast[product.product_id][date] = dailyTotal;
+        
+        forecast[product.product_id][date] = {
+          inbound: totalInbound,
+          outbound: totalOutbound,
+          external_transfer: totalExternalTransfer,
+          stock: totalStock
+        };
       });
     });
     
@@ -973,7 +1003,11 @@ const Production: React.FC = () => {
                           </div>
                         </td>
                         {dates.map((date) => {
-                          const totalStock = productInventoryForecast[product.product_id]?.[date] || 0;
+                          const dayData = productInventoryForecast[product.product_id]?.[date];
+                          const totalStock = dayData?.stock || 0;
+                          const inbound = dayData?.inbound || 0;
+                          const outbound = dayData?.outbound || 0;
+                          const externalTransfer = dayData?.external_transfer || 0;
                           const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                           const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                           
@@ -989,9 +1023,30 @@ const Production: React.FC = () => {
                             <td key={`${product.product_id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
                               isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
                             }`}>
-                              <div className="text-center">
-                                <div className={`font-medium ${getInventoryLevelColor(totalStock, totalMinQuantity, totalMaxQuantity)}`}>
-                                  {totalStock.toLocaleString()}
+                              <div className="space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-green-600">入庫:</span>
+                                  <span className="text-green-600 font-medium">
+                                    {inbound.toLocaleString()}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-red-600">出荷:</span>
+                                  <span className="text-red-600 font-medium">
+                                    {outbound.toLocaleString()}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-purple-600">移送:</span>
+                                  <span className="text-purple-600 font-medium">
+                                    {externalTransfer.toLocaleString()}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between pt-1 border-t border-gray-200">
+                                  <span className="text-xs text-blue-600">在庫:</span>
+                                  <span className={`font-bold ${getInventoryLevelColor(totalStock, totalMinQuantity, totalMaxQuantity)}`}>
+                                    {totalStock.toLocaleString()}
+                                  </span>
                                 </div>
                               </div>
                             </td>
