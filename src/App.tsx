@@ -4,7 +4,6 @@ import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import InventoryAdd from './pages/InventoryAdd';
-import InventoryEdit from './pages/InventoryEdit';
 import InventoryDailyEdit from './pages/InventoryDailyEdit';
 import InventoryOrder from './pages/InventoryOrder';
 import InventoryOrderConfirm from './pages/InventoryOrderConfirm';
@@ -33,7 +32,6 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/inventory/add" element={<InventoryAdd />} />
-            <Route path="/inventory/edit/:id" element={<InventoryEdit />} />
             <Route path="/inventory/daily/edit" element={<InventoryDailyEdit />} />
             <Route path="/inventory/order" element={<InventoryOrder />} />
             <Route path="/inventory/order/confirm" element={<InventoryOrderConfirm />} />
