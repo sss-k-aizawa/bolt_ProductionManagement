@@ -555,6 +555,35 @@ const Inventory: React.FC = () => {
 
       {activeTab === 'pallet' && (
         <>
+          {/* 週ナビゲーション */}
+          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-1.5">
+            <button
+              onClick={() => navigateWeek('prev')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            
+            <div className="text-center">
+              <h3 className="text-xs font-medium text-gray-900">
+                パレット在庫: {format(weekStart, 'yyyy年M月d日', { locale: ja })} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'M月d日', { locale: ja })}
+              </h3>
+              <button
+                onClick={goToCurrentWeek}
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                今週
+              </button>
+            </div>
+            
+            <button
+              onClick={() => navigateWeek('next')}
+              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+
           {/* パレット計画表 */}
           <Card className="p-0">
             <div className="overflow-x-auto">
