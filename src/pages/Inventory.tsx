@@ -636,8 +636,8 @@ const Inventory: React.FC = () => {
                           
                           // 在庫レベルに応じた背景色
                           const getStockBackgroundColor = () => {
-                            if (currentStock <= 200) return 'bg-red-100';
-                            if (currentStock <= 500) return 'bg-amber-100';
+                            if (currentStock <= 600) return 'bg-red-100';
+                            if (currentStock <= 1000) return 'bg-amber-100';
                             return '';
                           };
                           
