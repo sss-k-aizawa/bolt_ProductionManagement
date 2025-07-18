@@ -45,14 +45,12 @@ interface Supplier {
   id: string;
   code: string;
   name: string;
-  type: '法人' | '個人';
   contact_person: string;
   phone: string;
   email: string;
   address: string;
   payment_terms: string;
-  lead_time: number;
-  rating: 'A' | 'B' | 'C';
+  materials: string[];
   created_at: string;
   status: 'アクティブ' | '非アクティブ';
 }
@@ -276,14 +274,12 @@ const MasterManagement: React.FC = () => {
       id: '1',
       code: 'SUP-001',
       name: 'サプライヤーX株式会社',
-      type: '法人',
       contact_person: '営業部 鈴木',
       phone: '03-1111-2222',
       email: 'suzuki@supplier-x.co.jp',
       address: '東京都千代田区丸の内1-1-1',
       payment_terms: '月末締め翌月末払い',
-      lead_time: 7,
-      rating: 'A',
+      materials: ['原材料A', '部品B', '部品E'],
       created_at: '2024-01-10',
       status: 'アクティブ'
     },
@@ -291,14 +287,12 @@ const MasterManagement: React.FC = () => {
       id: '2',
       code: 'SUP-002',
       name: 'サプライヤーY有限会社',
-      type: '法人',
       contact_person: '購買部 田中',
       phone: '06-3333-4444',
       email: 'tanaka@supplier-y.co.jp',
       address: '大阪府大阪市北区梅田2-2-2',
       payment_terms: '20日締め翌月10日払い',
-      lead_time: 14,
-      rating: 'B',
+      materials: ['工具C', 'パーツF'],
       created_at: '2024-01-15',
       status: 'アクティブ'
     },
@@ -306,14 +300,12 @@ const MasterManagement: React.FC = () => {
       id: '3',
       code: 'SUP-003',
       name: 'サプライヤーZ商事',
-      type: '法人',
       contact_person: '代表 佐藤',
       phone: '052-5555-6666',
       email: 'sato@supplier-z.co.jp',
       address: '愛知県名古屋市中区栄3-3-3',
       payment_terms: '15日締め当月末払い',
-      lead_time: 10,
-      rating: 'A',
+      materials: ['材料D', '材料G'],
       created_at: '2024-02-01',
       status: 'アクティブ'
     },
@@ -321,14 +313,12 @@ const MasterManagement: React.FC = () => {
       id: '4',
       code: 'SUP-004',
       name: '九州サプライ株式会社',
-      type: '法人',
       contact_person: '営業課 山田',
       phone: '092-7777-8888',
       email: 'yamada@kyushu-supply.co.jp',
       address: '福岡県福岡市博多区博多駅前4-4-4',
       payment_terms: '月末締め翌々月10日払い',
-      lead_time: 21,
-      rating: 'B',
+      materials: ['原材料A', '材料D'],
       created_at: '2024-02-10',
       status: 'アクティブ'
     },
@@ -336,14 +326,12 @@ const MasterManagement: React.FC = () => {
       id: '5',
       code: 'SUP-005',
       name: '北海道マテリアル',
-      type: '法人',
       contact_person: '部長 高橋',
       phone: '011-9999-0000',
       email: 'takahashi@hokkaido-material.co.jp',
       address: '北海道札幌市中央区大通5-5-5',
       payment_terms: '月末締め翌月20日払い',
-      lead_time: 28,
-      rating: 'C',
+      materials: ['工具C', '部品E', 'パーツF'],
       created_at: '2024-03-01',
       status: '非アクティブ'
     }
@@ -934,22 +922,16 @@ const MasterManagement: React.FC = () => {
                     サプライヤー名
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    種別
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     担当者
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     連絡先
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    扱っている資材
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     支払条件
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    リードタイム
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    評価
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     ステータス
@@ -977,11 +959,6 @@ const MasterManagement: React.FC = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getTypeColor(supplier.type)}`}>
-                        {supplier.type}
-                      </span>
-                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {supplier.contact_person}
                     </td>
@@ -997,23 +974,17 @@ const MasterManagement: React.FC = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {supplier.payment_terms}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <Calendar size={12} className="mr-1" />
-                        {supplier.lead_time}日
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-wrap gap-1">
+                        {supplier.materials.map((material, index) => (
+                          <span key={index} className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                            {material}
+                          </span>
+                        ))}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        supplier.rating === 'A' ? 'bg-green-100 text-green-800' :
-                        supplier.rating === 'B' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {supplier.rating}
-                      </span>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {supplier.payment_terms}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(supplier.status)}`}>
