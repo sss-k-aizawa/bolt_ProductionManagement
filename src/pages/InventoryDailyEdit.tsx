@@ -179,8 +179,8 @@ const InventoryDailyEdit: React.FC = () => {
             <ArrowLeft className="h-6 w-6 text-gray-600" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">日別在庫推移編集</h1>
-            <p className="mt-1 text-sm text-gray-500">資材情報と日別在庫数の編集</p>
+            <h1 className="text-2xl font-bold text-gray-900">在庫編集</h1>
+            <p className="mt-1 text-sm text-gray-500">在庫情報</p>
           </div>
         </div>
         <button
