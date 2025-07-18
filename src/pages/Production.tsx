@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CalendarDays, Plus, Filter, TrendingUp, TrendingDown, Clock, CheckCircle, AlertTriangle, Edit, ChevronLeft, ChevronRight, Package, FileText, ClipboardList, Truck } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Calendar, Package, Edit, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { useProductionSchedule } from '../hooks/useProductionSchedule';
 import { useInventory } from '../hooks/useInventory';
 import { format, addDays, addWeeks, subWeeks, startOfWeek, endOfWeek } from 'date-fns';
