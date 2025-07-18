@@ -201,17 +201,6 @@ const Shipment: React.FC = () => {
             <Send size={16} className="inline mr-1" />
             製品出荷予定（階層別・日別）
           </button>
-          <button
-            onClick={() => setActiveTab('history')}
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'history'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
-          >
-            <Calendar size={16} className="inline mr-1" />
-            出荷履歴
-          </button>
         </nav>
       </div>
 
