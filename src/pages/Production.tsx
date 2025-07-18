@@ -10,7 +10,7 @@ const Production: React.FC = () => {
   const navigate = useNavigate();
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
-  const { items: inventoryItems, loading: inventoryLoading, error: inventoryError } = useInventory();
+  const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
   const [currentMonthIndex, setCurrentMonthIndex] = useState(2);
   
   // 現在の週の日付を生成
