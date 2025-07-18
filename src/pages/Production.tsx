@@ -11,9 +11,10 @@ const Production: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'schedule'>('schedule');
   const [currentMonthIndex, setCurrentMonthIndex] = useState(2); // 中央の月（現在月）から開始
+  const [currentWeek, setCurrentWeek] = useState(new Date());
   const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
-  const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
+  const [activeTab2, setActiveTab2] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
   
   // 現在の週の日付を生成
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 }); // 月曜日開始
@@ -904,6 +905,125 @@ const Production: React.FC = () => {
                             const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                             const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
                             
+                            return (
+                              <td key={`${product.product_id}-total-${date}`} className={`px-4 py-4 whitespace-nowrap text-center text-sm font-bold text-orange-900 ${
+                                isToday ? 'bg-orange-100' : ''
+                              } ${isWeekend ? 'bg-orange-100' : ''}`}>
+                                <div className="space-y-1">
+                                  <div className="text-lg font-bold">
+                                    {totalShipment.toLocaleString()}
+                                  </div>
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+
+                        {/* 顧客レベル */}
+                        {product.customers.map((customer) => (
+                          <React.Fragment key={`${product.product_id}-${customer.customer_name}`}>
+                            {/* 顧客レベル（小計行） */}
+                            <tr className="bg-blue-50">
+                              <td className="sticky left-0 z-10 bg-blue-50 px-4 py-3 whitespace-nowrap text-sm font-medium text-blue-900 border-r border-gray-200">
+                                <div className="flex items-center pl-6">
+                                  <Package size={16} className="text-blue-600 mr-2" />
+                                  <div>
+                                    <div className="font-medium text-blue-900">{customer.customer_name}</div>
+                                    <div className="text-xs text-blue-600">顧客別小計</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="sticky left-64 z-10 bg-blue-50 px-4 py-3 whitespace-nowrap text-sm text-blue-900 border-r border-gray-200">
+                                <div className="text-center">
+                                  <span className="font-medium">¥{customer.unit_price.toLocaleString()}</span>
+                                </div>
+                              </td>
+                              {dates.map((date) => {
+                                const customerTotal = customer.destinations.reduce((sum, dest) => {
+                                  const key = `${product.product_id}-${customer.customer_name}-${dest.destination_name}`;
+                                  return sum + (productShipmentData[key]?.[date] || 0);
+                                }, 0);
+                                const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                                const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                                
+                                return (
+                                  <td key={`${product.product_id}-${customer.customer_name}-${date}`} className={`px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-blue-900 ${
+                                    isToday ? 'bg-blue-100' : ''
+                                  } ${isWeekend ? 'bg-blue-100' : ''}`}>
+                                    <div className="space-y-1">
+                                      <div className="font-medium">
+                                        {customerTotal.toLocaleString()}
+                                      </div>
+                                      <div className="text-xs text-blue-600">
+                                        ¥{(customerTotal * customer.unit_price).toLocaleString()}
+                                      </div>
+                                    </div>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+
+                            {/* 出荷先レベル */}
+                            {customer.destinations.map((destination) => {
+                              const key = `${product.product_id}-${customer.customer_name}-${destination.destination_name}`;
+                              return (
+                                <tr key={key} className="hover:bg-gray-50">
+                                  <td className="sticky left-0 z-10 bg-white px-4 py-3 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
+                                    <div className="flex items-center pl-12">
+                                      <div className="w-2 h-2 bg-gray-400 rounded-full mr-3"></div>
+                                      <div>
+                                        <div className="font-medium">{destination.destination_name}</div>
+                                        <div className="text-xs text-gray-500">
+                                          在庫範囲: {destination.min_quantity} - {destination.max_quantity}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="sticky left-64 z-10 bg-white px-4 py-3 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">
+                                    <div className="text-center">
+                                      <span className="text-gray-600">¥{customer.unit_price.toLocaleString()}</span>
+                                    </div>
+                                  </td>
+                                  {dates.map((date) => {
+                                    const shipmentAmount = productShipmentData[key]?.[date] || 0;
+                                    const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                                    
+                                    return (
+                                      <td key={`${key}-${date}`} className={`px-4 py-3 whitespace-nowrap text-center text-sm text-gray-900 ${
+                                        isToday ? 'bg-blue-50' : ''
+                                      } ${isWeekend ? 'bg-gray-50' : ''}`}>
+                                        {shipmentAmount > 0 ? (
+                                          <div className="space-y-1">
+                                            <div className="font-medium">
+                                              {shipmentAmount.toLocaleString()}
+                                            </div>
+                                            <div className="text-xs text-gray-500">
+                                              ¥{(shipmentAmount * customer.unit_price).toLocaleString()}
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <div className="text-gray-400 text-xs">
+                                            -
+                                          </div>
+                                        )}
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
+                              );
+                            })}
+                          </React.Fragment>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
     </div>
   );
 };
