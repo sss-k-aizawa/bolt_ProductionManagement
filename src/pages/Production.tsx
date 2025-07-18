@@ -15,6 +15,13 @@ const Production: React.FC = () => {
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   const [activeTab, setActiveTab] = useState<'schedule' | 'monthly' | 'shipment' | 'inventory'>('schedule');
   
+  // 現在の週の日付を生成
+  const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 }); // 月曜日開始
+  const dates = Array.from({ length: 7 }, (_, i) => {
+    const date = addDays(weekStart, i);
+    return format(date, 'yyyy-MM-dd');
+  });
+
   // サンプル生産スケジュールデータを生成
   const generateSampleScheduleData = () => {
     const sampleProducts = [
@@ -66,13 +73,6 @@ const Production: React.FC = () => {
 
   // サンプルデータを使用（実際のデータがない場合）
   const displayScheduleData = scheduleData && scheduleData.length > 0 ? scheduleData : generateSampleScheduleData();
-
-  // 現在の週の日付を生成
-  const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 }); // 月曜日開始
-  const dates = Array.from({ length: 7 }, (_, i) => {
-    const date = addDays(weekStart, i);
-    return format(date, 'yyyy-MM-dd');
-  });
 
   // ユニークな製品リストを取得
   const uniqueProducts = Array.from(new Set(displayScheduleData.map(s => s.product_id)))
