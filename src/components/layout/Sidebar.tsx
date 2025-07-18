@@ -11,7 +11,7 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
     { name: 'ダッシュボード', path: '/', icon: <LayoutDashboard size={20} /> },
     { name: '生産', path: '/production', icon: <Calendar size={20} /> },
     { name: '出荷', path: '/shipment', icon: <Send size={20} /> },
-    { name: '資材在庫', path: '/inventory', icon: <Package size={20} /> },
+    { name: '在庫', path: '/inventory', icon: <Package size={20} /> },
     { name: 'マスタ管理', path: '/master-management', icon: <Database size={20} /> },
     { name: '設定', path: '/settings', icon: <Settings size={20} /> },
   ];
