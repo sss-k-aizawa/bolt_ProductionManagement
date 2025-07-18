@@ -11,6 +11,7 @@ const Production: React.FC = () => {
   const navigate = useNavigate();
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [currentMonthIndex, setCurrentMonthIndex] = useState(2); // 中央の月（現在月）から開始
+  const [activeTab, setActiveTab] = useState('weekly'); // Add missing activeTab state
   const { scheduleData, loading, error } = useProductionSchedule(currentWeek);
   const { items: inventoryItems, loading: inventoryLoading } = useInventory();
   
@@ -361,13 +362,13 @@ const Production: React.FC = () => {
             <p className="mt-1 text-sm text-gray-500">生産活動の計画と管理</p>
           </div>
         </div>
-        <Card>
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="text-center py-12">
             <AlertTriangle className="mx-auto h-12 w-12 text-red-500" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">エラーが発生しました</h3>
             <p className="mt-1 text-sm text-gray-500">{error}</p>
           </div>
-        </Card>
+        </div>
       </div>
     );
   }
@@ -413,43 +414,70 @@ const Production: React.FC = () => {
         </div>
       </div>
 
-      {/* 週ナビゲーション */}
-      <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-4 py-2">
-        <button
-          onClick={() => navigateWeek('prev')}
-          className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900"
-        >
-          <ChevronLeft size={16} />
-        </button>
-        
-        <div className="text-center">
-          <h3 className="text-sm font-medium text-gray-900">
-            {format(weekStart, 'yyyy年M月d日', { locale: ja })} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'M月d日', { locale: ja })}
-          </h3>
+      {/* Tab Navigation */}
+      <div className="border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8">
           <button
-            onClick={goToCurrentWeek}
-            className="text-xs text-blue-600 hover:text-blue-800"
+            onClick={() => setActiveTab('weekly')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'weekly'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
           >
-            今週
+            週間生産
           </button>
-        </div>
-        
-        <button
-          onClick={() => navigateWeek('next')}
-          className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900"
-        >
-          <ChevronRight size={16} />
-        </button>
+          <button
+            onClick={() => setActiveTab('monthly')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'monthly'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            月間集計
+          </button>
+          <button
+            onClick={() => setActiveTab('shipment')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'shipment'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            製品出庫
+          </button>
+          <button
+            onClick={() => setActiveTab('inventory')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'inventory'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            在庫予測
+          </button>
+        </nav>
       </div>
+
+      {activeTab === 'weekly' && (
+        <>
+          {/* 週ナビゲーション */}
+          <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-4 py-2">
+            <button
+              onClick={() => navigateWeek('prev')}
+              className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900"
+            >
+              <ChevronLeft size={16} />
             </button>
             
             <div className="text-center">
-              <h3 className="text-xs font-medium text-gray-900">
+              <h3 className="text-sm font-medium text-gray-900">
                 {format(weekStart, 'yyyy年M月d日', { locale: ja })} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'M月d日', { locale: ja })}
               </h3>
               <button
                 onClick={goToCurrentWeek}
-                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                className="text-xs text-blue-600 hover:text-blue-800"
               >
                 今週
               </button>
@@ -457,95 +485,86 @@ const Production: React.FC = () => {
             
             <button
               onClick={() => navigateWeek('next')}
-              className="inline-flex items-center px-1.5 py-0.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+              className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900"
             >
-              <ChevronRight size={14} />
+              <ChevronRight size={16} />
             </button>
           </div>
 
-      <Card className="p-0">
-        <div className="overflow-x-auto">
-          <div className="inline-block min-w-full align-middle">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-48">
-                    製品
-                  </th>
-                  {dates.map((date) => {
-                    const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                    return (
-                      <th key={date} className={`px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32 ${
-                        isWeekend ? 'bg-gray-100' : ''
-                      }`}>
-                        <div className="flex flex-col">
-                          <span>{format(new Date(date), 'M/d', { locale: ja })}</span>
-                          <span className="text-xs text-gray-400">{format(new Date(date), 'EEE', { locale: ja })}</span>
-                        </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-0">
+            <div className="overflow-x-auto">
+              <div className="inline-block min-w-full align-middle">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 min-w-48">
+                        製品
                       </th>
-                    );
-                  })}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {scheduleData.map((item, index) => {
-                  const completionColor = item.completion_rate >= 100 ? 'text-green-600' : 
-                                        item.completion_rate >= 80 ? 'text-amber-600' : 'text-red-600';
-                  
-                  return (
-                    <tr key={`${item.product_id}-${item.date}`} className="hover:bg-gray-50">
-                      <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
-                        <div className="flex items-center">
-                          <Package size={16} className="text-blue-500 mr-3" />
-                          <div>
-                            <div className="font-medium text-gray-900">{item.product_name}</div>
-                            <div className="text-xs text-gray-500">{item.product_id}</div>
-                          </div>
-                        </div>
-                      </td>
                       {dates.map((date) => {
-                        const dayData = scheduleData.find(d => d.date === date && d.product_id === item.product_id);
-                        const isToday = format(new Date(), 'yyyy-MM-dd') === date;
                         const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-                        
-                        if (!dayData) return (
-                          <td key={`${item.product_id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
-                            isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
-                          }`}>
-                            <span className="text-gray-400">-</span>
-                          </td>
-                        );
-                        
                         return (
-                          <td key={`${item.product_id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
-                            isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                          <th key={date} className={`px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-32 ${
+                            isWeekend ? 'bg-gray-100' : ''
                           }`}>
-                            <div className="space-y-1">
-                              <div className="text-xs text-gray-500">
-                                予定: {dayData.planned_quantity.toLocaleString()}
-                              </div>
-                              <div className={`text-sm font-medium ${completionColor}`}>
-                                実績: {dayData.actual_quantity.toLocaleString()}
-                              </div>
-                              <div className={`text-xs ${completionColor}`}>
-                                {dayData.completion_rate.toFixed(0)}%
-                              </div>
+                            <div className="flex flex-col">
+                              <span>{format(new Date(date), 'M/d', { locale: ja })}</span>
+                              <span className="text-xs text-gray-400">{format(new Date(date), 'EEE', { locale: ja })}</span>
                             </div>
-                          </td>
+                          </th>
                         );
                       })}
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </Card>
-                          );
-                        })}
-                      </tr>
-                    ))}
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {(scheduleData || []).map((item, index) => {
+                      const completionColor = item.completion_rate >= 100 ? 'text-green-600' : 
+                                            item.completion_rate >= 80 ? 'text-amber-600' : 'text-red-600';
+                      
+                      return (
+                        <tr key={`${item.product_id}-${item.date}`} className="hover:bg-gray-50">
+                          <td className="sticky left-0 z-10 bg-white px-4 py-4 whitespace-nowrap border-r border-gray-200">
+                            <div className="flex items-center">
+                              <Package size={16} className="text-blue-500 mr-3" />
+                              <div>
+                                <div className="font-medium text-gray-900">{item.product_name}</div>
+                                <div className="text-xs text-gray-500">{item.product_id}</div>
+                              </div>
+                            </div>
+                          </td>
+                          {dates.map((date) => {
+                            const dayData = (scheduleData || []).find(d => d.date === date && d.product_id === item.product_id);
+                            const isToday = format(new Date(), 'yyyy-MM-dd') === date;
+                            const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
+                            
+                            if (!dayData) return (
+                              <td key={`${item.product_id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
+                                isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                              }`}>
+                                <span className="text-gray-400">-</span>
+                              </td>
+                            );
+                            
+                            return (
+                              <td key={`${item.product_id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-center ${
+                                isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                              }`}>
+                                <div className="space-y-1">
+                                  <div className="text-xs text-gray-500">
+                                    予定: {dayData.planned_quantity.toLocaleString()}
+                                  </div>
+                                  <div className={`text-sm font-medium ${completionColor}`}>
+                                    実績: {dayData.actual_quantity.toLocaleString()}
+                                  </div>
+                                  <div className={`text-xs ${completionColor}`}>
+                                    {dayData.completion_rate.toFixed(0)}%
+                                  </div>
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
 
                     {/* 日別合計行 */}
                     <tr className="bg-blue-50 font-medium">
@@ -582,7 +601,7 @@ const Production: React.FC = () => {
                 </table>
               </div>
             </div>
-          </Card>
+          </div>
         </>
       )}
 
@@ -617,7 +636,7 @@ const Production: React.FC = () => {
             </button>
           </div>
 
-        <Card>
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="overflow-x-auto -mx-5">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -794,7 +813,7 @@ const Production: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </Card>
+        </div>
         </>
       )}
 
@@ -829,7 +848,7 @@ const Production: React.FC = () => {
             </button>
           </div>
 
-          <Card>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="mb-4">
               <h2 className="text-lg font-medium text-gray-900">製品出庫予定（階層別・日別）</h2>
               <p className="text-sm text-gray-500">顧客・出荷先別の出庫予定と配送計画</p>
@@ -970,7 +989,7 @@ const Production: React.FC = () => {
                 </table>
               </div>
             </div>
-          </Card>
+          </div>
         </>
       )}
 
@@ -1005,7 +1024,7 @@ const Production: React.FC = () => {
             </button>
           </div>
 
-          <Card>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="mb-4">
               <h2 className="text-lg font-medium text-gray-900">製品在庫予測（階層別・日別）</h2>
               <p className="text-sm text-gray-500">生産計画と出荷予定に基づく在庫予測</p>
@@ -1057,6 +1076,27 @@ const Production: React.FC = () => {
                           return (
                             <td key={`${product.product_id}-${date}`} className={`px-4 py-4 whitespace-nowrap text-sm ${
                               isToday ? 'bg-blue-50' : isWeekend ? 'bg-gray-50' : ''
+                            }`}>
+                              <div className="text-center">
+                                <div className={`text-lg font-bold ${getInventoryLevelColor(totalStock, totalMinQuantity, totalMaxQuantity)}`}>
+                                  {totalStock.toLocaleString()}
+                                </div>
+                                <div className={`text-xs ${getInventoryLevelColor(totalStock, totalMinQuantity, totalMaxQuantity)}`}>
+                                  {getInventoryLevelStatus(totalStock, totalMinQuantity, totalMaxQuantity)}
+                                </div>
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
